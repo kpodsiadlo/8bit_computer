@@ -9,7 +9,8 @@ class Display:
         if clock.state == 1:
             if logic.display_IN == 1:
                 self.state = buss.state
-        print("OUT: " + self.state.__str__())
+        print("Display: " + self.state.__str__())
+        
 
 class MAR:
     def __init__(self):
@@ -34,9 +35,6 @@ class RAM:
                 buss.state = self.state[mar.state]
 
 
-
-
-
 class ALU:
     def __init__(self):
         self.regA = regA.state
@@ -44,6 +42,9 @@ class ALU:
         self.state = regA.state + regB.state
         if logic.ALU_Substract == 1:
             self.state = regA.state - regB.state
+        if self.state > 255:
+            flag_register.carry = 1
+
 
     def do(self):
             self.regA = regA.state
@@ -51,11 +52,13 @@ class ALU:
             self.state = regA.state + regB.state
             if logic.ALU_Substract == 1:
                 self.state = regA.state - regB.state
+            if self.state > 255:
+                flag_register.carry = 1
             if logic.ALU_OUT == 1:
                 buss.state = self.state
 
 
-class Program_Counter:
+class ProgramCounter:
     def __init__(self):
         self.state = 0
 
@@ -64,9 +67,9 @@ class Program_Counter:
             if logic.count_enable == 1:
                 self.state += 1
                 print("PC: " + self.state.__str__())
-            if logic.PCregisterOUT == 1:
+            if logic.PC_OUT == 1:
                 buss.state = self.state
-            if logic.PCregisterIN == 1:
+            if logic.PC_Jump == 1:
                 self.state = buss.state
 
 
@@ -79,26 +82,23 @@ class Logic:
         self.IregisterIN = 0
         self.IregisterOUT = 0
         self.count_enable = 0
-        self.PCregisterOUT = 0
-        self.PCregisterIN = 0
+        self.PC_OUT = 0
+        self.PC_Jump = 0
         self.ALU_OUT = 0
         self.ALU_Substract = 0
         self.RAM_IN = 0
         self.RAM_OUT = 0
         self.MAR_IN = 0
-        self.MAR_OUT = 0
         self.display_IN = 0
-
 
     def reset(self):
         self.__init__()
 
 
-class Clock:  #  .start(time interval in seconds) .stop
+class Clock:  # start(time interval in seconds) .stop
     def __init__(self):
         self.state = 0
         self.timer = 0
-
 
     def tick(self):
         self.state = not self.state
@@ -123,6 +123,7 @@ class Buss:
 class RegisterA:
     def __init__(self):
         self.state = 0
+
     def do(self):
         if clock.state == 1:
             if logic.AregisterIN == 1:
@@ -135,6 +136,7 @@ class RegisterA:
 class RegisterB:
     def __init__(self):
         self.state = 0b00000000
+
     def do(self):
         if clock.state == 1:
             if logic.BregisterIN == 1:
@@ -143,9 +145,11 @@ class RegisterB:
                 buss.state = self.state
         print("RegB: " + self.state.__str__())
 
-class Instruction_Register:
+
+class InstructionRegister:
     def __init__(self):
         self.state = 0b00000000
+
     def do(self):
         if clock.state == 1:
             if logic.IregisterIN == 1:
@@ -154,6 +158,10 @@ class Instruction_Register:
                 buss.state = self.state
         print("RegB: " + self.state.__str__())
 
+
+class FlagRegister():
+    def __init__(self):
+        self.carry = 0
 
 def do():
     pc.do()
@@ -165,7 +173,6 @@ def do():
     display.do()
 
 
-
 def bprint(output):
         print(format(output, '#010b'))
 
@@ -174,10 +181,12 @@ display = Display()
 mar = MAR()
 ram = RAM()
 buss = Buss()
-pc = Program_Counter()
+pc = ProgramCounter()
 logic = Logic()
 clock = Clock()
 regA = RegisterA()
 regB = RegisterB()
+flag_register = FlagRegister()
 alu = ALU()
 # clock.start(2)
+#### EMULACJA SZYNY BDZIE SIE MUSIALA ODBYWAC PRZEZ ODPALANIE TYLKO AKTUALNIE POTRZEBNYCH MODUŁÓW.
