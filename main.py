@@ -1,5 +1,5 @@
 import time
-
+import input_data
 
 class Display:
     def __init__(self):
@@ -25,12 +25,10 @@ class MAR:
 
 class RAM:
     def __init__(self):
-        self.state = [0 for x in range(16)]
-        self.state[0] =  0b00011110
-        self.state[1] =  0b00101111
-        self.state[2] =  0b00110000
-        self.state[14] = 0b00000110
-        self.state[15] = 0b00001000
+        self.state = [x for x in input_data.data]
+        print("RAM: ")
+        for idx, x in enumerate(self.state):
+            print("{0:02d} {1:08b}".format(idx, x))
 
     def do_in(self):
         if clock.state == 1:

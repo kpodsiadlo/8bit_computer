@@ -1,0 +1,17 @@
+data = [0b00000000 for x in range(16)]
+data[0] =  0b00011110
+data[1] =  0b00101111
+data[2] =  0b00110000
+data[3] =  0
+data[4] =  0
+data[5] =  0
+data[6] =  0
+data[7] =  0
+data[8] =  0
+data[9] =  0
+data[10] = 0
+data[11] = 0
+data[12] = 0
+data[13] = 0
+data[14] = 0b00000110
+data[15] = 0b00001000
