@@ -10,7 +10,7 @@ class Display:
         if clock.state == 1:
             if logic.display_IN == 1:
                 self.state = buss.state
-                print("#############")
+                print("\n#############")
                 print("Display: " + self.state.__str__())
                 print("#############")
 
@@ -83,7 +83,8 @@ class ProgramCounter:
         if clock.state == 1:
             if logic.PC_enable == 1:
                 self.state += 1
-                print("PC: " + self.state.__str__())
+#               print("PC: " + (self.state-1).__str__())
+                print(".", end="", flush=True)
 
     def do_in(self):
         if logic.PC_Jump == 1:
@@ -215,10 +216,12 @@ class FlagRegister:
         if logic.flag_IN == 1:
             self.carry = alu.carry
             if self.carry == 1:
-                print("Carry Flag")
+#                print("Carry Flag")
+                pass
             self.zero = alu.zero
             if self.zero == 1:
-                print("Zero Flag")
+#                print("Zero Flag")
+                pass
 
 class InstructionCounter:
     def __init__(self):
@@ -259,7 +262,7 @@ class Decoder:
 
         elif instruction_register.higher_bits == 1:  ## lda  0001mmmm
             if ic.state == 2:
-                print("LDA")
+                # print("LDA")
                 logic.IregisterOUT = 1
                 logic.MAR_IN = 1
             elif ic.state == 3:
@@ -268,7 +271,7 @@ class Decoder:
 
         elif instruction_register.higher_bits == 2:  # add    0010 mmmm
             if ic.state == 2:
-                print("ADD")
+#                 # print("ADD")
                 logic.IregisterOUT = 1
                 logic.MAR_IN = 1
             elif ic.state == 3:
@@ -295,7 +298,7 @@ class Decoder:
 
         elif instruction_register.higher_bits == 4:  # sta
             if ic.state == 2:
-                print("STA")
+                # print("STA")
                 logic.IregisterOUT = 1
                 logic.MAR_IN = 1
             elif ic.state == 3:
@@ -304,27 +307,27 @@ class Decoder:
 
         elif instruction_register.higher_bits == 5:  # ldi
             if ic.state == 2:
-                print("LDI")
+                # print("LDI")
                 logic.IregisterOUT = 1
                 logic.AregisterIN = 1
 
         elif instruction_register.higher_bits == 6:  # jmp
             if ic.state == 2:
-                print("JMP")
+                # print("JMP")
                 logic.IregisterOUT = 1
                 logic.PC_Jump = 1
 
         elif instruction_register.higher_bits == 7:  # jc
-            if flag_register.carry == 1:
-                print("JC")
-                if ic.state == 2:
+            if ic.state == 2:
+                # print("JC")
+                if flag_register.carry == 1:
                     logic.IregisterOUT = 1
                     logic.PC_Jump = 1
 
         elif instruction_register.higher_bits == 8:  # jz
-            if flag_register.zero == 1:
-                if ic.state == 2:
-                    print("JZ")
+            if ic.state == 2:
+                if flag_register.zero == 1:
+                    # print("JZ")
                     logic.IregisterOUT = 1
                     logic.PC_Jump = 1
 
@@ -332,13 +335,13 @@ class Decoder:
 
         elif instruction_register.higher_bits == 14:  # display
             if ic.state == 2:
-                print("OUT")
+                # print("OUT")
                 logic.AregisterOUT = 1
                 logic.display_IN = 1
 
         elif instruction_register.higher_bits == 15:  # halt
             if ic.state == 2:
-                print("HLT")
+                # print("HLT")
                 clock.stop()
 
 
@@ -387,6 +390,6 @@ mar = MAR()
 ram = RAM()
 display = Display()
 
-clock.start(0.05)
+clock.start(0.01)
 
 

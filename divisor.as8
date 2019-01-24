@@ -1,0 +1,13 @@
+lda, %15
+out
+lda, %14
+sub, %13
+sta, %14
+lda, %15
+sub, %14
+jz, %10
+jc, %2
+jmp, %6
+lda, %14
+out
+hlt

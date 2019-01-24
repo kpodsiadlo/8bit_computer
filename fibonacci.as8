@@ -1,0 +1,14 @@
+ldi, 1
+out
+sta, %15
+sta, %14
+add, %14
+jc, %13
+out
+sta, %14
+add, %15
+jc, %13
+out
+sta, %15
+jmp, %4
+hlt
