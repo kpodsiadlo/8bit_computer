@@ -63,15 +63,17 @@ class ALU:
         self.carry = 0
         if logic.ALU_Substract == 1:
             self.state = regA.state - regB.state
+
         if self.state > 255:
             self.state -= 256
             self.carry = 1
-#           print("ALU Carry")
-        elif self.state == 0:
+#            print("ALU Carry")
+        if self.state == 0:
             self.zero = 1
 #            print("ALU ZERO")
-        elif self.state < 0:
+        if self.state < 0:
             self.state +=256
+            self.carry = 1
 
 
 
@@ -390,6 +392,6 @@ mar = MAR()
 ram = RAM()
 display = Display()
 
-clock.start(0.01)
+clock.start(0.0001)
 
 

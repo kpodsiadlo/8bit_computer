@@ -16,3 +16,23 @@ with open(filename, "r") as f:
          x = x.lstrip("0b")
          x = int(x, base=2)
          data[idx] = x
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

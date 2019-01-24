@@ -8,7 +8,10 @@ To start a computer:
 
 python3 main.py <filename>
 
-Included programs: fibonacci, add3
+Included programs: fibonacci, add3, divisor
+*DIVISOR (by SCOTT SHAMBAUGH) calculates largest divisor of a number.
+You need to MANUALLY enter number in binary format in memory locations [14] and [15] by editing the compiled file.
+By default the number is 84. Of course.
 
 .as8 files are assembly code files. The computer understands only 0's and 1's, so don't load them.
 Files without extension are executables.
@@ -42,7 +45,6 @@ jc,  %x -   change program counter to memory address x if previous add or sub op
 jz   %x -   change program counter to memory address x if previous add or sub operation enabled zero flag
 out     -   print value of register A to screen
 hlt     -   Halt! Hande hoch!
-
 
 
 Example:
