@@ -1,6 +1,7 @@
 import time
 import input_data
 
+
 class Display:
     def __init__(self):
         self.state = 0
@@ -9,7 +10,9 @@ class Display:
         if clock.state == 1:
             if logic.display_IN == 1:
                 self.state = buss.state
+                print("#############")
                 print("Display: " + self.state.__str__())
+                print("#############")
 
 
 class MAR:
@@ -20,20 +23,17 @@ class MAR:
         if clock.state == 1:
             if logic.MAR_IN == 1:
                 self.state = buss.state
-                print("MAR: " + self.state.__str__())
+#                print("MAR: " + self.state.__str__())
 
 
 class RAM:
     def __init__(self):
         self.state = [x for x in input_data.data]
-        print("RAM: ")
-        for idx, x in enumerate(self.state):
-            print("{0:02d} {1:08b}".format(idx, x))
 
     def do_in(self):
         if clock.state == 1:
-            if logic.RAM_OUT == 1:
-                buss.state = self.state[mar.state]
+            if logic.RAM_IN == 1:
+                self.state[mar.state] = buss.state
 
     def do_out(self):
         if clock.state == 1:
@@ -43,24 +43,36 @@ class RAM:
 
 class ALU:
     def __init__(self):
-        self.regA = regA.state
-        self.regb = regB.state
+        # self.regA = regA.state
+        # self.regB = regB.state
         self.state = regA.state + regB.state
-        if logic.ALU_Substract == 1:
-            self.state = regA.state - regB.state
-        if self.state > 255:
-            flag_register.carry = 1
+        self.calculate()
+        self.zero = 0
+        self.carry = 0
 
     def do_out(self):
-        self.regA = regA.state
-        self.regb = regB.state
+        # self.regA = regA.state
+        # self.regB = regB.state
         self.state = regA.state + regB.state
+        self.calculate()
+        if logic.ALU_OUT == 1:
+            buss.state = self.state
+
+    def calculate(self):
+        self.zero = 0
+        self.carry = 0
         if logic.ALU_Substract == 1:
             self.state = regA.state - regB.state
         if self.state > 255:
-            flag_register.carry = 1
-        if logic.ALU_OUT == 1:
-            buss.state = self.state
+            self.state -= 256
+            self.carry = 1
+#           print("ALU Carry")
+        elif self.state == 0:
+            self.zero = 1
+#            print("ALU ZERO")
+        elif self.state < 0:
+            self.state +=256
+
 
 
 class ProgramCounter:
@@ -99,6 +111,7 @@ class Logic:
         self.RAM_OUT = 0
         self.MAR_IN = 0
         self.display_IN = 0
+        self.flag_IN = 0
 
     def reset(self):
         self.__init__()
@@ -111,8 +124,9 @@ class Clock:  # start(time interval in seconds) .stop
 
     def tick(self):
         self.state = not self.state
-        print("Tick: " + self.state.__str__())
-        do()
+        if self.state == 1:                         ### only true tick
+        ##    print("Tick: " + self.state.__str__())
+            do()
 
     def start(self, time_interval_in_s):
         self.timer = 1
@@ -140,13 +154,13 @@ class RegisterA:
         if clock.state == 1:
             if logic.AregisterIN == 1:
                 self.state = buss.state
-                print("RegA: " + self.state.__str__())
+#               print("RegA: " + self.state.__str__())
 
     def do_out(self):
         if clock.state == 1:
             if logic.AregisterOUT == 1:
                 buss.state = self.state
-                print("RegA: " + self.state.__str__())
+#               print("RegA: " + self.state.__str__())
 
 
 class RegisterB:
@@ -157,13 +171,13 @@ class RegisterB:
         if clock.state == 1:
             if logic.BregisterIN == 1:
                 self.state = buss.state
-                print("RegB: " + self.state.__str__())
+#               print("RegB: " + self.state.__str__())
 
     def do_out(self):
         if clock.state == 1:
             if logic.BregisterOUT == 1:
                 buss.state = self.state
-                print("RegB: " + self.state.__str__())
+#               print("RegB: " + self.state.__str__())
 
 
 class InstructionRegister:
@@ -177,25 +191,34 @@ class InstructionRegister:
             if logic.IregisterIN == 1:
                 self.state = buss.state
                 self.split()
-                print("Instruction register: " + self.state.__str__())
+              #  print("Instruction register: " + self.state.__str__())
 
     def do_out(self):
         if clock.state == 1:
             if logic.IregisterOUT == 1:
                 buss.state = self.lower_bits
-                print("Instruction register:: " + self.state.__str__())
+              #  print("Instruction register:: " + self.state.__str__())
 
     def split(self):
         self.higher_bits = self.state >> 4
-        print("IR_HIGHER:" + self.higher_bits.__str__())
+#       print("Instruction: " + self.higher_bits.__str__())
         self.lower_bits = self.state & 0b00001111
-        print("IR_LOWER: " + self.lower_bits.__str__())
+#       print("Data         " + self.lower_bits.__str__())
 
 
 class FlagRegister:
     def __init__(self):
         self.carry = 0
+        self.zero = 0
 
+    def do_in(self):
+        if logic.flag_IN == 1:
+            self.carry = alu.carry
+            if self.carry == 1:
+                print("Carry Flag")
+            self.zero = alu.zero
+            if self.zero == 1:
+                print("Zero Flag")
 
 class InstructionCounter:
     def __init__(self):
@@ -204,7 +227,7 @@ class InstructionCounter:
     def increase(self):
         if clock.state == 1:
             self.state += 1
-            if self.state > 5:
+            if self.state > 4:
                 self.state = 0
 
 
@@ -214,19 +237,109 @@ class Decoder:
 
     @staticmethod
     def do():
-        print("T: " + ic.state.__str__())
+        # if clock.state == 1:
+        #     print("T: " + ic.state.__str__())
 
         logic.reset()
         if ic.state == 0:  # Microinstruction 0 (Fetch)
             logic.PC_OUT = 1
             logic.MAR_IN = 1
-        if ic.state == 1:  # Microinstruction 1 (Fetch)
+        elif ic.state == 1:  # Microinstruction 1 (Fetch)
             logic.RAM_OUT = 1
             logic.IregisterIN = 1
             logic.PC_enable = 1
-        if ic.state > 1:
-            execute()
+        elif ic.state > 1:
+            decoder.execute()
 
+    @staticmethod
+    def execute():
+
+        if instruction_register.higher_bits == 0:
+            pass
+
+        elif instruction_register.higher_bits == 1:  ## lda  0001mmmm
+            if ic.state == 2:
+                print("LDA")
+                logic.IregisterOUT = 1
+                logic.MAR_IN = 1
+            elif ic.state == 3:
+                logic.RAM_OUT = 1
+                logic.AregisterIN = 1
+
+        elif instruction_register.higher_bits == 2:  # add    0010 mmmm
+            if ic.state == 2:
+                print("ADD")
+                logic.IregisterOUT = 1
+                logic.MAR_IN = 1
+            elif ic.state == 3:
+                logic.RAM_OUT = 1
+                logic.BregisterIN = 1
+            elif ic.state == 4:
+                logic.ALU_OUT = 1
+                logic.AregisterIN = 1
+                logic.flag_IN = 1
+
+        elif instruction_register.higher_bits == 3:  # subtract
+            if ic.state == 2:
+                logic.IregisterOUT = 1
+                logic.MAR_IN = 1
+            elif ic.state == 3:
+                logic.RAM_OUT = 1
+                logic.BregisterIN = 1
+            if ic.state == 4:
+                logic.ALU_Substract = 1
+                logic.ALU_OUT = 1
+                logic.AregisterIN = 1
+                logic.flag_IN = 1
+
+
+        elif instruction_register.higher_bits == 4:  # sta
+            if ic.state == 2:
+                print("STA")
+                logic.IregisterOUT = 1
+                logic.MAR_IN = 1
+            elif ic.state == 3:
+                logic.AregisterOUT = 1
+                logic.RAM_IN = 1
+
+        elif instruction_register.higher_bits == 5:  # ldi
+            if ic.state == 2:
+                print("LDI")
+                logic.IregisterOUT = 1
+                logic.AregisterIN = 1
+
+        elif instruction_register.higher_bits == 6:  # jmp
+            if ic.state == 2:
+                print("JMP")
+                logic.IregisterOUT = 1
+                logic.PC_Jump = 1
+
+        elif instruction_register.higher_bits == 7:  # jc
+            if flag_register.carry == 1:
+                print("JC")
+                if ic.state == 2:
+                    logic.IregisterOUT = 1
+                    logic.PC_Jump = 1
+
+        elif instruction_register.higher_bits == 8:  # jz
+            if flag_register.zero == 1:
+                if ic.state == 2:
+                    print("JZ")
+                    logic.IregisterOUT = 1
+                    logic.PC_Jump = 1
+
+        #########
+
+        elif instruction_register.higher_bits == 14:  # display
+            if ic.state == 2:
+                print("OUT")
+                logic.AregisterOUT = 1
+                logic.display_IN = 1
+
+        elif instruction_register.higher_bits == 15:  # halt
+            if ic.state == 2:
+                print("HLT")
+                clock.stop()
 
 
 def do():
@@ -243,6 +356,7 @@ def do():
     ram.do_out()
 
     # ins
+    flag_register.do_in()
     pc.do_in()
     regA.do_in()
     regB.do_in()
@@ -257,13 +371,11 @@ def do():
     ic.increase()
 
 
-def bprint(output):
-    print(format(output, '#010b'))
-
 
 clock = Clock()
 pc = ProgramCounter()
 ic = InstructionCounter()
+flag_register = FlagRegister()
 logic = Logic()
 decoder = Decoder()
 buss = Buss()
@@ -271,38 +383,10 @@ regA = RegisterA()
 regB = RegisterB()
 alu = ALU()
 instruction_register = InstructionRegister()
-
-flag_register = FlagRegister()
 mar = MAR()
 ram = RAM()
 display = Display()
 
-# clock.start(2)
+clock.start(0.05)
 
 
-def execute():
-    if instruction_register.higher_bits == 1:  ## lda
-        if ic.state == 2:
-            logic.IregisterOUT = 1
-            logic.MAR_IN = 1
-
-        if ic.state == 3:
-            logic.RAM_OUT = 1
-            logic.AregisterIN = 1
-
-    if instruction_register.higher_bits == 2:  ## add
-        if ic.state == 2:
-            logic.IregisterOUT = 1
-            logic.MAR_IN = 1
-        if ic.state == 3:
-            logic.RAM_OUT = 1
-            logic.BregisterIN = 1
-        if ic.state == 4:
-            logic.ALU_OUT = 1
-            logic.AregisterIN = 1
-
-
-    if instruction_register.higher_bits == 3: ## display
-        if ic.state == 2:
-            logic.AregisterOUT = 1
-            logic.display_IN = 1

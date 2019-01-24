@@ -1,0 +1,40 @@
+## copy this memory dump and paste into "Input Data". Then run the script.
+
+Load 4s, subtracts from %15, if zero halts
+
+data = [0b00000000 for x in range(16)]
+data[0] =  0b01010010    # ldi 2
+data[1] =  0b00111110    # sub %14
+data[2] =  0b10000100    # jz  %4
+data[3] =  0b01100001    # jmp %1
+data[4] =  0b11100000    # out
+data[5] =  0b11110000    # hlt
+data[6] =  0
+data[7] =  0
+data[8] =  0
+data[9] =  0
+data[10] = 0
+data[11] = 0
+data[12] = 0
+data[13] = 0
+data[14] = 0b00000001    # data (=1)
+data[15] = 0
+
+Load 255, add 1, display and halt if carry
+data = [0b00000000 for x in range(16)]
+data[0] =  0b00011111    # lda %15
+data[1] =  0b00101110    # add %14
+data[2] =  0b01110100    # jc  %4
+data[3] =  0b01100001    # jmp %1
+data[4] =  0b11100000    # out
+data[5] =  0b11110000    # hlt
+data[6] =  0
+data[7] =  0
+data[8] =  0
+data[9] =  0
+data[10] = 0
+data[11] = 0
+data[12] = 0
+data[13] = 0
+data[14] = 0b00000001    # data (=1)
+data[15] = 0b11111111
