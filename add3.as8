@@ -1,0 +1,7 @@
+ldi, 3
+sta, %15
+out
+add, %15
+jc, %6
+jmp, %2
+hlt

@@ -1,24 +1,32 @@
-TL,DR:
+Ben Eater's 8-bit computer emulator.
+This is an emulator of a computer featured in Ben Eater's popular video series documenting design and build of
+a simple computer based on a SAP-1 design from Albert Paul Malvino's book Digital Computer Electronics.
 
 Python 3 ONLY
 
 To start a computer:
-python3 main.py <filename>
-Included programs: fibonacci.
-.as8 files are assembly code files. The computer understands only 0's and 1's, so don't load them.
 
+python3 main.py <filename>
+
+Included programs: fibonacci, add3
+
+.as8 files are assembly code files. The computer understands only 0's and 1's, so don't load them.
+Files without extension are executables.
 
 To compile an executable file start "python 3 compiler.py". It will tell you what to do.
+If you want to include predefined values in the program memory, feel free to manually edit the output files afterwards.
+Each line corresponds to one byte in memory.
 
 
 ##PROGRAMMING##
-Assembler for the SAP is very, very rudimentary.
+Instruction set for the SAP is very, very rudimentary.
 
 Total memory is 16 bytes.
-There are 2 registers: a and b.
+There are 2 registers: a and b, both 8-bit. Only register a is directly accessible.
 The sum of operations is always stored in register a.
 
 Program can consist of maximum 16 lines, each instruction takes exactly 1 byte of memory.
+Memory is addressed from 0 to 15.
 
 Available instructions:
 
@@ -37,8 +45,18 @@ hlt     -   Halt! Hande hoch!
 
 
 
-Ben Eater's 8-bit computer emulator.
-This is an emulator of a computer featured in Ben Eater's popular video series documenting design and build of
-a simple computer based on a SAP-1 design from Albert Paul Malvino's book Digital Computer Electronics.
+Example:
 
-As of now it works in text-only
+ldi, 3
+sta, %15
+out
+add, %15
+jc, %6
+jmp, %3
+hlt
+
+Copy lines above and save it as test.as8 file in folder main.py is stored.
+run "python3 compiler.py"
+Run "python3 test"
+
+Will print 3, 6, 9, 12, 15 etc and will stop when the result exceeds 255.
