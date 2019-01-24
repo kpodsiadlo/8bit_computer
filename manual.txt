@@ -1,12 +1,44 @@
-# 0  # 0000 - nop
-# 1  # 0001 - lda
-# 2  # 0010 - add
-# 3  # 0011 - sub
-# 4  # 0100 - sta
-# 5  # 0101 - ldi
-# 6  # 0110 - jmp
-# 7  # 0111 - jc
-# 8  # 1000 - jz
-#
-# 14 # 1110 - out
-# 15 # 1111 - hlt
+TL,DR:
+
+Python 3 ONLY
+
+To start a computer:
+python3 main.py <filename>
+Included programs: fibonacci.
+.as8 files are assembly code files. The computer understands only 0's and 1's, so don't load them.
+
+
+To compile an executable file start "python 3 compiler.py". It will tell you what to do.
+
+
+##PROGRAMMING##
+Assembler for the SAP is very, very rudimentary.
+
+Total memory is 16 bytes.
+There are 2 registers: a and b.
+The sum of operations is always stored in register a.
+
+Program can consist of maximum 16 lines, each instruction takes exactly 1 byte of memory.
+
+Available instructions:
+
+
+nop     -   no operation
+lda, %x -   load byte from memory address x to register a
+add, %x -   add a byte from memory address x to register a and store in register a
+sub, %x -   subtract a byte from memory address x to register a and store in register a
+sta, %x -   store byte from register a to memory address
+ldi, x  -   load 4-bit number x to register a
+jmp, %x -   change program counter to memory address x
+jc,  %x -   change program counter to memory address x if previous add or sub operation enabled carry flag
+jz   %x -   change program counter to memory address x if previous add or sub operation enabled zero flag
+out     -   print value of register A to screen
+hlt     -   Halt! Hande hoch!
+
+
+
+Ben Eater's 8-bit computer emulator.
+This is an emulator of a computer featured in Ben Eater's popular video series documenting design and build of
+a simple computer based on a SAP-1 design from Albert Paul Malvino's book Digital Computer Electronics.
+
+As of now it works in text-only
