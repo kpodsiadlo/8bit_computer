@@ -4,19 +4,25 @@ a simple computer based on a SAP-1 design from Albert Paul Malvino's book Digita
 
 Python 3 ONLY
 
-To start a computer:
+To start a program:
 
 python3 main.py <filename>
 
 Included programs: fibonacci, add3, divisor
-*DIVISOR (by SCOTT SHAMBAUGH) calculates largest divisor of a number.
-You need to MANUALLY enter number in binary format in memory locations [14] and [15] by editing the compiled file.
-By default the number is 84. Of course.
 
-.as8 files are assembly code files. The computer understands only 0's and 1's, so don't load them.
-Files without extension are executables.
+*DIVISOR (by SCOTT SHAMBAUGH, https://theshamblog.com) calculates largest divisor of a given 8-bit number.
+You need to MANUALLY enter this number in binary format to the memory locations [14] and [15]
+and the binary digit 1 (00000001) to the memory location [13] by if you compile the file yourself.
+By default the number is 84 (01010100).
 
-To compile an executable file start "python 3 compiler.py". It will tell you what to do.
+
+The .as8 files are assembly code files. The computer understands only 0's and 1's, so don't load them.
+The files without extension are executables.
+
+To build an executable file from .as8 file run "python3 compiler.py". It will tell you what to do.
+Make sure the .as8 file is in the same folder as compiler.py. If a compiled file exist IT WILL AUTOMATICALLY
+OVERWRITE it.
+ 
 If you want to include predefined values in the program memory, feel free to manually edit the output files afterwards.
 Each line corresponds to one byte in memory.
 
@@ -25,8 +31,8 @@ Each line corresponds to one byte in memory.
 Instruction set for the SAP is very, very rudimentary.
 
 Total memory is 16 bytes.
-There are 2 registers: a and b, both 8-bit. Only register a is directly accessible.
-The sum of operations is always stored in register a.
+There are 2 registers: 'a' and 'b', both 8-bit. Only register 'a' is directly accessible.
+The sum of operations is always stored in register 'a'.
 
 Program can consist of maximum 16 lines, each instruction takes exactly 1 byte of memory.
 Memory is addressed from 0 to 15.
@@ -35,11 +41,11 @@ Available instructions:
 
 
 nop     -   no operation
-lda, %x -   load byte from memory address x to register a
-add, %x -   add a byte from memory address x to register a and store in register a
-sub, %x -   subtract a byte from memory address x to register a and store in register a
-sta, %x -   store byte from register a to memory address
-ldi, x  -   load 4-bit number x to register a
+lda, %x -   load byte from memory address x to register 'a'
+add, %x -   add a byte from memory address x to register 'a' and store in register 'a'
+sub, %x -   subtract a byte from memory address x to register 'a' and store in register 'a'
+sta, %x -   store byte from register 'a' to memory address
+ldi, x  -   load 4-bit number x to register 'a'
 jmp, %x -   change program counter to memory address x
 jc,  %x -   change program counter to memory address x if previous add or sub operation enabled carry flag
 jz   %x -   change program counter to memory address x if previous add or sub operation enabled zero flag
