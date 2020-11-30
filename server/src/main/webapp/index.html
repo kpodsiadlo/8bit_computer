@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html lang="EN">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <title>8bit computer</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <div class="row" id="clock">Clock</div>
+            <div class="row" id="memory-address">MAR</div>
+            <div class="row" id="memory-contents">Memory</div>
+            <div class="row" id="instruction-register">IR</div>
+            <div class="row" id="microinstruction-counter">Microinstr Counter</div>
+            <div class="row" id="decoder">Decoder</div>
+        </div>
+        <div class="col-2" id="bus">BUS</div>
+        <div class="col-5">
+            <div class="row" id="program-counter">
+                PC: <input type="text" value="0" id="pc-display">
+                <input type="button" id="pc-decrease" value="DEC">
+                <input type="button" id="pc-increase" value="INC">
+            </div>
+            <div class="row" id="register-a">RegA</div>
+            <div class="row" id="alu">ALU</div>
+            <div class="row" id="register-b">RegB</div>
+            <div class="row" id="output">OUT</div>
+            <div class="row" id="instruction-display">Instructions</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
