@@ -1,8 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
 import com.kpodsiadlo.eightbitcomputer.model.Computer;
-import com.sun.org.slf4j.internal.LoggerFactory;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;

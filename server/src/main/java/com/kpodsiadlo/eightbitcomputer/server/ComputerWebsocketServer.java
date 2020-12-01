@@ -2,7 +2,7 @@ package com.kpodsiadlo.eightbitcomputer.server;
 
 import com.kpodsiadlo.eightbitcomputer.handler.ComputerSessionHandler;
 import com.kpodsiadlo.eightbitcomputer.json.Utils;
-
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,7 +13,6 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import java.util.logging.Logger;
 
 @ApplicationScoped
 @ServerEndpoint("/computer")
@@ -23,22 +22,22 @@ public class ComputerWebsocketServer {
 
     @OnOpen
     public void onOpen(Session session) {
-        Logger.getLogger(this.getClass().getName()).info("onOpen");
+        LoggerFactory.getLogger(this.getClass()).debug("OnOpen");
         sessionHandler.addSession(session);
     }
 
     @OnClose
     public void onClose(Session session) {
-        Logger.getLogger(this.getClass().getName()).info("onClose");
-
-        sessionHandler.removeSession(session);
+        LoggerFactory.getLogger(this.getClass()).debug("OnClose");
+        if (session != null) {
+            sessionHandler.removeSession(session);
+        }
     }
 
     @OnMessage
-    public void onMessage(String message, Session session){
-        Logger.getLogger("onMessage").info("onMessage");
+    public void onMessage(String message, Session session) {
+        LoggerFactory.getLogger(this.getClass()).debug("OnMessage");
         JsonObject jsonMessage = Utils.getJsonObject(message);
-        Logger.getLogger("afterGettingJsonObject").info(jsonMessage.toString());
         sessionHandler.updateComputer(jsonMessage);
         sendUpdatedComputerToAllSessions();
     }
@@ -49,8 +48,7 @@ public class ComputerWebsocketServer {
     }
 
     @OnError
-    public void onError(Throwable error){
-        Logger.getLogger(this.getClass().getName()).severe("On Error");
-        Logger.getLogger(this.getClass().getName()).severe(error.getMessage());
+    public void onError(Throwable error) {
+        LoggerFactory.getLogger(this.getClass()).error("On Error " + error.getMessage());
     }
 }
