@@ -20,9 +20,9 @@
         <div class="col-2" id="bus">BUS</div>
         <div class="col-5">
             <div class="row" id="program-counter">
-                PC: <input type="text" value="0" id="pc-display">
-                <input type="button" id="pc-decrease" value="DEC">
-                <input type="button" id="pc-increase" value="INC">
+                <label for="program-counter-display">PC: </label><input type="text" value="0" id="program-counter-display">
+                <input type="button" id="program-counter-decrease" value="DEC">
+                <input type="button" id="program-counter-increase" value="INC" onclick="onProgramCounterIncrease()">
             </div>
             <div class="row" id="register-a">RegA</div>
             <div class="row" id="alu">ALU</div>
@@ -33,5 +33,6 @@
     </div>
 </div>
 </body>
+<script src="websockets.js"></script>
 </html>
 
