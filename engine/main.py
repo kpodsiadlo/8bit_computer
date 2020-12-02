@@ -1,6 +1,7 @@
 import time
 import input_data
 
+time_interval_in_seconds = 0.001;
 
 class Display:
     def __init__(self):
@@ -120,10 +121,10 @@ class Logic:
         self.__init__()
 
 
-class Clock:  # start(time interval in seconds) .stop
+class Clock:
     def __init__(self):
         self.state = 0
-        self.timer = 0
+        self.clock_running = 0
 
     def tick(self):
         self.state = not self.state
@@ -131,14 +132,11 @@ class Clock:  # start(time interval in seconds) .stop
         ##    print("Tick: " + self.state.__str__())
             do()
 
-    def start(self, time_interval_in_s):
-        self.timer = 1
-        while self.timer == 1:
-            time.sleep(float(time_interval_in_s))
-            self.tick()
+    def start(self):
+        self.clock_running = 1
 
     def stop(self):
-        self.timer = 0
+        self.clock_running = 0
 
 
 class Buss:
@@ -392,6 +390,12 @@ mar = MAR()
 ram = RAM()
 display = Display()
 
-clock.start(0.0001)
 
-
+clock.start()
+while True:
+    if clock.clock_running == 0:
+        # if clock is off
+        pass
+    else:
+        time.sleep(float(time_interval_in_seconds))
+        clock.tick()
