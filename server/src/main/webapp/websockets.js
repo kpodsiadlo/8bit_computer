@@ -27,3 +27,24 @@ function sendUpdate() {
     console.log(jsonMessage);
     socket.send(JSON.stringify(jsonMessage));
 }
+
+function onToggleClock() {
+    console.log("onToggleClock")
+    let toggleButton = document.getElementById("toggle-clock-button");
+    switch (toggleButton.value) {
+        case "STOP": {
+            let jsonMessage = {"clockRunning": false};
+            socket.send(JSON.stringify(jsonMessage));
+            toggleButton.value = "START";
+            break;
+
+        }
+        case "START": {
+            let jsonMessage = {"clockRunning": true};
+            socket.send(JSON.stringify(jsonMessage));
+            toggleButton.value = "STOP";
+            break;
+        }
+    }
+
+}

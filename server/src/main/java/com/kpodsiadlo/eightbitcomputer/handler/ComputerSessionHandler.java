@@ -18,17 +18,32 @@ public class ComputerSessionHandler {
     @Inject
     Computer computer;
 
-    public void updateComputer(JsonObject message){
+    public void updateComputerModel(JsonObject message){
         Logger.getLogger(this.getClass().getName()).info("updateComputer");
-        Integer programCounter = message.getInt("programCounter");
-        Logger.getLogger(this.getClass().getName()).info("programCounter= " + programCounter);
-        computer.setProgramCounter(programCounter);
+
+        try { Integer programCounter = message.getInt("programCounter");
+            Logger.getLogger(this.getClass().getName()).info("programCounter = " + programCounter);
+            computer.setProgramCounter(programCounter);
+        }
+            catch (Exception ignored) {
+
+        }
+
+        try {
+            Boolean clockRunning = message.getBoolean("clockRunning");
+            Logger.getLogger(this.getClass().getName()).info("clockRunning = " + clockRunning);
+            computer.setClockRunning(clockRunning);
+        } catch (Exception ignored) {
+        }
     }
 
     public JsonObject getComputerState() {
+        Logger.getLogger(this.getClass().getName()).info("getComputerState");
         Integer programCounter = computer.getProgramCounter();
+        Boolean clockRunning = computer.getClockRunning();
         return JsonProvider.provider().createObjectBuilder()
                 .add("programCounter", programCounter)
+                .add("clockRunning", clockRunning)
                 .build();
     }
 

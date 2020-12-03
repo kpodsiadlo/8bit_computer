@@ -39,11 +39,12 @@ public class ComputerWebsocketServer {
         LoggerFactory.getLogger(this.getClass()).info("OnMessage");
         LoggerFactory.getLogger(this.getClass()).info(message);
         JsonObject jsonMessage = Utils.getJsonObject(message);
-        sessionHandler.updateComputer(jsonMessage);
+        sessionHandler.updateComputerModel(jsonMessage);
         sendUpdatedComputerToAllSessions();
     }
 
     private void sendUpdatedComputerToAllSessions() {
+        LoggerFactory.getLogger(this.getClass()).info("sendUpdatedComputerToAllSessions");
         JsonObject computerState = sessionHandler.getComputerState();
         sessionHandler.sendToAllSessions(computerState);
     }
