@@ -1,0 +1,1 @@
+data = [0b00000000 for x in range(16)]

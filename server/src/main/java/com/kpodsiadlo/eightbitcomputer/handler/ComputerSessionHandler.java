@@ -20,7 +20,7 @@ public class ComputerSessionHandler {
 
     public void updateComputer(JsonObject message){
         Logger.getLogger(this.getClass().getName()).info("updateComputer");
-        Integer programCounter = Integer.parseInt(message.getString("programCounter"));
+        Integer programCounter = message.getInt("programCounter");
         Logger.getLogger(this.getClass().getName()).info("programCounter= " + programCounter);
         computer.setProgramCounter(programCounter);
     }

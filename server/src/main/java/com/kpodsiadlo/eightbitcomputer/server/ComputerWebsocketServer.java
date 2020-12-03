@@ -36,7 +36,8 @@ public class ComputerWebsocketServer {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        LoggerFactory.getLogger(this.getClass()).debug("OnMessage");
+        LoggerFactory.getLogger(this.getClass()).info("OnMessage");
+        LoggerFactory.getLogger(this.getClass()).info(message);
         JsonObject jsonMessage = Utils.getJsonObject(message);
         sessionHandler.updateComputer(jsonMessage);
         sendUpdatedComputerToAllSessions();
