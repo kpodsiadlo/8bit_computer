@@ -1,1 +1,5 @@
 /server/.idea
+/server/target
+/engine/.idea
+/engine/__pycache__
+/engine/venv
