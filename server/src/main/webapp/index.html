@@ -13,26 +13,47 @@
             <div class="row" id="clock">
                 <input type=button id="toggle-clock-button" value="STOP" onclick="onToggleClock()">
             </div>
-            <div class="row" id="memory-address">MAR</div>
-            <div class="row" id="memory-contents">Memory</div>
-            <div class="row" id="instruction-register">IR</div>
-            <div class="row" id="microinstruction-counter">Microinstr Counter</div>
-            <div class="row" id="decoder">Decoder</div>
+            <div class="row" id="memory-address">
+                <label for="memory-address-display">Memory Address: </label>
+                <input type="number" value="0" id="memory-address-display">
+            </div>
+            <div class="row" id="memory-contents">
+                <label for="memory-content-display">Memory Contents: </label>
+                <input type="number" value="0" id="memory-content-display">
+            </div>
+            <div class="row" id="instruction-register">
+                <label for="instruction-register-display">Instruction Register: </label>
+                <input type="number" value="0" id="instruction-register-display">
+            </div>
+            <div class="row" id="microinstruction-counter">
+                <label for="microinstruction-counter-display">Microinstruction Counter: </label>
+                <input type="number" value="0" id="microinstruction-counter-display">
+            </div>
+            <div class="row" id="decoder">Decoder
+            </div>
         </div>
-        <div class="col-2" id="bus">BUS</div>
+        <div class="col-2" id="bus">
+            <label for="bus-display">BUS DATA:</label>
+            <input type="number" value="0" id="bus-display">
+        </div>
         <div class="col-5">
             <div class="row" id="program-counter">
-                <label for="program-counter-display">PC: </label><input type="text" value="0" id="program-counter-display">
-                <input type="button" id="program-counter-decrease" value="DEC">
+                <label for="program-counter-display">Program Counter: </label><input type="text" value="0" id="program-counter-display">
                 <input type="button" id="program-counter-increase" value="INC" onclick="onProgramCounterIncrease()">
             </div>
             <div class="row" id="register-a">
-                <label for="register-a-display">Register A: </label><input type="number", value="0", id="register-a-display">
+                <label for="register-a-display">Register A: </label>
+                <input type="number" value="0" id="register-a-display">
             </div>
-
             <div class="row" id="alu">ALU</div>
-            <div class="row" id="register-b">RegB</div>
-            <div class="row" id="output">OUT</div>
+            <div class="row" id="register-b">
+                <label for="register-b-display">Register B: </label>
+                <input type="number" value="0" id="register-b-display">
+            </div>
+            <div class="row" id="output">
+                <label for="output-display">Output </label>
+                <input type="number" value="0" id="output-display">
+            </div>
             <div class="row" id="instruction-display">Instructions</div>
         </div>
     </div>
