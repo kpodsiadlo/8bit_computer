@@ -26,7 +26,10 @@
                 <input type="button" id="program-counter-decrease" value="DEC">
                 <input type="button" id="program-counter-increase" value="INC" onclick="onProgramCounterIncrease()">
             </div>
-            <div class="row" id="register-a">RegA</div>
+            <div class="row" id="register-a">
+                <label for="register-a-display">Register A: </label><input type="number", value="0", id="register-a-display">
+            </div>
+
             <div class="row" id="alu">ALU</div>
             <div class="row" id="register-b">RegB</div>
             <div class="row" id="output">OUT</div>

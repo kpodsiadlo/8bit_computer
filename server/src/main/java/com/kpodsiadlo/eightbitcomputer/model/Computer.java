@@ -7,6 +7,7 @@ import javax.ejb.Startup;
 @Startup
 public class Computer {
     private Integer programCounter = 0;
+    private Integer registerA = 0;
     private Boolean clockRunning = true;
 
     public Boolean getClockRunning() {
@@ -19,6 +20,14 @@ public class Computer {
 
     public Integer getProgramCounter() {
         return programCounter;
+    }
+
+    public Integer getRegisterA() {
+        return registerA;
+    }
+
+    public void setRegisterA(Integer registerA) {
+        this.registerA = registerA;
     }
 
     public void setProgramCounter(Integer programCounter) {

@@ -4,17 +4,22 @@ socket.onmessage = onMessage;
 function onMessage(event) {
     console.log("Event received");
     let computerData = JSON.parse(event.data);
-    let programCounter = computerData.programCounter;
-    updateProgramCounter(programCounter);
+    console.log(computerData);
+    updateProgramCounterDisplay(computerData.programCounter);
+    updateRegisterADisplay(computerData.registerA);
 }
 
-function updateProgramCounter(programCounter) {
-    document.getElementById("program-counter-display").value = programCounter;
+function updateProgramCounterDisplay(data) {
+    document.getElementById("program-counter-display").value = data;
+}
+
+function updateRegisterADisplay(data) {
+    document.getElementById("register-a-display").value = data;
 }
 
 function onProgramCounterIncrease() {
     var currentValue = parseInt(document.getElementById("program-counter-display").value);
-    updateProgramCounter(currentValue + 1)
+    updateProgramCounterDisplay(currentValue + 1)
     sendUpdate();
 }
 

@@ -4,6 +4,17 @@ filename = 'fibonacci'
 
 class Computer:
 
+    def execute_one_click_and_yield_computer_state(self, computer):
+        computer.clock.tick(computer)
+        yield computer.get_state(computer)
+
+    @staticmethod
+    def get_state(computer):
+        state = {
+            "programCounter": computer.pc.state,
+            "registerA": computer.regA.state}
+        return state
+
     def __init__(self):
         self.clock = self.Clock()
         self.pc = self.ProgramCounter()
@@ -48,14 +59,7 @@ class Computer:
         self.pc.increase(computer)
         self.ic.increase(computer)
 
-    def execute_one_click_and_yield_computer_state(self, computer):
-        computer.clock.tick(computer)
-        yield computer.get_state(computer)
 
-    @staticmethod
-    def get_state(computer):
-        state = {"programCounter": computer.pc.state}
-        return state
 
     class Display:
         def __init__(self):

@@ -45,7 +45,7 @@ public class ComputerWebsocketServer {
 
     private void sendUpdatedComputerToAllSessions() {
         LoggerFactory.getLogger(this.getClass()).info("sendUpdatedComputerToAllSessions");
-        JsonObject computerState = sessionHandler.getComputerState();
+        JsonObject computerState = sessionHandler.getComputerModelState();
         sessionHandler.sendToAllSessions(computerState);
     }
 

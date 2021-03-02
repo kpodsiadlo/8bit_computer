@@ -34,16 +34,27 @@ public class ComputerSessionHandler {
             Logger.getLogger(this.getClass().getName()).info("clockRunning = " + clockRunning);
             computer.setClockRunning(clockRunning);
         } catch (Exception ignored) {
+
+        }
+
+        try { Integer registerA = message.getInt("registerA");
+            Logger.getLogger(this.getClass().getName()).info("registerA = " + registerA);
+            computer.setRegisterA(registerA);
+        }
+        catch (Exception ignored) {
+
         }
     }
 
-    public JsonObject getComputerState() {
+    public JsonObject getComputerModelState() {
         Logger.getLogger(this.getClass().getName()).info("getComputerState");
-        Integer programCounter = computer.getProgramCounter();
         Boolean clockRunning = computer.getClockRunning();
+        Integer programCounter = computer.getProgramCounter();
+        Integer registerA = computer.getRegisterA();
         return JsonProvider.provider().createObjectBuilder()
-                .add("programCounter", programCounter)
                 .add("clockRunning", clockRunning)
+                .add("programCounter", programCounter)
+                .add("registerA", registerA)
                 .build();
     }
 
