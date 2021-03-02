@@ -1,7 +1,6 @@
 import input_data
-import fake_input_data
 
-mock_input_data = True
+filename = 'fibonacci'
 
 class Computer:
 
@@ -83,10 +82,7 @@ class Computer:
 
     class RAM:
         def __init__(self):
-            if mock_input_data:
-                self.state = [x for x in fake_input_data.data]
-            else:
-                self.state = input_data.get_input_data()
+                self.state = input_data.get_input_data(filename)
 
         def do_in(self, computer):
             if computer.clock.state == 1:
