@@ -40,13 +40,21 @@ public class ComputerWebsocketServer {
         LoggerFactory.getLogger(this.getClass()).info(message);
         JsonObject jsonMessage = Utils.getJsonObject(message);
         sessionHandler.updateComputerModel(jsonMessage);
-        sendUpdatedComputerToAllSessions();
+        //sendUpdatedComputerToAllSessions();
+        sendUpdatedComputerToReceivingSessions(session);
     }
 
     private void sendUpdatedComputerToAllSessions() {
         LoggerFactory.getLogger(this.getClass()).info("sendUpdatedComputerToAllSessions");
         JsonObject computerState = sessionHandler.getComputerModelState();
         sessionHandler.sendToAllSessions(computerState);
+    }
+
+    private void sendUpdatedComputerToReceivingSessions(Session transmittingSession) {
+        LoggerFactory.getLogger(this.getClass()).info("sendUpdatedComputerToReceivingSessions");
+        JsonObject computerState = sessionHandler.getComputerModelState();
+        LoggerFactory.getLogger(this.getClass()).info("Sending: " + computerState.toString());
+        sessionHandler.sendToAllReceivingSessions(computerState,transmittingSession);
     }
 
     @OnError

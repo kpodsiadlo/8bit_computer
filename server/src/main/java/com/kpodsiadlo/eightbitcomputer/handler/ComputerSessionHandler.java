@@ -1,68 +1,122 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
 import com.kpodsiadlo.eightbitcomputer.model.Computer;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
 @ApplicationScoped
 public class ComputerSessionHandler {
 
-    private Set<Session> sessions = new HashSet<>();
+    private final Set<Session> sessions = new HashSet<>();
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
     @Inject
     Computer computer;
 
-    public void updateComputerModel(JsonObject message){
-        Logger.getLogger(this.getClass().getName()).info("updateComputer");
-
-        try { Integer programCounter = message.getInt("programCounter");
-            Logger.getLogger(this.getClass().getName()).info("programCounter = " + programCounter);
-            computer.setProgramCounter(programCounter);
-        }
-            catch (Exception ignored) {
-
-        }
+    public void updateComputerModel(JsonObject message) {
+        logger.info("updateComputer");
 
         try {
-            Boolean clockRunning = message.getBoolean("clockRunning");
-            Logger.getLogger(this.getClass().getName()).info("clockRunning = " + clockRunning);
+            boolean clockRunning = message.getBoolean("clockRunning");
             computer.setClockRunning(clockRunning);
-        } catch (Exception ignored) {
-
+        } catch (NullPointerException e) {
+            logJsonError("clockRunning");
         }
 
-        try { Integer registerA = message.getInt("registerA");
-            Logger.getLogger(this.getClass().getName()).info("registerA = " + registerA);
-            computer.setRegisterA(registerA);
-        }
-        catch (Exception ignored) {
 
+        List<String> integerComponents = Arrays.asList(
+                "memoryAddress",
+                "memoryContents",
+                "instructionRegister",
+                "microinstructionCounter",
+                "programCounter",
+                "registerA",
+                "registerB",
+                "output"
+        );
+
+        for (String integerComponent : integerComponents) {
+
+            Method method = null;
+            Optional<Integer> componentStatus = Optional.empty();
+
+            //Get the name of setter method
+            try {
+                String name = "set" + integerComponent.substring(0, 1).toUpperCase() + integerComponent.substring(1);
+                method = Computer.class.getMethod(name, Integer.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+
+            // get component Status
+            try {
+                componentStatus = Optional.ofNullable(message.getInt(integerComponent));
+            } catch (NullPointerException e) {
+                logJsonError(integerComponent);
+            }
+
+            // invoke the setter
+            Method finalMethod = method;
+            componentStatus.ifPresent(e -> {
+                try {
+                    finalMethod.invoke(computer, e);
+                    logger.info("Change " + integerComponent + ": " + e);
+                } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
+                    illegalAccessException.printStackTrace();
+                }
+            });
         }
+    }
+
+
+    public void logJsonError(String jsonValueMissing) {
+        logger.warning(jsonValueMissing + " not found in incoming JSON {}");
     }
 
     public JsonObject getComputerModelState() {
-        Logger.getLogger(this.getClass().getName()).info("getComputerState");
-        Boolean clockRunning = computer.getClockRunning();
-        Integer programCounter = computer.getProgramCounter();
-        Integer registerA = computer.getRegisterA();
-        return JsonProvider.provider().createObjectBuilder()
-                .add("clockRunning", clockRunning)
-                .add("programCounter", programCounter)
-                .add("registerA", registerA)
-                .build();
+        logger.info("getComputerState");
+        Map<String, Object> computerState = new HashMap<>();
+        computerState.put("SOURCE", "Server");
+        computerState.put("clockRunning", computer.getClockRunning());
+        computerState.put("memoryAddress", computer.getMemoryAddress());
+        computerState.put("memoryContents", computer.getMemoryContents());
+        computerState.put("instructionRegister", computer.getInstructionRegister());
+        computerState.put("microinstructionCounter", computer.getMicroinstructionCounter());
+        computerState.put("programCounter", computer.getProgramCounter());
+        computerState.put("registerA", computer.getRegisterA());
+        computerState.put("registerB", computer.getRegisterB());
+        computerState.put("output", computer.getOutput());
+
+        JsonObjectBuilder provider = JsonProvider.provider().createObjectBuilder();
+
+        computerState.forEach((key, value) -> provider.add(key, value.toString()));
+
+        //DON'T CHANGE INTO INLINE VARIABLE!
+        JsonObject build = provider.build();
+
+        return build;
     }
 
-    public void addSession(Session session){
+    public void addSession(Session session) {
         sessions.add(session);
     }
 
-    public void removeSession(Session session){
+    public void removeSession(Session session) {
         sessions.remove(session);
     }
 
@@ -71,11 +125,18 @@ public class ComputerSessionHandler {
             session.getBasicRemote().sendText(message.toString());
         } catch (IOException e) {
             removeSession(session);
-            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+            logger.severe(e.getMessage());
         }
     }
 
     public void sendToAllSessions(JsonObject message) {
         sessions.forEach(session -> sendToSession(session, message));
+    }
+
+    public void sendToAllReceivingSessions(JsonObject message, Session transmittingSession) {
+        Set<Session> receivingSessions = new HashSet<>(sessions);
+        receivingSessions.remove(transmittingSession);
+        receivingSessions.forEach(session -> sendToSession(session, message));
+
     }
 }

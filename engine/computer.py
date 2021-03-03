@@ -1,6 +1,6 @@
 import input_data
 
-filename = 'fibonacci'
+filename = 'add3_non_stop'
 
 class Computer:
 
@@ -11,6 +11,7 @@ class Computer:
     @staticmethod
     def get_state(computer):
         state = {
+            "source": "Engine",
             "programCounter": computer.pc.state,
             "registerA": computer.regA.state}
         return state

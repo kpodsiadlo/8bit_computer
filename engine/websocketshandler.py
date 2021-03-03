@@ -16,16 +16,22 @@ async def run_computer(websocket):
             data_json = json.dumps(data)
             await websocket.send(data_json)
         else:
-            await asyncio.sleep(0.0001)
+            await asyncio.sleep(1)
+            print("SLEEPING")
 
 
 async def receive(message):
         message_json = json.loads(message)
         print("Data received" + message_json.__str__())
-        if message_json["clockRunning"] == False:
+     #   try:
+        if message_json["clockRunning"] == 'false':
             computer.clock.stop(computer)
-        if message_json["clockRunning"] == True:
+            print("STOP")
+        if message_json["clockRunning"] == 'true':
             computer.clock.start(computer)
+            print("START")
+      #  except KeyError:
+    #     print("KeyError: clockRunning")
 
 
 async def producer_handler(websocket):

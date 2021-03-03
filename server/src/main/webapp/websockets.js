@@ -6,11 +6,10 @@ function onMessage(event) {
     let computerData = JSON.parse(event.data);
     console.log(computerData);
     updateDisplays(computerData);
-    
 }
 
 function updateDisplays(computerData) {
-    updateMemoryAddress(computerData.memoryAddress)
+    updateMemoryAddress(computerData.memoryAddress);
     updateProgramCounterDisplay(computerData.programCounter);
     updateMemoryContents(computerData.memoryContents);
     updateInstructionRegister(computerData.instructionRegister);
@@ -19,6 +18,7 @@ function updateDisplays(computerData) {
     updateRegisterBDisplay(computerData.registerB);
     updateOutputDisplay(computerData.outputDisplay);
 }
+
 function updateMemoryAddress(data) {
     document.getElementById("memory-address-display").value = data;
 }
@@ -64,6 +64,7 @@ function sendUpdate() {
     let jsonMessage = {
         "programCounter": programCounter
     };
+    jsonMessage = addSourceToJSONMessage(jsonMessage)
     console.log(jsonMessage);
     socket.send(JSON.stringify(jsonMessage));
 }
@@ -74,17 +75,26 @@ function onToggleClock() {
     switch (toggleButton.value) {
         case "STOP": {
             let jsonMessage = {"clockRunning": false};
+            jsonMessage = addSourceToJSONMessage(jsonMessage)
             socket.send(JSON.stringify(jsonMessage));
             toggleButton.value = "START";
             break;
 
         }
         case "START": {
-            let jsonMessage = {"clockRunning": true};
+            let jsonMessage =
+                {"clockRunning": true};
+            jsonMessage = addSourceToJSONMessage(jsonMessage)
             socket.send(JSON.stringify(jsonMessage));
             toggleButton.value = "STOP";
             break;
         }
     }
+
+}
+
+function addSourceToJSONMessage(jsonMessage) {
+    jsonMessage["source"] = "WEBPAGE2";
+    return jsonMessage;
 
 }
