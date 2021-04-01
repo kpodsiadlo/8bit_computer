@@ -9,12 +9,14 @@ public class Computer {
     private Boolean clockRunning = true;
     private Integer memoryAddress = 0;
     private Integer memoryContents = 0;
-    private Integer instructionRegister = 0;
+    private Integer instructionRegisterHigherBits = 0;
+    private Integer instructionRegisterLowerBits = 0;
     private Integer microinstructionCounter = 0;
     private Integer programCounter = 0;
     private Integer registerA = 0;
     private Integer registerB = 0;
     private Integer output = 0;
+    private Integer bus = 0;
 
     public Boolean getClockRunning() {
         return clockRunning;
@@ -56,12 +58,20 @@ public class Computer {
         this.memoryContents = memoryContents;
     }
 
-    public Integer getInstructionRegister() {
-        return instructionRegister;
+    public Integer getInstructionRegisterHigherBits() {
+        return instructionRegisterHigherBits;
     }
 
-    public void setInstructionRegister(Integer instructionRegister) {
-        this.instructionRegister = instructionRegister;
+    public void setInstructionRegisterHigherBits(Integer instructionRegisterHigherBits) {
+        this.instructionRegisterHigherBits = instructionRegisterHigherBits;
+    }
+
+    public Integer getInstructionRegisterLowerBits() {
+        return instructionRegisterLowerBits;
+    }
+
+    public void setInstructionRegisterLowerBits(Integer instructionRegisterLowerBits) {
+        this.instructionRegisterLowerBits = instructionRegisterLowerBits;
     }
 
     public Integer getMicroinstructionCounter() {
@@ -86,5 +96,13 @@ public class Computer {
 
     public void setOutput(Integer output) {
         this.output = output;
+    }
+
+    public Integer getBus() {
+        return bus;
+    }
+
+    public void setBus(Integer bus) {
+        this.bus = bus;
     }
 }

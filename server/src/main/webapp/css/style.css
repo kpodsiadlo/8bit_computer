@@ -5,3 +5,9 @@ div {
     border-width: thin;
 }
 
+
+input[type=number]{
+    width: 40px;
+}
+
+

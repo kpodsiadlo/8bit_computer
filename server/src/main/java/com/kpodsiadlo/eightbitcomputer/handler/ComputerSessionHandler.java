@@ -42,7 +42,8 @@ public class ComputerSessionHandler {
         List<String> integerComponents = Arrays.asList(
                 "memoryAddress",
                 "memoryContents",
-                "instructionRegister",
+                "instructionRegisterHigherBits",
+                "instructionRegisterLowerBits",
                 "microinstructionCounter",
                 "programCounter",
                 "registerA",
@@ -95,12 +96,14 @@ public class ComputerSessionHandler {
         computerState.put("clockRunning", computer.getClockRunning());
         computerState.put("memoryAddress", computer.getMemoryAddress());
         computerState.put("memoryContents", computer.getMemoryContents());
-        computerState.put("instructionRegister", computer.getInstructionRegister());
+        computerState.put("instructionRegisterHigherBits", computer.getInstructionRegisterHigherBits());
+        computerState.put("instructionRegisterLowerBits", computer.getInstructionRegisterLowerBits());
         computerState.put("microinstructionCounter", computer.getMicroinstructionCounter());
         computerState.put("programCounter", computer.getProgramCounter());
         computerState.put("registerA", computer.getRegisterA());
         computerState.put("registerB", computer.getRegisterB());
         computerState.put("output", computer.getOutput());
+        computerState.put("bus", computer.getBus());
 
         JsonObjectBuilder provider = JsonProvider.provider().createObjectBuilder();
 

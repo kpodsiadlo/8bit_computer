@@ -14,7 +14,8 @@ class Computer:
             # Names use Java convention for interoperability
             "memoryAddress": computer.mar.state,
             # TODO: "memoryContents": computer.ram.state,
-            "instructionRegister" : computer.instruction_register.state,
+            "instructionRegisterHigherBits" : computer.instruction_register.higher_bits,
+            "instructionRegisterLowerBits": computer.instruction_register.lower_bits,
             "microinstructionCounter": computer.ic.state,
             "source": "Engine",
             "programCounter": computer.pc.state,

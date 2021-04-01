@@ -12,11 +12,13 @@ function updateDisplays(computerData) {
     updateMemoryAddress(computerData.memoryAddress);
     updateProgramCounterDisplay(computerData.programCounter);
     updateMemoryContents(computerData.memoryContents);
-    updateInstructionRegister(computerData.instructionRegister);
+    updateInstructionRegisterHigherBits(computerData.instructionRegisterHigherBits);
+    updateInstructionRegisterLowerBits(computerData.instructionRegisterLowerBits);
     updateMicroinstructionCounter(computerData.microinstructionCounter);
     updateRegisterADisplay(computerData.registerA);
     updateRegisterBDisplay(computerData.registerB);
     updateOutputDisplay(computerData.outputDisplay);
+    updateBus(computerData.bus);
 }
 
 function updateMemoryAddress(data) {
@@ -27,8 +29,12 @@ function updateMemoryContents(data) {
     document.getElementById("memory-content-display").value = data;
 }
 
-function updateInstructionRegister (data) {
-    document.getElementById("instruction-register-display").value = data;
+function updateInstructionRegisterHigherBits (data) {
+    document.getElementById("instruction-register-display-higher-bits").value = data;
+}
+
+function updateInstructionRegisterLowerBits (data) {
+    document.getElementById("instruction-register-display-lower-bits").value = data;
 }
 
 function updateMicroinstructionCounter(data) {
@@ -49,6 +55,10 @@ function updateRegisterBDisplay(data) {
 
 function updateOutputDisplay(data){
     document.getElementById("output-display").value = data;
+}
+
+function updateBus(data) {
+    document.getElementById("bus-display").value = data;
 }
 
 

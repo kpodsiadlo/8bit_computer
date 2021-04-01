@@ -4,7 +4,7 @@ import asyncio
 import websockets
 
 uri = "ws://localhost:8080/server/computer"
-time_interval_in_seconds = 0.01
+time_interval_in_seconds = 0.1
 computer = Computer()
 computer.clock.start(computer)
 
