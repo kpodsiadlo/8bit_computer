@@ -11,9 +11,17 @@ class Computer:
     @staticmethod
     def get_state(computer):
         state = {
+            # Names use Java convention for interoperability
+            "memoryAddress": computer.mar.state,
+            # TODO: "memoryContents": computer.ram.state,
+            "instructionRegister" : computer.instruction_register.state,
+            "microinstructionCounter": computer.ic.state,
             "source": "Engine",
             "programCounter": computer.pc.state,
-            "registerA": computer.regA.state}
+            "registerA": computer.regA.state,
+            "registerB": computer.regB.state,
+            "output": computer.display.state,
+            "bus": computer.buss.state}
         return state
 
     def __init__(self):
