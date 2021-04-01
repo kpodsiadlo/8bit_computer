@@ -17,7 +17,7 @@ function updateDisplays(computerData) {
     updateMicroinstructionCounter(computerData.microinstructionCounter);
     updateRegisterADisplay(computerData.registerA);
     updateRegisterBDisplay(computerData.registerB);
-    updateOutputDisplay(computerData.outputDisplay);
+    updateOutputDisplay(computerData.output);
     updateBus(computerData.bus);
 }
 

@@ -48,7 +48,8 @@ public class ComputerSessionHandler {
                 "programCounter",
                 "registerA",
                 "registerB",
-                "output"
+                "output",
+                "bus"
         );
 
         for (String integerComponent : integerComponents) {
