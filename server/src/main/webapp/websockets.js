@@ -16,9 +16,39 @@ function updateDisplays(computerData) {
     updateInstructionRegisterLowerBits(computerData.instructionRegisterLowerBits);
     updateMicroinstructionCounter(computerData.microinstructionCounter);
     updateRegisterADisplay(computerData.registerA);
+    updateALUDisplay(computerData.alu);
     updateRegisterBDisplay(computerData.registerB);
     updateOutputDisplay(computerData.output);
     updateBus(computerData.bus);
+    updateInstructions(computerData.logic);
+}
+
+function updateInstructions(logic) {
+    console.log("update instructions");
+    Object.keys(logic).forEach(function (key) {
+        changeColor(key, logic[key]);
+    })
+}
+
+function changeColor(element, boolean) {
+    if (document.getElementById(element) != null) {
+        if (boolean == 1) {
+            //if (document.getElementById(element).classList.contains("off")) {
+            document.getElementById(element).classList.remove("off");
+            //}
+            //if (!document.getElementById(element.classList.contains("on"))) {
+            document.getElementById(element).classList.add("on");
+            //}
+        }
+        if (boolean == 0) {
+            //if (document.getElementById(element).classList.contains("on")) {
+            document.getElementById(element).classList.remove("on");
+            //}
+            //if (!document.getElementById(element.classList.contains("off"))) {
+            document.getElementById(element).classList.add("off");
+            //}
+        }
+    }
 }
 
 function updateMemoryAddress(data) {
@@ -29,11 +59,11 @@ function updateMemoryContents(data) {
     document.getElementById("memory-content-display").value = data;
 }
 
-function updateInstructionRegisterHigherBits (data) {
+function updateInstructionRegisterHigherBits(data) {
     document.getElementById("instruction-register-display-higher-bits").value = data;
 }
 
-function updateInstructionRegisterLowerBits (data) {
+function updateInstructionRegisterLowerBits(data) {
     document.getElementById("instruction-register-display-lower-bits").value = data;
 }
 
@@ -49,11 +79,15 @@ function updateRegisterADisplay(data) {
     document.getElementById("register-a-display").value = data;
 }
 
+function updateALUDisplay(data) {
+    document.getElementById("alu-display").value = data;
+}
+
 function updateRegisterBDisplay(data) {
     document.getElementById("register-b-display").value = data;
 }
 
-function updateOutputDisplay(data){
+function updateOutputDisplay(data) {
     document.getElementById("output-display").value = data;
 }
 

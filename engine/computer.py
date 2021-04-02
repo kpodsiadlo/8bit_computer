@@ -1,6 +1,6 @@
 import input_data
 
-filename = 'add3_non_stop'
+filename = 'fibonacci'
 
 class Computer:
 
@@ -10,6 +10,11 @@ class Computer:
 
     @staticmethod
     def get_state(computer):
+
+        def get_logic(computer):
+            logic = computer.logic.__dict__
+            return logic
+
         state = {
             # Names use Java convention for interoperability
             "memoryAddress": computer.mar.state,
@@ -20,9 +25,12 @@ class Computer:
             "source": "Engine",
             "programCounter": computer.pc.state,
             "registerA": computer.regA.state,
+            "alu": computer.alu.state,
             "registerB": computer.regB.state,
             "output": computer.display.state,
-            "bus": computer.buss.state}
+            "bus": computer.buss.state,
+            "logic": get_logic(computer)
+        }
         return state
 
     def __init__(self):

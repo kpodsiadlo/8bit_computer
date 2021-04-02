@@ -1,5 +1,8 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpodsiadlo.eightbitcomputer.json.Utils;
 import com.kpodsiadlo.eightbitcomputer.model.Computer;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,15 +33,36 @@ public class ComputerSessionHandler {
 
     public void updateComputerModel(JsonObject message) {
         logger.info("updateComputer");
+        updateClockRunning(message);
+        updateLogic(message);
+        updateIntegers(message);
+    }
 
+    private void updateLogic(JsonObject message) {
+        JsonObject logicJson = null;
         try {
-            boolean clockRunning = message.getBoolean("clockRunning");
-            computer.setClockRunning(clockRunning);
-        } catch (NullPointerException e) {
-            logJsonError("clockRunning");
+            logicJson = message.getJsonObject("logic");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logJsonError("logic");
         }
 
+        HashMap<String, Integer> logic = null;
+        if (logicJson != null) {
+            logger.info("Logic" + logicJson.toString());
+            try {
+                logic = new ObjectMapper().readValue(logicJson.toString(), HashMap.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
 
+        if (logic != null) {
+            computer.setLogic(logic);
+        }
+    }
+
+    private void updateIntegers(JsonObject message) {
         List<String> integerComponents = Arrays.asList(
                 "memoryAddress",
                 "memoryContents",
@@ -47,6 +71,7 @@ public class ComputerSessionHandler {
                 "microinstructionCounter",
                 "programCounter",
                 "registerA",
+                "alu",
                 "registerB",
                 "output",
                 "bus"
@@ -85,6 +110,15 @@ public class ComputerSessionHandler {
         }
     }
 
+    private void updateClockRunning(JsonObject message) {
+        try {
+            boolean clockRunning = message.getBoolean("clockRunning");
+            computer.setClockRunning(clockRunning);
+        } catch (NullPointerException e) {
+            logJsonError("clockRunning");
+        }
+    }
+
 
     public void logJsonError(String jsonValueMissing) {
         logger.warning(jsonValueMissing + " not found in incoming JSON {}");
@@ -92,23 +126,26 @@ public class ComputerSessionHandler {
 
     public JsonObject getComputerModelState() {
         logger.info("getComputerState");
-        Map<String, Object> computerState = new HashMap<>();
-        computerState.put("SOURCE", "Server");
-        computerState.put("clockRunning", computer.getClockRunning());
-        computerState.put("memoryAddress", computer.getMemoryAddress());
-        computerState.put("memoryContents", computer.getMemoryContents());
-        computerState.put("instructionRegisterHigherBits", computer.getInstructionRegisterHigherBits());
-        computerState.put("instructionRegisterLowerBits", computer.getInstructionRegisterLowerBits());
-        computerState.put("microinstructionCounter", computer.getMicroinstructionCounter());
-        computerState.put("programCounter", computer.getProgramCounter());
-        computerState.put("registerA", computer.getRegisterA());
-        computerState.put("registerB", computer.getRegisterB());
-        computerState.put("output", computer.getOutput());
-        computerState.put("bus", computer.getBus());
 
         JsonObjectBuilder provider = JsonProvider.provider().createObjectBuilder();
 
-        computerState.forEach((key, value) -> provider.add(key, value.toString()));
+        //Map<String, Object>  computerState = new HashMap<>();
+        provider.add("SOURCE", "Server");
+        provider.add("clockRunning", computer.getClockRunning());
+        provider.add("memoryAddress", computer.getMemoryAddress());
+        provider.add("memoryContents", computer.getMemoryContents());
+        provider.add("instructionRegisterHigherBits", computer.getInstructionRegisterHigherBits());
+        provider.add("instructionRegisterLowerBits", computer.getInstructionRegisterLowerBits());
+        provider.add("microinstructionCounter", computer.getMicroinstructionCounter());
+        provider.add("programCounter", computer.getProgramCounter());
+        provider.add("registerA", computer.getRegisterA());
+        provider.add("registerB", computer.getRegisterB());
+        provider.add("output", computer.getOutput());
+        provider.add("bus", computer.getBus());
+        provider.add("alu", computer.getAlu());
+        provider.add("logic", Utils.mapToJsonObject(computer.getLogic()));
+
+        //computerState.forEach((key, value) -> provider.add(key, value.toString()));
 
         //DON'T CHANGE INTO INLINE VARIABLE!
         JsonObject build = provider.build();

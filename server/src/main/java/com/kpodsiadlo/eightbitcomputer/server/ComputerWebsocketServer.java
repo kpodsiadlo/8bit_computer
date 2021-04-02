@@ -40,7 +40,6 @@ public class ComputerWebsocketServer {
         LoggerFactory.getLogger(this.getClass()).info(message);
         JsonObject jsonMessage = Utils.getJsonObject(message);
         sessionHandler.updateComputerModel(jsonMessage);
-        //sendUpdatedComputerToAllSessions();
         sendUpdatedComputerToReceivingSessions(session);
     }
 

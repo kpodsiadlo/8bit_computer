@@ -10,4 +10,12 @@ input[type=number]{
     width: 40px;
 }
 
+.on {
+    background-color: red;
+}
+
+.off {
+    background-color: grey;
+}
+
 

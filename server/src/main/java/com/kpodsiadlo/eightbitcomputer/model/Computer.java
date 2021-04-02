@@ -2,6 +2,8 @@ package com.kpodsiadlo.eightbitcomputer.model;
 
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.util.HashMap;
+import java.util.Map;
 
 @Singleton
 @Startup
@@ -17,6 +19,8 @@ public class Computer {
     private Integer registerB = 0;
     private Integer output = 0;
     private Integer bus = 0;
+    private Integer alu = 0;
+    private Map<String, Integer> logic = new HashMap<>();
 
     public Boolean getClockRunning() {
         return clockRunning;
@@ -104,5 +108,21 @@ public class Computer {
 
     public void setBus(Integer bus) {
         this.bus = bus;
+    }
+
+    public Map<String, Integer> getLogic() {
+        return logic;
+    }
+
+    public void setLogic(Map<String, Integer> logic) {
+        this.logic = logic;
+    }
+
+    public Integer getAlu() {
+        return alu;
+    }
+
+    public void setAlu(Integer alu) {
+        this.alu = alu;
     }
 }

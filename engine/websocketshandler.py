@@ -4,7 +4,7 @@ import asyncio
 import websockets
 
 uri = "ws://localhost:8080/server/computer"
-time_interval_in_seconds = 0.1
+time_interval_in_seconds = 0.01
 computer = Computer()
 computer.clock.start(computer)
 
@@ -24,10 +24,10 @@ async def receive(message):
         message_json = json.loads(message)
         print("Data received" + message_json.__str__())
      #   try:
-        if message_json["clockRunning"] == 'false':
+        if message_json["clockRunning"] == False:
             computer.clock.stop(computer)
             print("STOP")
-        if message_json["clockRunning"] == 'true':
+        if message_json["clockRunning"] == True:
             computer.clock.start(computer)
             print("START")
       #  except KeyError:
