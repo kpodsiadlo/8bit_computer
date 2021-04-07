@@ -17,12 +17,12 @@
             <div class="row" id="memory-address">
                 <label for="memory-address-display">Memory Address: </label>
                 <input type="number" value="0" id="memory-address-display">
-                <span class="badge badge-primary" id="MAR_IN">IN</span>
+                <span class="badge badge-secondary" id="MAR_IN">IN</span>
             </div>
             <div class="row" id="memory-contents">
                 <label for="memory-content-display">Memory Contents: </label>
                 <input type="number" value="0" id="memory-content-display">
-                <span class="badge badge-danger" id="RAM_OUT">OUT</span>
+                <span class="badge badge-secondary" id="RAM_OUT">OUT</span>
                 <span class="badge badge-secondary" id="RAM_IN">IN</span>
             </div>
             <div class="row" id="instruction-register">
@@ -32,7 +32,7 @@
                 <label for="instruction-register-display-lower-bits">Lower</label>
                 <input type="number" size="4" value="0" id="instruction-register-display-lower-bits">
                 <span class="badge badge-secondary" id="IregisterOUT">OUT</span>
-                <span class="badge badge-danger" id="IregisterIN">IN</span>
+                <span class="badge badge-secondary" id="IregisterIN">IN</span>
             </div>
             <div class="row" id="microinstruction-counter">
                 <label for="microinstruction-counter-display">Microinstruction Counter: </label>
@@ -51,28 +51,28 @@
                                                                                      id="program-counter-display">
                 <input type="button" id="program-counter-increase" value="INC" onclick="onProgramCounterIncrease()">
                 <span class="badge badge-secondary" id="PC_enable">ENABLE</span>
-                <span class="badge badge-danger" id="PC_OUT">OUT</span>
-                <span class="badge badge-danger" id="PC_Jump">JUMP</span>
+                <span class="badge badge-secondary" id="PC_OUT">OUT</span>
+                <span class="badge badge-secondary" id="PC_Jump">JUMP</span>
 
             </div>
             <div class="row" id="register-a">
                 <label for="register-a-display">Register A: </label>
                 <input type="number" value="0" id="register-a-display">
                 <span class="badge badge-secondary" id="AregisterOUT">OUT</span>
-                <span class="badge badge-danger" id="AregisterIN">IN</span>
+                <span class="badge badge-secondary" id="AregisterIN">IN</span>
 
             </div>
             <div class="row" id="alu">
                 <label for="alu-display">ALU</label>
                 <input type="number" value="0" id="alu-display">
-                <span class="badge badge-danger" id="ALU_OUT">OUT</span>
-                <span class="badge badge-danger" id="ALU_Substract">SUB</span>
+                <span class="badge badge-secondary" id="ALU_OUT">OUT</span>
+                <span class="badge badge-secondary" id="ALU_Substract">SUB</span>
             </div>
             <div class="row" id="register-b">
                 <label for="register-b-display">Register B: </label>
                 <input type="number" value="0" id="register-b-display">
                 <span class="badge badge-secondary" id="BregisterOUT">OUT</span>
-                <span class="badge badge-danger" id="BregisterIN">IN</span>
+                <span class="badge badge-secondary" id="BregisterIN">IN</span>
             </div>
             <div class="row" id="output">
                 <label for="output-display">Output </label>
