@@ -138,7 +138,7 @@ function onToggleClock() {
 }
 
 function addSourceToJSONMessage(jsonMessage) {
-    jsonMessage["source"] = "WEBPAGE2";
+    jsonMessage["source"] = "WEBPAGE";
     return jsonMessage;
 
 }
