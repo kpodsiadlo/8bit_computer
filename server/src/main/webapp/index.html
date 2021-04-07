@@ -63,10 +63,16 @@
 
             </div>
             <div class="row" id="alu">
+                <div>
                 <label for="alu-display">ALU</label>
                 <input type="number" value="0" id="alu-display">
                 <span class="badge badge-secondary" id="ALU_OUT">OUT</span>
                 <span class="badge badge-secondary" id="ALU_Substract">SUB</span>
+                </div>
+                <div>
+                    <span class="badge badge-secondary" id="carry">CARRY</span>
+                    <span class="badge badge-secondary" id="zero">ZERO</span>
+                </div>
             </div>
             <div class="row" id="register-b">
                 <label for="register-b-display">Register B: </label>
@@ -88,4 +94,3 @@
 </body>
 <script src="websockets.js"></script>
 </html>
-

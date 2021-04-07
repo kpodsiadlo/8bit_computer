@@ -15,6 +15,9 @@ class Computer:
             logic = computer.logic.__dict__
             return logic
 
+        def get_flags(computer):
+            return computer.flag_register.__dict__
+
         state = {
             # Names use Java convention for interoperability
             "memoryAddress": computer.mar.state,
@@ -29,7 +32,8 @@ class Computer:
             "registerB": computer.regB.state,
             "output": computer.display.state,
             "bus": computer.buss.state,
-            "logic": get_logic(computer)
+            "logic": get_logic(computer),
+            "flags": get_flags(computer)
         }
         return state
 

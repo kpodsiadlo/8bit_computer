@@ -21,6 +21,7 @@ public class Computer {
     private Integer bus = 0;
     private Integer alu = 0;
     private Map<String, Integer> logic = new HashMap<>();
+    private Map<String, Integer> flags = new HashMap<>();
 
     public Boolean getClockRunning() {
         return clockRunning;
@@ -124,5 +125,13 @@ public class Computer {
 
     public void setAlu(Integer alu) {
         this.alu = alu;
+    }
+
+    public Map<String, Integer> getFlags() {
+        return flags;
+    }
+
+    public void setFlags(Map<String, Integer> flags) {
+        this.flags = flags;
     }
 }
