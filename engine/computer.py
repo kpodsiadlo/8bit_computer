@@ -21,7 +21,7 @@ class Computer:
         state = {
             # Names use Java convention for interoperability
             "memoryAddress": computer.mar.state,
-            # TODO: "memoryContents": computer.ram.state,
+        # TODO: "memoryContents": computer.ram.state,
             "instructionRegisterHigherBits" : computer.instruction_register.higher_bits,
             "instructionRegisterLowerBits": computer.instruction_register.lower_bits,
             "microinstructionCounter": computer.ic.state,
