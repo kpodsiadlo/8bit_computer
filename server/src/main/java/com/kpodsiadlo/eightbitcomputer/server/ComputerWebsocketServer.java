@@ -1,7 +1,7 @@
 package com.kpodsiadlo.eightbitcomputer.server;
 
 import com.kpodsiadlo.eightbitcomputer.handler.ComputerSessionHandler;
-import com.kpodsiadlo.eightbitcomputer.json.Utils;
+import com.kpodsiadlo.eightbitcomputer.json.JsonUtils;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -38,7 +38,7 @@ public class ComputerWebsocketServer {
     public void onMessage(String message, Session session) {
         LoggerFactory.getLogger(this.getClass()).info("OnMessage");
         LoggerFactory.getLogger(this.getClass()).info(message);
-        JsonObject jsonMessage = Utils.getJsonObject(message);
+        JsonObject jsonMessage = JsonUtils.getJsonObject(message);
         sessionHandler.updateComputerModel(jsonMessage);
         sendUpdatedComputerToReceivingSessions(session);
     }

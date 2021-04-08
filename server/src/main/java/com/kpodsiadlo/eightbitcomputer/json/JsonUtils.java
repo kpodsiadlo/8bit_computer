@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 
-public class Utils {
+public class JsonUtils {
     private final static Logger logger = Logger.getLogger("Utils");
 
 

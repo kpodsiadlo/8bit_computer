@@ -21,12 +21,20 @@ function updateDisplays(computerData) {
     updateOutputDisplay(computerData.output);
     updateBus(computerData.bus);
     updateInstructions(computerData.logic);
+    updateFlags(computerData.flags)
 }
 
 function updateInstructions(logic) {
     console.log("update instructions");
     Object.keys(logic).forEach(function (key) {
         changeColor(key, logic[key]);
+    })
+}
+
+function updateFlags(flags) {
+    console.log("update flags");
+    Object.keys(flags).forEach(function (key) {
+        changeColor(key, flags[key]);
     })
 }
 

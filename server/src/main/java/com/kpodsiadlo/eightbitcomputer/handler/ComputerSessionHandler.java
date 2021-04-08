@@ -2,7 +2,7 @@ package com.kpodsiadlo.eightbitcomputer.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kpodsiadlo.eightbitcomputer.json.Utils;
+import com.kpodsiadlo.eightbitcomputer.json.JsonUtils;
 import com.kpodsiadlo.eightbitcomputer.model.Computer;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -14,11 +14,11 @@ import javax.websocket.Session;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -34,31 +34,37 @@ public class ComputerSessionHandler {
     public void updateComputerModel(JsonObject message) {
         logger.info("updateComputer");
         updateClockRunning(message);
-        updateLogic(message);
+        updateMap(message, "logic");
+        updateMap(message, "flags");
         updateIntegers(message);
     }
 
-    private void updateLogic(JsonObject message) {
-        JsonObject logicJson = null;
+    private void updateMap(JsonObject message, String component) {
+        JsonObject componentJson = null;
         try {
-            logicJson = message.getJsonObject("logic");
+            componentJson = message.getJsonObject(component);
         } catch (Exception e) {
             e.printStackTrace();
-            logJsonError("logic");
+            logJsonError(component);
         }
 
-        HashMap<String, Integer> logic = null;
-        if (logicJson != null) {
-            logger.info("Logic" + logicJson.toString());
+        HashMap<String, Integer> retrievedComponentData = null;
+        if (componentJson != null) {
+            logger.info(component + componentJson.toString());
             try {
-                logic = new ObjectMapper().readValue(logicJson.toString(), HashMap.class);
+                retrievedComponentData = new ObjectMapper().readValue(componentJson.toString(), HashMap.class);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
 
-        if (logic != null) {
-            computer.setLogic(logic);
+        if (retrievedComponentData != null) {
+            if (component.equals("logic")) {
+                computer.setLogic(retrievedComponentData);
+            }
+            if (component.equals("flags")) {
+                computer.setFlags((retrievedComponentData));
+            }
         }
     }
 
@@ -121,7 +127,7 @@ public class ComputerSessionHandler {
 
 
     public void logJsonError(String jsonValueMissing) {
-        logger.warning(jsonValueMissing + " not found in incoming JSON {}");
+        logger.warning(MessageFormat.format("{0} not found in incoming JSON '{}'", jsonValueMissing));
     }
 
     public JsonObject getComputerModelState() {
@@ -129,7 +135,6 @@ public class ComputerSessionHandler {
 
         JsonObjectBuilder provider = JsonProvider.provider().createObjectBuilder();
 
-        //Map<String, Object>  computerState = new HashMap<>();
         provider.add("SOURCE", "Server");
         provider.add("clockRunning", computer.getClockRunning());
         provider.add("memoryAddress", computer.getMemoryAddress());
@@ -143,9 +148,8 @@ public class ComputerSessionHandler {
         provider.add("output", computer.getOutput());
         provider.add("bus", computer.getBus());
         provider.add("alu", computer.getAlu());
-        provider.add("logic", Utils.mapToJsonObject(computer.getLogic()));
-
-        //computerState.forEach((key, value) -> provider.add(key, value.toString()));
+        provider.add("logic", JsonUtils.mapToJsonObject(computer.getLogic()));
+        provider.add("flags", JsonUtils.mapToJsonObject(computer.getFlags()));
 
         //DON'T CHANGE INTO INLINE VARIABLE!
         JsonObject build = provider.build();
