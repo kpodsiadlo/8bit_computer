@@ -64,7 +64,19 @@ function updateMemoryAddress(data) {
 }
 
 function updateMemoryContents(data) {
-    document.getElementById("memory-content-display").value = data;
+    for (let i = 0; i < data.length; i++) {
+        document.getElementById("mem" + i + "-value").value =
+            dec2bin(data[i]);
+    }
+}
+
+function updateOpcodes(){
+
+}
+
+function dec2bin(dec) {
+    let bin = dec.toString(2);
+    return bin.padStart(8, "0");
 }
 
 function updateInstructionRegisterHigherBits(data) {
@@ -149,4 +161,18 @@ function addSourceToJSONMessage(jsonMessage) {
     jsonMessage["source"] = "WEBPAGE";
     return jsonMessage;
 
+}
+
+const machine_code = {
+    0000: "nop",
+    0001: "lda",
+    0010: "add",
+    0011: "sub",
+    0100: "sta",
+    0101: "ldi",
+    0110: "jmp",
+    0111: "jc",
+    1000: "jz",
+    1110: "out",
+    1111: "hlt"
 }

@@ -10,7 +10,7 @@ input[type=number]{
     width: 40px;
 }
 
-.memorycell{
+input[type=number].memorycell{
     width: 80px;
 }
 

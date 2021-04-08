@@ -7,6 +7,8 @@ import com.kpodsiadlo.eightbitcomputer.model.Computer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.spi.JsonProvider;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,6 +40,7 @@ public class ComputerSessionHandler {
         updateMap(message, "logic");
         updateMap(message, "flags");
         updateIntegers(message);
+        updateMemoryContents(message);
     }
 
     private void updateMap(JsonObject message, String component) {
@@ -68,10 +72,17 @@ public class ComputerSessionHandler {
         }
     }
 
+    private void updateMemoryContents(JsonObject message){
+        JsonArray jsonArray = message.getJsonArray("memoryContents");
+        List<Integer> values = jsonArray.getValuesAs(JsonNumber::intValue);
+        computer.setMemoryContents(values);
+
+
+    }
+
     private void updateIntegers(JsonObject message) {
         List<String> integerComponents = Arrays.asList(
                 "memoryAddress",
-                "memoryContents",
                 "instructionRegisterHigherBits",
                 "instructionRegisterLowerBits",
                 "microinstructionCounter",
@@ -98,8 +109,8 @@ public class ComputerSessionHandler {
 
             // get component Status
             try {
-                componentStatus = Optional.ofNullable(message.getInt(integerComponent));
-            } catch (NullPointerException e) {
+                componentStatus = Optional.of(message.getInt(integerComponent));
+            } catch (NullPointerException | ClassCastException e) {
                 logJsonError(integerComponent);
             }
 

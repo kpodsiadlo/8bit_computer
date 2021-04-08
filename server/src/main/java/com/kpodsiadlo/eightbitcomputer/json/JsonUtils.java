@@ -48,7 +48,6 @@ public class JsonUtils {
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             objectBuilder.add(entry.getKey(), entry.getValue());
         }
-        logger.info(objectBuilder.toString());
         return objectBuilder.build();
     }
 
