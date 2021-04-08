@@ -2,7 +2,9 @@ package com.kpodsiadlo.eightbitcomputer.model;
 
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -10,7 +12,6 @@ import java.util.Map;
 public class Computer {
     private Boolean clockRunning = true;
     private Integer memoryAddress = 0;
-    private Integer memoryContents = 0;
     private Integer instructionRegisterHigherBits = 0;
     private Integer instructionRegisterLowerBits = 0;
     private Integer microinstructionCounter = 0;
@@ -22,6 +23,7 @@ public class Computer {
     private Integer alu = 0;
     private Map<String, Integer> logic = new HashMap<>();
     private Map<String, Integer> flags = new HashMap<>();
+    private List<Integer> memoryContents = new ArrayList<>();
 
     public Boolean getClockRunning() {
         return clockRunning;
@@ -55,11 +57,11 @@ public class Computer {
         this.memoryAddress = memoryAddress;
     }
 
-    public Integer getMemoryContents() {
+    public List<Integer> getMemoryContents() {
         return memoryContents;
     }
 
-    public void setMemoryContents(Integer memoryContents) {
+    public void setMemoryContents(List<Integer> memoryContents) {
         this.memoryContents = memoryContents;
     }
 

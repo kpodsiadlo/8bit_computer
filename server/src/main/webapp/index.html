@@ -19,9 +19,9 @@
                 <input type="number" value="0" id="memory-address-display">
                 <span class="badge badge-secondary" id="MAR_IN">IN</span>
             </div>
-            <div class="row" id="memory-contents">
-                <label for="memory-content-display">Memory Contents: </label>
-                <input type="number" value="0" id="memory-content-display">
+            <div class="row" id="memory-value">
+                <label for="memory-value-display">Memory Contents: </label>
+                <input type="number" value="0" id="memory-value-display">
                 <span class="badge badge-secondary" id="RAM_OUT">OUT</span>
                 <span class="badge badge-secondary" id="RAM_IN">IN</span>
             </div>
@@ -64,10 +64,10 @@
             </div>
             <div class="row" id="alu">
                 <div>
-                <label for="alu-display">ALU</label>
-                <input type="number" value="0" id="alu-display">
-                <span class="badge badge-secondary" id="ALU_OUT">OUT</span>
-                <span class="badge badge-secondary" id="ALU_Substract">SUB</span>
+                    <label for="alu-display">ALU</label>
+                    <input type="number" value="0" id="alu-display">
+                    <span class="badge badge-secondary" id="ALU_OUT">OUT</span>
+                    <span class="badge badge-secondary" id="ALU_Substract">SUB</span>
                 </div>
                 <div>
                     <span class="badge badge-secondary" id="carry">CARRY</span>
@@ -88,6 +88,76 @@
             <div class="row" id="instruction-display">Instructions:
             </div>
 
+        </div>
+    </div>
+    <div class="row">
+        <div class=col-5>
+            <label for="memory-content-display">Memory Contents</label>
+            <div id="memory-content-display"></div>
+            <div class="row">
+                <label for ="mem0">0: </label>
+                <input type="number" class="memorycell" id="mem0">
+            </div>
+            <div class="row">
+                <label for ="mem1">1: </label>
+                <input type="number" class="memorycell" id="mem1">
+            </div>
+            <div class="row">
+                <label for ="mem2">2: </label>
+                <input type="number" class="memorycell" id="mem2">
+            </div>
+            <div class="row">
+                <label for ="mem3">3: </label>
+                <input type="number" class="memorycell" id="mem3">
+            </div>
+            <div class="row">
+                <label for ="mem4">4: </label>
+                <input type="number" class="memorycell" id="mem4">
+            </div>
+            <div class="row">
+                <label for ="mem5">5: </label>
+                <input type="number" class="memorycell" id="mem5">
+            </div>
+            <div class="row">
+                <label for ="mem6">6: </label>
+                <input type="number" class="memorycell" id="mem6">
+            </div>
+            <div class="row">
+                <label for ="mem7">7: </label>
+                <input type="number" class="memorycell" id="mem7">
+            </div>
+            <div class="row">
+                <label for ="mem8">8: </label>
+                <input type="number" class="memorycell" id="mem8">
+            </div>
+            <div class="row">
+                <label for ="mem9">9: </label>
+                <input type="number" class="memorycell" id="mem9">
+            </div>
+            <div class="row">
+                <label for ="mem10">10: </label>
+                <input type="number" class="memorycell" id="mem10">
+            </div>
+            <div class="row">
+                <label for ="mem11">11: </label>
+                <input type="number" class="memorycell" id="mem11">
+            </div>
+            <div class="row">
+                <label for ="mem12">12: </label>
+                <input type="number" class="memorycell" id="mem12">
+            </div>
+            <div class="row">
+                <label for ="mem13">13: </label>
+                <input type="number" class="memorycell" id="mem13">
+            </div>
+            <div class="row">
+                <label for ="mem14">14: </label>
+                <input type="number" class="memorycell" id="mem14">
+            </div>
+            <div class="row">
+                <label for ="mem15">15: </label>
+                <input type="number" class="memorycell" id="mem15">
+            </div>
         </div>
     </div>
 </div>

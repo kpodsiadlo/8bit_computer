@@ -17,15 +17,14 @@ class Computer:
 
         def get_flags(computer):
             return computer.flag_register.__dict__
-
         state = {
             # Names use Java convention for interoperability
+            "source": "Engine",
             "memoryAddress": computer.mar.state,
-        # TODO: "memoryContents": computer.ram.state,
+            "memoryContents": computer.ram.state,
             "instructionRegisterHigherBits" : computer.instruction_register.higher_bits,
             "instructionRegisterLowerBits": computer.instruction_register.lower_bits,
             "microinstructionCounter": computer.ic.state,
-            "source": "Engine",
             "programCounter": computer.pc.state,
             "registerA": computer.regA.state,
             "alu": computer.alu.state,
@@ -35,6 +34,7 @@ class Computer:
             "logic": get_logic(computer),
             "flags": get_flags(computer)
         }
+
         return state
 
     def __init__(self):

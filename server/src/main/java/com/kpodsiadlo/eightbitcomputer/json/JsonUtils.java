@@ -1,11 +1,14 @@
 package com.kpodsiadlo.eightbitcomputer.json;
 
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
 import javax.json.spi.JsonProvider;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
 
 import java.util.logging.Logger;
@@ -39,14 +42,23 @@ public class JsonUtils {
     }
     public static JsonObject mapToJsonObject(Map<String, Integer> map) {
 
-        logger.info("mapToJsonString");
-        JsonObjectBuilder provider = JsonProvider.provider().createObjectBuilder();
+        logger.info("mapToJsonObject");
+        JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
 
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            provider.add(entry.getKey(), entry.getValue());
+            objectBuilder.add(entry.getKey(), entry.getValue());
         }
-        logger.info(provider.toString());
-        return provider.build();
+        logger.info(objectBuilder.toString());
+        return objectBuilder.build();
+    }
+
+    public static JsonArray listToJsonObject(List <Integer> list) {
+        logger.info("listToJsonObject");
+        JsonArrayBuilder arrayBuilder = JsonProvider.provider().createArrayBuilder();
+        for (Integer element : list) {
+            arrayBuilder.add(element);
+        }
+        return arrayBuilder.build();
     }
 
 }

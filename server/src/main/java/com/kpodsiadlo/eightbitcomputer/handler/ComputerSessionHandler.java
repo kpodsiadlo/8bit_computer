@@ -138,7 +138,7 @@ public class ComputerSessionHandler {
         provider.add("SOURCE", "Server");
         provider.add("clockRunning", computer.getClockRunning());
         provider.add("memoryAddress", computer.getMemoryAddress());
-        provider.add("memoryContents", computer.getMemoryContents());
+        provider.add("memoryContents", JsonUtils.listToJsonObject(computer.getMemoryContents()));
         provider.add("instructionRegisterHigherBits", computer.getInstructionRegisterHigherBits());
         provider.add("instructionRegisterLowerBits", computer.getInstructionRegisterLowerBits());
         provider.add("microinstructionCounter", computer.getMicroinstructionCounter());
@@ -151,7 +151,7 @@ public class ComputerSessionHandler {
         provider.add("logic", JsonUtils.mapToJsonObject(computer.getLogic()));
         provider.add("flags", JsonUtils.mapToJsonObject(computer.getFlags()));
 
-        //DON'T CHANGE INTO INLINE VARIABLE!
+        //DON'T CHANGE INTO AN INLINE VARIABLE!
         JsonObject build = provider.build();
 
         return build;
