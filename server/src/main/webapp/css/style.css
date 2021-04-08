@@ -7,11 +7,15 @@ div {
 
 
 input[type=number]{
-    width: 40px;
+    width: 60px;
 }
 
-input[type=number].memorycell{
-    width: 100px;
+input[type=number].memory-cell-binary{
+    width: 140px;
+}
+
+input[type=number].memory-cell-decimal{
+    width: 60px;
 }
 
 .on {

@@ -20,11 +20,11 @@ function updateDisplays(computerData) {
     updateRegisterBDisplay(computerData.registerB);
     updateOutputDisplay(computerData.output);
     updateBus(computerData.bus);
-    updateInstructions(computerData.logic);
+    updateControlLights(computerData.logic);
     updateFlags(computerData.flags)
 }
 
-function updateInstructions(logic) {
+function updateControlLights(logic) {
     console.log("update instructions");
     Object.keys(logic).forEach(function (key) {
         changeColor(key, logic[key]);
@@ -64,13 +64,44 @@ function updateMemoryAddress(data) {
 }
 
 function updateMemoryContents(data) {
-    for (let i = 0; i < data.length; i++) {
-        document.getElementById("mem" + i + "-value").value =
-            dec2bin(data[i]);
-    }
-}
+    updateBinaryValue(data);
+    updateDecimalValue(data);
+    updateInstruction(data);
+    updateInstructionValue(data);
 
-function updateOpcodes(){
+
+    function updateBinaryValue(data) {
+        for (let i = 0; i < data.length; i++) {
+            document.getElementById("mem" + i + "-binary-value").value =
+                dec2bin(data[i]);
+        }
+    }
+
+    function updateDecimalValue(data) {
+        for (let i = 0; i < data.length; i++) {
+            document.getElementById("mem" + i + "-decimal-value").value =
+                (data[i]);
+        }
+    }
+
+    function updateInstruction(data){
+        for (let i = 0; i < data.length; i++) {
+            instructionBinaryData = dec2bin(data[i]).substring(0,4);
+            console.log("InstrBinData: " + instructionBinaryData);
+            opcode = machine_code[instructionBinaryData];
+            console.log(opcode);
+            document.getElementById("mem" + i + "-instruction").innerText =
+                opcode.toUpperCase();
+        }
+    }
+
+    function updateInstructionValue(data) {
+        for (let i = 0; i < data.length; i++) {
+            document.getElementById("mem" + i + "-instruction-value").value =
+                parseInt((dec2bin(data[i]).substring(4)), 2);
+        }
+    }
+
 
 }
 
@@ -78,6 +109,7 @@ function dec2bin(dec) {
     let bin = dec.toString(2);
     return bin.padStart(8, "0");
 }
+
 
 function updateInstructionRegisterHigherBits(data) {
     document.getElementById("instruction-register-display-higher-bits").value = data;
@@ -164,15 +196,15 @@ function addSourceToJSONMessage(jsonMessage) {
 }
 
 const machine_code = {
-    0000: "nop",
-    0001: "lda",
-    0010: "add",
-    0011: "sub",
-    0100: "sta",
-    0101: "ldi",
-    0110: "jmp",
-    0111: "jc",
-    1000: "jz",
-    1110: "out",
-    1111: "hlt"
+    "0000": "nop",
+    "0001": "lda",
+    "0010": "add",
+    "0011": "sub",
+    "0100": "sta",
+    "0101": "ldi",
+    "0110": "jmp",
+    "0111": "jc",
+    "1000": "jz",
+    "1110": "out",
+    "1111": "hlt"
 }

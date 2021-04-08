@@ -91,89 +91,147 @@
         </div>
     </div>
     <div class="row">
-        <div class=col-5>
-            <label for="memory-content-display">Memory Contents</label>
-            <div id="memory-content-display"></div>
-            <div class="row" id="memorycell-container-0">
-                <label for="mem0-value">0: </label>
-                <input type="number" class="memorycell" id="mem0-value">
-                <span id="mem0-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-1">
-                <label for="mem1-value">1: </label>
-                <input type="number" class="memorycell" id="mem1-value">
-                <span id="mem1-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-2">
-                <label for="mem2-value">2: </label>
-                <input type="number" class="memorycell" id="mem2-value">
-                <span id="mem2-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-3">
-                <label for="mem3-value">3: </label>
-                <input type="number" class="memorycell" id="mem3-value">
-                <span id="mem3-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-4">
-                <label for="mem4-value">4: </label>
-                <input type="number" class="memorycell" id="mem4-value">
-                <span id="mem4-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-5">
-                <label for="mem5-value">5: </label>
-                <input type="number" class="memorycell" id="mem5-value">
-                <span id="mem5-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-6">
-                <label for="mem6-value">6: </label>
-                <input type="number" class="memorycell" id="mem6-value">
-                <span id="mem6-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-7">
-                <label for="mem7-value">7: </label>
-                <input type="number" class="memorycell" id="mem7-value">
-                <span id="mem7-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-8">
-                <label for="mem8-value">8: </label>
-                <input type="number" class="memorycell" id="mem8-value">
-                <span id="mem8-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-9">
-                <label for="mem9-value">9: </label>
-                <input type="number" class="memorycell" id="mem9-value">
-                <span id="mem9-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-10">
-                <label for="mem10-value">10: </label>
-                <input type="number" class="memorycell" id="mem10-value">
-                <span id="mem10-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-11">
-                <label for="mem11-value">11: </label>
-                <input type="number" class="memorycell" id="mem11-value">
-                <span id="mem11-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-12">
-                <label for="mem12-value">12: </label>
-                <input type="number" class="memorycell" id="mem12-value">
-                <span id="mem12-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-13">
-                <label for="mem13-value">13: </label>
-                <input type="number" class="memorycell" id="mem13-value">
-                <span id="mem13-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-14">
-                <label for="mem14-value">14: </label>
-                <input type="number" class="memorycell" id="mem14-value">
-                <span id="mem14-label">HLT</span>
-            </div>
-            <div class="row" id="memorycell-container-15">
-                <label for="mem15-value">15: </label>
-                <input type="number" class="memorycell" id="mem15-value">
-                <span id="mem15-label">HLT</span>
-            </div>
+        <div class=col-12>
+            <table class="tg">
+                <thead>
+                <tr>
+                    <th class="tg-0lax">Address</th>
+                    <th class="tg-0lax">Binary</th>
+                    <th class="tg-0lax">Decimal</th>
+                    <th class="tg-0lax">Instruction</th>
+                    <th class="tg-0lax">Value</th>
+
+                </tr>
+                </thead>
+                <tr id="memory-cell-container-0">
+                    <td class="tg-0lax"><span class="memory-cell-number">00</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem0-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem0-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem0-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem0-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-1">
+                    <td class="tg-0lax"><span class="memory-cell-number">01</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem1-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem1-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem1-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem1-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-2">
+                    <td class="tg-0lax"><span class="memory-cell-number">02</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem2-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem2-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem2-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem2-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-3">
+                    <td class="tg-0lax"><span class="memory-cell-number">03</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem3-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem3-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem3-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem3-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-4">
+                    <td class="tg-0lax"><span class="memory-cell-number">04</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem4-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem4-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem4-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem4-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-5">
+                    <td class="tg-0lax"><span class="memory-cell-number">05</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem5-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem5-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem5-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem5-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-6">
+                    <td class="tg-0lax"><span class="memory-cell-number">06</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem6-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem6-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem6-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem6-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-7">
+                    <td class="tg-0lax"><span class="memory-cell-number">07</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem7-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem7-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem7-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem7-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-8">
+                    <td class="tg-0lax"><span class="memory-cell-number">08</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem8-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem8-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem8-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem8-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-9">
+                    <td class="tg-0lax"><span class="memory-cell-number">09</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem9-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem9-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem9-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem9-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-10">
+                    <td class="tg-0lax"><span class="memory-cell-number">10</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem10-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem10-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem10-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem10-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-11">
+                    <td class="tg-0lax"><span class="memory-cell-number">11</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem11-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem11-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem11-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem11-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-12">
+                    <td class="tg-0lax"><span class="memory-cell-number">12</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem12-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem12-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem12-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem12-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-13">
+                    <td class="tg-0lax"><span class="memory-cell-number">13</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem13-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem13-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem13-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem13-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-14">
+                    <td class="tg-0lax"><span class="memory-cell-number">14</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem14-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem14-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem14-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem14-instruction-value">
+                    </td>
+                </tr>
+                <tr id="memory-cell-container-15">
+                    <td class="tg-0lax"><span class="memory-cell-number">15</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-binary" id="mem15-binary-value"></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem15-decimal-value"></td>
+                    <td class="tg-0lax"><span id="mem15-instruction">HLT</span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal" id="mem15-instruction-value">
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>
