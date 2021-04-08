@@ -109,7 +109,7 @@ public class ComputerSessionHandler {
 
             // get component Status
             try {
-                componentStatus = Optional.of(message.getInt(integerComponent));
+                componentStatus = Optional.of(message.getInt(integerComponent, 0));
             } catch (NullPointerException | ClassCastException e) {
                 logJsonError(integerComponent);
             }
