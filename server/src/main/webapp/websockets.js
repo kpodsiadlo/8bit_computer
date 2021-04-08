@@ -23,7 +23,7 @@ function updateDisplays(computerData) {
     updateControlLights(computerData.logic);
     updateFlags(computerData.flags)
     updateMemoryContents(computerData.memoryContents);
-    highlightCurrentMemoryAddress(computerData.memoryAddress, computerData.memoryContents.length)
+    highlightCurrentMemoryAddress(computerData.memoryAddress)
     updateClockRunning(computerData.clockRunning)
 }
 
@@ -43,7 +43,7 @@ function updateFlags(flags) {
 
 function changeColor(element, boolean) {
     if (document.getElementById(element) != null) {
-        if (boolean == 1) {
+        if (boolean === 1) {
             //if (document.getElementById(element).classList.contains("off")) {
             document.getElementById(element).classList.remove("off");
             //}
@@ -51,7 +51,7 @@ function changeColor(element, boolean) {
             document.getElementById(element).classList.add("on");
             //}
         }
-        if (boolean == 0) {
+        if (boolean === 0) {
             //if (document.getElementById(element).classList.contains("on")) {
             document.getElementById(element).classList.remove("on");
             //}
@@ -95,7 +95,7 @@ function updateMemoryContents(data) {
         for (let i = 0; i < data.length; i++) {
             instructionBinaryData = dec2bin(data[i]).substring(0, 4);
             opcode = machine_code[instructionBinaryData];
-            if (opcode != undefined) {
+            if (opcode !== undefined) {
                 document.getElementById("mem" + i + "-instruction").innerText =
                     opcode.toUpperCase();
             }
@@ -117,7 +117,7 @@ function dec2bin(dec) {
     return bin.padStart(8, "0");
 }
 
-function highlightCurrentMemoryAddress(memoryAddress, memoryLength) {
+function highlightCurrentMemoryAddress(memoryAddress) {
 
     var rows = document.querySelectorAll(".memory-cell-container");
     rows.forEach(row => row.classList.remove("current-memory-address"))
@@ -165,9 +165,9 @@ function updateBus(data) {
 function updateClockRunning(data) {
     var clockStatus = document.getElementById("clock-running-display");
     console.log("clockStatus" + data);
-    if (data == true) {
+    if (data === true) {
         clockStatus.innerText = "Clock: Running"
-    } else if (data == false) {
+    } else if (data === false) {
         clockStatus.innerText = "Clock: Stopped"
     }
 }

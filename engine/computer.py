@@ -57,7 +57,12 @@ class Computer:
         self.display = self.Display()
 
     def do(self, computer):
-        self.buss.do(computer)
+        # increase:
+
+        self.ic.increase(computer)
+
+        self.buss.reset(computer)
+
         self.decoder.do(computer)
 
         # outs
@@ -69,6 +74,7 @@ class Computer:
         self.instruction_register.do_out(computer)
         self.ram.do_out(computer)
 
+        self.pc.increase(computer)
         # ins
         self.flag_register.do_in(computer)
         self.pc.do_in(computer)
@@ -79,10 +85,6 @@ class Computer:
         self.ram.do_in(computer)
         self.display.do_in(computer)
 
-        # increase:
-
-        self.pc.increase(computer)
-        self.ic.increase(computer)
 
     class Display:
         def __init__(self):
@@ -219,7 +221,7 @@ class Computer:
         def __init__(self):
             self.state = None
 
-        def do(self, computer):
+        def reset(self, computer):
             computer.buss.state = None
 
     class RegisterA:
@@ -302,7 +304,7 @@ class Computer:
 
     class InstructionCounter:
         def __init__(self):
-            self.state = 0
+            self.state = 4
 
         def increase(self, computer):
             if computer.clock.state == 1:
