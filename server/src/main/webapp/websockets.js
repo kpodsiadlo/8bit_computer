@@ -22,6 +22,7 @@ function updateDisplays(computerData) {
     updateBus(computerData.bus);
     updateControlLights(computerData.logic);
     updateFlags(computerData.flags)
+    highlightCurrentMemoryAddress(computerData.memoryAddress, computerData.memoryContents.length)
 }
 
 function updateControlLights(logic) {
@@ -69,7 +70,6 @@ function updateMemoryContents(data) {
     updateInstruction(data);
     updateInstructionValue(data);
 
-
     function updateBinaryValue(data) {
         for (let i = 0; i < data.length; i++) {
             document.getElementById("mem" + i + "-binary-value").value =
@@ -84,14 +84,14 @@ function updateMemoryContents(data) {
         }
     }
 
-    function updateInstruction(data){
+    function updateInstruction(data) {
         for (let i = 0; i < data.length; i++) {
-            instructionBinaryData = dec2bin(data[i]).substring(0,4);
-            console.log("InstrBinData: " + instructionBinaryData);
+            instructionBinaryData = dec2bin(data[i]).substring(0, 4);
             opcode = machine_code[instructionBinaryData];
-            console.log(opcode);
-            document.getElementById("mem" + i + "-instruction").innerText =
-                opcode.toUpperCase();
+            if (opcode != undefined) {
+                document.getElementById("mem" + i + "-instruction").innerText =
+                    opcode.toUpperCase();
+            }
         }
     }
 
@@ -102,13 +102,21 @@ function updateMemoryContents(data) {
         }
     }
 
+    function dec2bin(dec) {
+        let bin = dec.toString(2);
+        return bin.padStart(8, "0");
+    }
 
 }
 
-function dec2bin(dec) {
-    let bin = dec.toString(2);
-    return bin.padStart(8, "0");
+function highlightCurrentMemoryAddress(memoryAddress, memoryLength) {
+
+    var rows = document.querySelectorAll(".memory-cell-container");
+    rows.forEach(row => row.classList.remove("current-memory-address"))
+    document.getElementById("memory-cell-container-" + memoryAddress).classList.add("current-memory-address");
+
 }
+
 
 
 function updateInstructionRegisterHigherBits(data) {
