@@ -6,7 +6,7 @@ import websockets
 uri = "ws://localhost:8080/server/computer"
 time_interval_in_seconds = 1
 computer = Computer()
-computer.clock.start(computer)
+#computer.clock.start(computer)
 
 
 async def run_computer(websocket):

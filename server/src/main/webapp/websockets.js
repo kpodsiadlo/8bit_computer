@@ -24,6 +24,7 @@ function updateDisplays(computerData) {
     updateFlags(computerData.flags)
     updateMemoryContents(computerData.memoryContents);
     highlightCurrentMemoryAddress(computerData.memoryAddress, computerData.memoryContents.length)
+    updateClockRunning(computerData.clockRunning)
 }
 
 function updateControlLights(logic) {
@@ -109,7 +110,6 @@ function updateMemoryContents(data) {
     }
 
 
-
 }
 
 function dec2bin(dec) {
@@ -124,7 +124,6 @@ function highlightCurrentMemoryAddress(memoryAddress, memoryLength) {
     document.getElementById("memory-cell-container-" + memoryAddress).classList.add("current-memory-address");
 
 }
-
 
 
 function updateInstructionRegisterHigherBits(data) {
@@ -162,6 +161,17 @@ function updateOutputDisplay(data) {
 function updateBus(data) {
     document.getElementById("bus-display").value = data;
 }
+
+function updateClockRunning(data) {
+    var clockStatus = document.getElementById("clock-running-display");
+    console.log("clockStatus" + data);
+    if (data == true) {
+        clockStatus.innerText = "Clock: Running"
+    } else if (data == false) {
+        clockStatus.innerText = "Clock: Stopped"
+    }
+}
+
 
 
 function onProgramCounterIncrease() {

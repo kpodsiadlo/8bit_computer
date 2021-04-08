@@ -74,9 +74,9 @@ public class ComputerSessionHandler {
 
     private void updateMemoryContents(JsonObject message){
         Optional<JsonArray> jsonArrayOptional = Optional.ofNullable(message.getJsonArray("memoryContents"));
-        jsonArrayOptional.ifPresentOrElse(opt -> computer.setMemoryContents(opt.getValuesAs(JsonNumber::intValue)),
+        jsonArrayOptional.ifPresentOrElse(
+                opt -> computer.setMemoryContents(opt.getValuesAs(JsonNumber::intValue)),
                 ()-> logJsonError("Memory Contents"));
-
     }
 
     private void updateIntegers(JsonObject message) {
