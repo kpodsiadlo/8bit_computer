@@ -14,6 +14,10 @@ input[type=number].memory-cell-binary{
     width: 140px;
 }
 
+input[type=number].binary{
+    width: 140px;
+}
+
 input[type=number].memory-cell-decimal{
     width: 60px;
 }

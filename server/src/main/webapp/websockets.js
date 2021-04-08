@@ -10,8 +10,8 @@ function onMessage(event) {
 
 function updateDisplays(computerData) {
     updateMemoryAddress(computerData.memoryAddress);
+    updateCurrentMemoryValue(computerData.memoryAddress, computerData.memoryContents);
     updateProgramCounterDisplay(computerData.programCounter);
-    updateMemoryContents(computerData.memoryContents);
     updateInstructionRegisterHigherBits(computerData.instructionRegisterHigherBits);
     updateInstructionRegisterLowerBits(computerData.instructionRegisterLowerBits);
     updateMicroinstructionCounter(computerData.microinstructionCounter);
@@ -22,6 +22,7 @@ function updateDisplays(computerData) {
     updateBus(computerData.bus);
     updateControlLights(computerData.logic);
     updateFlags(computerData.flags)
+    updateMemoryContents(computerData.memoryContents);
     highlightCurrentMemoryAddress(computerData.memoryAddress, computerData.memoryContents.length)
 }
 
@@ -64,6 +65,11 @@ function updateMemoryAddress(data) {
     document.getElementById("memory-address-display").value = data;
 }
 
+function updateCurrentMemoryValue(address, contents) {
+    document.getElementById("memory-value-display").value =
+        dec2bin(contents[address]);
+}
+
 function updateMemoryContents(data) {
     updateBinaryValue(data);
     updateDecimalValue(data);
@@ -102,11 +108,13 @@ function updateMemoryContents(data) {
         }
     }
 
-    function dec2bin(dec) {
-        let bin = dec.toString(2);
-        return bin.padStart(8, "0");
-    }
 
+
+}
+
+function dec2bin(dec) {
+    let bin = dec.toString(2);
+    return bin.padStart(8, "0");
 }
 
 function highlightCurrentMemoryAddress(memoryAddress, memoryLength) {

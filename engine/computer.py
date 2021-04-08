@@ -20,6 +20,7 @@ class Computer:
         state = {
             # Names use Java convention for interoperability
             "source": "Engine",
+            "clockRunning": computer.clock.clock_running,
             "memoryAddress": computer.mar.state,
             "memoryContents": computer.ram.state,
             "instructionRegisterHigherBits" : computer.instruction_register.higher_bits,
@@ -200,7 +201,7 @@ class Computer:
     class Clock:
         def __init__(self):
             self.state = 0
-            self.clock_running = 0
+            self.clock_running = False
 
         def tick(self, computer):
             computer.clock.state = not computer.clock.state
@@ -209,10 +210,10 @@ class Computer:
                 computer.do(computer)
 
         def start(self, computer):
-            computer.clock.clock_running = 1
+            computer.clock.clock_running = True
 
         def stop(self, computer):
-            computer.clock.clock_running = 0
+            computer.clock.clock_running = False
 
     class Buss:
         def __init__(self):
