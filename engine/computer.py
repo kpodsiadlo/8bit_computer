@@ -2,6 +2,7 @@ import input_data
 
 filename = 'fibonacci'
 
+
 class Computer:
 
     def execute_one_click_and_yield_computer_state(self, computer):
@@ -17,13 +18,14 @@ class Computer:
 
         def get_flags(computer):
             return computer.flag_register.__dict__
+
         state = {
             # Names use Java convention for interoperability
             "source": "Engine",
             "clockRunning": computer.clock.clock_running,
             "memoryAddress": computer.mar.state,
             "memoryContents": computer.ram.state,
-            "instructionRegisterHigherBits" : computer.instruction_register.higher_bits,
+            "instructionRegisterHigherBits": computer.instruction_register.higher_bits,
             "instructionRegisterLowerBits": computer.instruction_register.lower_bits,
             "microinstructionCounter": computer.ic.state,
             "programCounter": computer.pc.state,
@@ -82,8 +84,6 @@ class Computer:
         self.pc.increase(computer)
         self.ic.increase(computer)
 
-
-
     class Display:
         def __init__(self):
             self.state = 0
@@ -109,7 +109,7 @@ class Computer:
 
     class RAM:
         def __init__(self):
-                self.state = input_data.get_input_data(filename)
+            self.state = input_data.get_input_data(filename)
 
         def do_in(self, computer):
             if computer.clock.state == 1:
@@ -422,4 +422,3 @@ class Computer:
                 if computer.ic.state == 2:
                     print("HLT")
                     computer.clock.stop(computer)
-

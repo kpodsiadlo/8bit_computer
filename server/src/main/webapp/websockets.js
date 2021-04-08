@@ -173,7 +173,6 @@ function updateClockRunning(data) {
 }
 
 
-
 function onProgramCounterIncrease() {
     var currentValue = parseInt(document.getElementById("program-counter-display").value);
     updateProgramCounterDisplay(currentValue + 1)
