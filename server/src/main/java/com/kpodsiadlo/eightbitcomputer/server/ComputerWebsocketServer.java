@@ -26,13 +26,13 @@ public class ComputerWebsocketServer {
 
     @OnOpen
     public void onOpen(Session session) {
-        LoggerFactory.getLogger(this.getClass()).debug("OnOpen");
+        logger.debug("OnOpen");
         sessionHandler.addSession(session);
     }
 
     @OnClose
     public void onClose(Session session) {
-        LoggerFactory.getLogger(this.getClass()).debug("OnClose");
+        logger.debug("OnClose");
         if (session != null) {
             sessionHandler.removeSession(session);
         }
@@ -40,8 +40,8 @@ public class ComputerWebsocketServer {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        LoggerFactory.getLogger(this.getClass()).info("OnMessage");
-        LoggerFactory.getLogger(this.getClass()).info(message);
+        logger.info("OnMessage");
+        logger.info(message);
         JsonObject jsonMessage = JsonUtils.getJsonObject(message);
         IncomingMessageType messageType = sessionHandler.processJsonMessage(jsonMessage);
         if (messageType.equals(IncomingMessageType.UPDATE)) {
@@ -65,14 +65,14 @@ public class ComputerWebsocketServer {
     }
 
     private void sendUpdatedComputerToReceivingSessions(Session transmittingSession) {
-        LoggerFactory.getLogger(this.getClass()).info("sendUpdatedComputerToReceivingSessions");
+        logger.info("sendUpdatedComputerToReceivingSessions");
         String computerState = sessionHandler.getComputerStateAsJson();
-        LoggerFactory.getLogger(this.getClass()).info("Sending: " + computerState.toString());
+        logger.info("Sending: {}", computerState);
         sessionHandler.sendToAllReceivingSessions(computerState,transmittingSession);
     }
 
     @OnError
     public void onError(Throwable error) {
-        LoggerFactory.getLogger(this.getClass()).error("On Error " + error.getMessage());
+        logger.error("On Error: {}", error.getMessage());
     }
 }

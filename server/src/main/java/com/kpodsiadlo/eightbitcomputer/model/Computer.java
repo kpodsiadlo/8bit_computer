@@ -1,5 +1,7 @@
 package com.kpodsiadlo.eightbitcomputer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.Map;
 
 @Singleton
 @Startup
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Computer {
     private Boolean clockRunning = true;
     private Integer memoryAddress = 0;
