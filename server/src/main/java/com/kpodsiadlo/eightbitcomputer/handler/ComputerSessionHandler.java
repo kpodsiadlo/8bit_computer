@@ -27,23 +27,24 @@ public class ComputerSessionHandler {
     Computer computer;
 
     public IncomingMessageType processJsonMessage(JsonObject message) {
-        if (isMessageTick(message)) {
+        if (checkForKeyInMessage(message, "tick")) {
             return IncomingMessageType.TICK;
+        } else if (checkForKeyInMessage(message, "reset")) {
+            return IncomingMessageType.RESET;
         } else {
             updateComputerWithJackson(message);
             return IncomingMessageType.UPDATE;
         }
     }
 
-    private boolean isMessageTick(JsonObject message) {
-        Optional<Boolean> tick = Optional.empty();
+    private boolean checkForKeyInMessage(JsonObject message, String key) {
+        Optional<Boolean> keyInJson = Optional.empty();
         try {
-            tick = Optional.of(message.getBoolean("tick"));
-        } catch (NullPointerException ignored)
-        {
-            logger.debug("Message is not a Tick");
+            keyInJson = Optional.of(message.getBoolean(key));
+        } catch (NullPointerException ignored) {
+            logger.debug("Message is not a {}", key);
         }
-        return tick.isPresent();
+        return keyInJson.isPresent();
     }
 
     private void updateComputerWithJackson(JsonObject message) {

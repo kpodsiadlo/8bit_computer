@@ -4,7 +4,7 @@ import asyncio
 import websockets
 
 uri = "ws://localhost:8080/server/computer"
-time_interval_in_seconds = 1
+time_interval_in_seconds = 0.01
 computer = Computer()
 
 
@@ -28,16 +28,32 @@ async def execute_one_cycle_and_send_update_to_server(websocket):
     data_json = json.dumps(data)
     await websocket.send(data_json)
 
+async def resetComputer(websocket):
+    global computer
+    computer = Computer()
+    await execute_one_cycle_and_send_update_to_server(websocket)
+
 
 async def receive(message, websocket):
     message_json = json.loads(message)
     print("Data received" + message_json.__str__())
-    clockRunning = None;
+    clockRunning = None
+    reset = None
+    tick = None
+
 
     try:
         clockRunning = message_json["clockRunning"]
     except KeyError:
         print("No Clock Information in JSON")
+    try:
+        reset = message_json["reset"]
+    except KeyError:
+        pass
+    try:
+        tick = message_json["tick"]
+    except KeyError:
+        pass
 
     if clockRunning is not None:
         if not clockRunning:
@@ -46,12 +62,11 @@ async def receive(message, websocket):
         if clockRunning:
             computer.clock.start(computer)
             print("START")
-    elif message_json["tick"]:
+    elif tick is not None:
         await execute_one_cycle_and_send_update_to_server(websocket)
+    elif reset is not None:
+        await resetComputer(websocket)
 
-
-#  except KeyError:
-#     print("KeyError: clockRunning")
 
 
 async def producer_handler(websocket):

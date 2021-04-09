@@ -27,6 +27,37 @@ function updateDisplays(computerData) {
     updateClockRunning(computerData.clockRunning)
 }
 
+function sendComputerStateToServer() {
+    computerState = getComputerState();
+    socket.send(JSON.stringify(computerState));
+
+}
+
+function getComputerState(){
+    computerState = {};
+    ram = getRamState();
+    memoryAddress = getMemoryAddress();
+    computerState.memoryContents = ram;
+    computerState.memoryAddress = memoryAddress;
+}
+
+function getRamState() {
+    ramState = []
+    for (i=0; i<16; i++ ) {
+        ramState[i] = document.getElementById("mem" + i + "-decimal-value").value;
+    }
+    return ramState
+}
+
+function onReset() {
+    resetMessage = {"reset":true};
+    socket.send(JSON.stringify(resetMessage));
+}
+
+function getMemoryAddress() {
+    return document.getElementById("memory-address-display").value;
+}
+
 function updateControlLights(logic) {
     console.log("update instructions");
     Object.keys(logic).forEach(function (key) {
@@ -232,6 +263,7 @@ function addSourceToJSONMessage(jsonMessage) {
     return jsonMessage;
 
 }
+
 
 const machine_code = {
     "0000": "nop",

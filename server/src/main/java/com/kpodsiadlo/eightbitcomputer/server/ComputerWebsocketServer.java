@@ -48,19 +48,26 @@ public class ComputerWebsocketServer {
             sendUpdatedComputerToReceivingSessions(session);
         } else if (messageType.equals(IncomingMessageType.TICK)) {
             sendTickToRecevingSessions(session);
+        } else if(messageType.equals(IncomingMessageType.RESET)) {
+            sendResetToReceivingSessions(session);
         }
+    }
+
+    private void sendResetToReceivingSessions(Session session) {
+        logger.debug("SendResetToReceivingSessions");
+        sessionHandler.sendToAllReceivingSessions(generateControlMessage("reset"), session);
     }
 
     private void sendTickToRecevingSessions(Session session) {
         logger.debug("SendTickToReceivingSessions");
-        sessionHandler.sendToAllReceivingSessions(tick(), session);
+        sessionHandler.sendToAllReceivingSessions(generateControlMessage("tick"), session);
     }
 
-    private String tick() {
-        logger.debug("tick");
+    private String generateControlMessage(String message) {
+        logger.debug(message);
         JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
         objectBuilder.add("SOURCE", "Server");
-        objectBuilder.add("tick", true);
+        objectBuilder.add(message, true);
         return objectBuilder.build().toString();
     }
 
