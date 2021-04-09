@@ -54,6 +54,7 @@ function onReset() {
     socket.send(JSON.stringify(resetMessage));
     var toggleClockButton = document.getElementById("toggle-clock-button");
     if (toggleClockButton.value === "STOP") {
+        document.getElementById("toggle-clock-button").value = "START";
         enableManualClockIncrease();
     }
 }
