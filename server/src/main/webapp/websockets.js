@@ -164,14 +164,26 @@ function updateBus(data) {
 
 function updateClockRunning(data) {
     var clockStatus = document.getElementById("clock-running-display");
+    var manualClock = document.getElementById("manual-clock-button");
     console.log("clockStatus" + data);
     if (data === true) {
-        clockStatus.innerText = "Clock: Running"
+        clockStatus.innerText = "Clock: Running";
+        manualClock.classList.remove("btn-success");
+        manualClock.classList.add("btn-secondary");
+        manualClock.disabled = true;
     } else if (data === false) {
-        clockStatus.innerText = "Clock: Stopped"
+        clockStatus.innerText = "Clock: Stopped";
+        manualClock.classList.remove("btn-secondary");
+        manualClock.classList.add("btn-success");
+        manualClock.disabled = false;
     }
 }
 
+function onTick(){
+    let jsonMessage = {"tick": true};
+    jsonMessage = addSourceToJSONMessage(jsonMessage)
+    socket.send(JSON.stringify(jsonMessage));
+}
 
 function onProgramCounterIncrease() {
     var currentValue = parseInt(document.getElementById("program-counter-display").value);

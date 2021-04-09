@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kpodsiadlo.eightbitcomputer.json.JsonUtils;
 import com.kpodsiadlo.eightbitcomputer.model.Computer;
+import com.kpodsiadlo.eightbitcomputer.server.IncomingMessageType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,7 +35,25 @@ public class ComputerSessionHandler {
     @Inject
     Computer computer;
 
-    public void updateComputerModel(JsonObject message) {
+    private boolean isMessageTick(JsonObject message) {
+        Optional<Boolean> tick = Optional.empty();
+        try {
+            tick = Optional.of(message.getBoolean("tick"));
+        } catch (NullPointerException ignored) {
+        }
+        return tick.isPresent();
+    }
+
+    public IncomingMessageType processJsonMessage(JsonObject message) {
+        if (isMessageTick(message)) {
+            return IncomingMessageType.TICK;
+        } else {
+            updateComputer(message);
+            return IncomingMessageType.UPDATE;
+        }
+    }
+
+    private void updateComputer(JsonObject message) {
         logger.info("updateComputer");
         updateClockRunning(message);
         updateMap(message, "logic");

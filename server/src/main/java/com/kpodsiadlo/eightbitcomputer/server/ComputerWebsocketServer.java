@@ -2,11 +2,14 @@ package com.kpodsiadlo.eightbitcomputer.server;
 
 import com.kpodsiadlo.eightbitcomputer.handler.ComputerSessionHandler;
 import com.kpodsiadlo.eightbitcomputer.json.JsonUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.spi.JsonProvider;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -19,6 +22,7 @@ import javax.websocket.server.ServerEndpoint;
 public class ComputerWebsocketServer {
     @Inject
     private ComputerSessionHandler sessionHandler;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @OnOpen
     public void onOpen(Session session) {
@@ -39,14 +43,25 @@ public class ComputerWebsocketServer {
         LoggerFactory.getLogger(this.getClass()).info("OnMessage");
         LoggerFactory.getLogger(this.getClass()).info(message);
         JsonObject jsonMessage = JsonUtils.getJsonObject(message);
-        sessionHandler.updateComputerModel(jsonMessage);
-        sendUpdatedComputerToReceivingSessions(session);
+        IncomingMessageType messageType = sessionHandler.processJsonMessage(jsonMessage);
+        if (messageType.equals(IncomingMessageType.UPDATE)) {
+            sendUpdatedComputerToReceivingSessions(session);
+        } else if (messageType.equals(IncomingMessageType.TICK)) {
+            sendTickToRecevingSessions(session);
+        }
     }
 
-    private void sendUpdatedComputerToAllSessions() {
-        LoggerFactory.getLogger(this.getClass()).info("sendUpdatedComputerToAllSessions");
-        JsonObject computerState = sessionHandler.getComputerModelState();
-        sessionHandler.sendToAllSessions(computerState);
+    private void sendTickToRecevingSessions(Session session) {
+        logger.debug("SendTickToReceivingSessions");
+        sessionHandler.sendToAllReceivingSessions(tick(), session);
+    }
+
+    private JsonObject tick() {
+        logger.debug("tick");
+        JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
+        objectBuilder.add("SOURCE", "Server");
+        objectBuilder.add("tick", true);
+        return objectBuilder.build();
     }
 
     private void sendUpdatedComputerToReceivingSessions(Session transmittingSession) {

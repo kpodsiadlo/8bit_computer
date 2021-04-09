@@ -15,24 +15,38 @@ async def run_computer(websocket):
     while True:
         if computer.clock.clock_running == True:
             await asyncio.sleep(float(time_interval_in_seconds))
-            data = next(computer.execute_one_click_and_yield_computer_state(computer))
-            data_json = json.dumps(data)
-            await websocket.send(data_json)
+            await execute_one_cycle_and_send_update_to_server(websocket)
         else:
             await asyncio.sleep(1)
             print("SLEEPING")
 
 
-async def receive(message):
+async def execute_one_cycle_and_send_update_to_server(websocket):
+    data = next(computer.execute_one_click_and_yield_computer_state(computer))
+    print(data)
+    data_json = json.dumps(data)
+    await websocket.send(data_json)
+
+
+async def receive(message, websocket):
     message_json = json.loads(message)
     print("Data received" + message_json.__str__())
-    #   try:
-    if message_json["clockRunning"] == False:
-        computer.clock.stop(computer)
-        print("STOP")
-    if message_json["clockRunning"] == True:
-        computer.clock.start(computer)
-        print("START")
+    clockRunning = None;
+
+    try:
+        clockRunning = message_json["clockRunning"]
+    except KeyError:
+        print("No Clock Information in JSON")
+
+    if clockRunning is not None:
+        if not clockRunning:
+            computer.clock.stop(computer)
+            print("STOP")
+        if clockRunning:
+            computer.clock.start(computer)
+            print("START")
+    elif message_json["tick"]:
+        await execute_one_cycle_and_send_update_to_server(websocket)
 
 
 #  except KeyError:
@@ -45,7 +59,7 @@ async def producer_handler(websocket):
 
 async def consumer_handler(websocket):
     async for message in websocket:
-        await receive(message)
+        await receive(message, websocket)
 
 
 async def handler():
