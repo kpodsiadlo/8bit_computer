@@ -289,10 +289,42 @@ function getPrograms() {
             var incomingJson = JSON.parse(this.responseText);
             document.getElementById("programs-display").innerHTML =
             JSON.stringify(incomingJson);
+            updateProgramList(incomingJson);
         }
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
     xmlhttp.send();
+}
+
+function updateProgramList(incomingListOfPrograms) {
+    var displayedListOfPrograms = document.getElementById("program-selector");
+    result = "";
+    for (i=0; i<incomingListOfPrograms.length; i++) {
+        result += createOptionEntry(incomingListOfPrograms[i]);
+    }
+    displayedListOfPrograms.innerHTML = result;
+
+    function createOptionEntry(program) {
+        entry = "<option value=\"" + program.id + "\">" + program.name + "</option>"
+        return entry;
+    }
+}
+
+
+
+function getProgram(id) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        console.log("onreadystatechange");
+        if (this.readyState == 4 && this.status == 200) {
+            var incomingJson = JSON.parse(this.responseText);
+            document.getElementById("programs-display").innerHTML =
+                JSON.stringify(incomingJson);
+        }
+    };
+    xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
+    xmlhttp.send();
+
 }
 
 const machine_code = {
