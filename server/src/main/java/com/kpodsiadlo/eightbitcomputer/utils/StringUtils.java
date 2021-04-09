@@ -1,4 +1,4 @@
-package com.kpodsiadlo.eightbitcomputer.Utils;
+package com.kpodsiadlo.eightbitcomputer.utils;
 
 public class StringUtils {
     private StringUtils() {
