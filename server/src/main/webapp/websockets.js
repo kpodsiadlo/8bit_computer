@@ -108,8 +108,6 @@ function updateMemoryContents(data) {
                 parseInt((decTo8DigitBin(data[i]).substring(4)), 2);
         }
     }
-
-
 }
 
 function decTo8DigitBin(dec) {
@@ -182,7 +180,7 @@ function updateClockRunning(data) {
     }
 }
 
-function onTick(){
+function onTick() {
     let jsonMessage = {"tick": true};
     jsonMessage = addSourceToJSONMessage(jsonMessage)
     socket.send(JSON.stringify(jsonMessage));

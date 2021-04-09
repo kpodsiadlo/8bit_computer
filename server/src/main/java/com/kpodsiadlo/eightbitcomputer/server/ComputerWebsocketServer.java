@@ -56,17 +56,17 @@ public class ComputerWebsocketServer {
         sessionHandler.sendToAllReceivingSessions(tick(), session);
     }
 
-    private JsonObject tick() {
+    private String tick() {
         logger.debug("tick");
         JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
         objectBuilder.add("SOURCE", "Server");
         objectBuilder.add("tick", true);
-        return objectBuilder.build();
+        return objectBuilder.build().toString();
     }
 
     private void sendUpdatedComputerToReceivingSessions(Session transmittingSession) {
         LoggerFactory.getLogger(this.getClass()).info("sendUpdatedComputerToReceivingSessions");
-        JsonObject computerState = sessionHandler.getComputerModelState();
+        String computerState = sessionHandler.getComputerStateAsJson();
         LoggerFactory.getLogger(this.getClass()).info("Sending: " + computerState.toString());
         sessionHandler.sendToAllReceivingSessions(computerState,transmittingSession);
     }

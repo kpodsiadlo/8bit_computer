@@ -1,13 +1,16 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.kpodsiadlo.eightbitcomputer.json.JsonUtils;
 import com.kpodsiadlo.eightbitcomputer.model.Computer;
 import com.kpodsiadlo.eightbitcomputer.server.IncomingMessageType;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
@@ -18,7 +21,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -91,11 +93,11 @@ public class ComputerSessionHandler {
         }
     }
 
-    private void updateMemoryContents(JsonObject message){
+    private void updateMemoryContents(JsonObject message) {
         Optional<JsonArray> jsonArrayOptional = Optional.ofNullable(message.getJsonArray("memoryContents"));
         jsonArrayOptional.ifPresentOrElse(
                 opt -> computer.setMemoryContents(opt.getValuesAs(JsonNumber::intValue)),
-                ()-> logJsonError("Memory Contents"));
+                () -> logJsonError("Memory Contents"));
     }
 
     private void updateIntegers(JsonObject message) {
@@ -154,12 +156,57 @@ public class ComputerSessionHandler {
         }
     }
 
-
     public void logJsonError(String jsonValueMissing) {
         logger.warning(MessageFormat.format("{0} not found in incoming JSON '{}'", jsonValueMissing));
     }
 
-    public JsonObject getComputerModelState() {
+    public String getComputerStateAsJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String s = null;
+        try {
+            s = objectMapper.writeValueAsString(computer);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        s = "" + "{\"SOURCE\":\"server\", " + s.substring(1);
+        return s;
+    }
+
+
+    public void addSession(Session session) {
+        sessions.add(session);
+    }
+
+    public void removeSession(Session session) {
+        sessions.remove(session);
+    }
+
+    public void sendToSession(Session session, String message) {
+        try {
+            session.getBasicRemote().sendText(message.toString());
+        } catch (IOException e) {
+            removeSession(session);
+            logger.severe(e.getMessage());
+        }
+    }
+
+
+
+    public void sendToAllReceivingSessions(String message, Session transmittingSession) {
+        Set<Session> receivingSessions = new HashSet<>(sessions);
+        receivingSessions.remove(transmittingSession);
+        receivingSessions.forEach(session -> sendToSession(session, message));
+
+    }
+}
+
+    /*
+
+        public void sendToAllSessions(String message) {
+        sessions.forEach(session -> sendToSession(session, message));
+    }
+
+    public String getComputerModelState() {
         logger.info("getComputerState");
 
         JsonObjectBuilder provider = JsonProvider.provider().createObjectBuilder();
@@ -167,7 +214,6 @@ public class ComputerSessionHandler {
         provider.add("SOURCE", "Server");
         provider.add("clockRunning", computer.getClockRunning());
         provider.add("memoryAddress", computer.getMemoryAddress());
-        provider.add("memoryContents", JsonUtils.listToJsonObject(computer.getMemoryContents()));
         provider.add("instructionRegisterHigherBits", computer.getInstructionRegisterHigherBits());
         provider.add("instructionRegisterLowerBits", computer.getInstructionRegisterLowerBits());
         provider.add("microinstructionCounter", computer.getMicroinstructionCounter());
@@ -179,38 +225,12 @@ public class ComputerSessionHandler {
         provider.add("alu", computer.getAlu());
         provider.add("logic", JsonUtils.mapToJsonObject(computer.getLogic()));
         provider.add("flags", JsonUtils.mapToJsonObject(computer.getFlags()));
+        provider.add("memoryContents", JsonUtils.listToJsonObject(computer.getMemoryContents()));
 
         //DON'T CHANGE INTO AN INLINE VARIABLE!
         JsonObject build = provider.build();
 
-        return build;
-    }
-
-    public void addSession(Session session) {
-        sessions.add(session);
-    }
-
-    public void removeSession(Session session) {
-        sessions.remove(session);
-    }
-
-    public void sendToSession(Session session, JsonObject message) {
-        try {
-            session.getBasicRemote().sendText(message.toString());
-        } catch (IOException e) {
-            removeSession(session);
-            logger.severe(e.getMessage());
-        }
-    }
-
-    public void sendToAllSessions(JsonObject message) {
-        sessions.forEach(session -> sendToSession(session, message));
-    }
-
-    public void sendToAllReceivingSessions(JsonObject message, Session transmittingSession) {
-        Set<Session> receivingSessions = new HashSet<>(sessions);
-        receivingSessions.remove(transmittingSession);
-        receivingSessions.forEach(session -> sendToSession(session, message));
-
+        return build.toString();
     }
 }
+     */
