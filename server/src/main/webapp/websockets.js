@@ -287,8 +287,6 @@ function getPrograms() {
         console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
-            document.getElementById("programs-display").innerHTML =
-            JSON.stringify(incomingJson);
             updateProgramList(incomingJson);
             updateMemoryContentsFromDatabase(incomingJson[0].contents);
         }
@@ -313,13 +311,23 @@ function getPrograms() {
 
 function updateMemoryContentsFromDatabase(stringBinaryValues){
     decimalValues = [];
-    for (let i = 0; i < stringBinaryValues.length; i++) {
-        decimalValue = parseInt(stringBinaryValues[i], 2);
-        decimalValues[i] = decimalValue;
+    for (let i = 0; i < 16; i++) {
+        if (i<stringBinaryValues.length) {
+            decimalValue = parseInt(stringBinaryValues[i], 2);
+            decimalValues[i] = decimalValue;
+        }
+        else {
+            decimalValues[i] = 0;
+        }
     }
     updateMemoryContents(decimalValues)
 }
 
+
+function selectProgram(){
+    var programSelector = document.getElementById("program-selector");
+    getProgram(programSelector.value);
+}
 
 function getProgram(id) {
     var xmlhttp = new XMLHttpRequest();
@@ -327,11 +335,10 @@ function getProgram(id) {
         console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
-            document.getElementById("programs-display").innerHTML =
-                JSON.stringify(incomingJson);
+            updateMemoryContentsFromDatabase(incomingJson.contents)
         }
     };
-    xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
+    xmlhttp.open("GET", "http://localhost:8080/server/api/program/" + id, true);
     xmlhttp.send();
 }
 
