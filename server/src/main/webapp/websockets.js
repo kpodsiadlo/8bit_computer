@@ -33,7 +33,7 @@ function sendComputerStateToServer() {
 
 }
 
-function getComputerState(){
+function getComputerState() {
     computerState = {};
     ram = getRamState();
     memoryAddress = getMemoryAddress();
@@ -43,15 +43,19 @@ function getComputerState(){
 
 function getRamState() {
     ramState = []
-    for (i=0; i<16; i++ ) {
+    for (i = 0; i < 16; i++) {
         ramState[i] = document.getElementById("mem" + i + "-decimal-value").value;
     }
     return ramState
 }
 
 function onReset() {
-    resetMessage = {"reset":true};
+    resetMessage = {"reset": true};
     socket.send(JSON.stringify(resetMessage));
+    var toggleClockButton = document.getElementById("toggle-clock-button");
+    if (toggleClockButton.value === "STOP") {
+        enableManualClockIncrease();
+    }
 }
 
 function getMemoryAddress() {
@@ -196,19 +200,30 @@ function updateBus(data) {
 
 function updateClockRunning(data) {
     var clockStatus = document.getElementById("clock-running-display");
-    var manualClock = document.getElementById("manual-clock-button");
     console.log("clockStatus" + data);
     if (data === true) {
         clockStatus.innerText = "Clock: Running";
-        manualClock.classList.remove("btn-success");
-        manualClock.classList.add("btn-secondary");
-        manualClock.disabled = true;
+        disableManualClockIncrease();
+
     } else if (data === false) {
         clockStatus.innerText = "Clock: Stopped";
-        manualClock.classList.remove("btn-secondary");
-        manualClock.classList.add("btn-success");
-        manualClock.disabled = false;
+        enableManualClockIncrease();
     }
+}
+
+function enableManualClockIncrease() {
+    var manualClock = document.getElementById("manual-clock-button");
+    manualClock.classList.remove("btn-secondary");
+    manualClock.classList.add("btn-success");
+    manualClock.disabled = false;
+}
+
+function disableManualClockIncrease() {
+    var manualClock = document.getElementById("manual-clock-button");
+    manualClock.classList.remove("btn-success");
+    manualClock.classList.add("btn-secondary");
+    manualClock.disabled = true;
+
 }
 
 function onTick() {
