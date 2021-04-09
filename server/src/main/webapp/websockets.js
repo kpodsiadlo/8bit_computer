@@ -290,26 +290,35 @@ function getPrograms() {
             document.getElementById("programs-display").innerHTML =
             JSON.stringify(incomingJson);
             updateProgramList(incomingJson);
+            updateMemoryContentsFromDatabase(incomingJson[0].contents);
         }
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
     xmlhttp.send();
+
+    function updateProgramList(incomingListOfPrograms) {
+        var displayedListOfPrograms = document.getElementById("program-selector");
+        result = "";
+        for (i=0; i<incomingListOfPrograms.length; i++) {
+            result += createOptionEntry(incomingListOfPrograms[i]);
+        }
+        displayedListOfPrograms.innerHTML = result;
+
+        function createOptionEntry(program) {
+            entry = "<option value=\"" + program.id + "\">" + program.name + "</option>"
+            return entry;
+        }
+    }
 }
 
-function updateProgramList(incomingListOfPrograms) {
-    var displayedListOfPrograms = document.getElementById("program-selector");
-    result = "";
-    for (i=0; i<incomingListOfPrograms.length; i++) {
-        result += createOptionEntry(incomingListOfPrograms[i]);
+function updateMemoryContentsFromDatabase(stringBinaryValues){
+    decimalValues = [];
+    for (let i = 0; i < stringBinaryValues.length; i++) {
+        decimalValue = parseInt(stringBinaryValues[i], 2);
+        decimalValues[i] = decimalValue;
     }
-    displayedListOfPrograms.innerHTML = result;
-
-    function createOptionEntry(program) {
-        entry = "<option value=\"" + program.id + "\">" + program.name + "</option>"
-        return entry;
-    }
+    updateMemoryContents(decimalValues)
 }
-
 
 
 function getProgram(id) {
@@ -324,8 +333,8 @@ function getProgram(id) {
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
     xmlhttp.send();
-
 }
+
 
 const machine_code = {
     "0000": "nop",

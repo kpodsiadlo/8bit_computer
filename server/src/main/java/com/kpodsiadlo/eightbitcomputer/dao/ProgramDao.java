@@ -40,7 +40,7 @@ public class ProgramDao {
     }
 
     public List<Program> getAll() {
-        Query select_p_from_program_p = entityManager.createQuery("Select p from Program p");
+        Query select_p_from_program_p = entityManager.createQuery("Select p from Program p order by p.id");
         return select_p_from_program_p.getResultList();
 
     }
