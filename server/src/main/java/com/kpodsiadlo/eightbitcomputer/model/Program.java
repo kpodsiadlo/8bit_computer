@@ -1,6 +1,7 @@
 package com.kpodsiadlo.eightbitcomputer.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +9,17 @@ import java.util.List;
 @Entity
 public class Program {
 
-    @Id
+    @Id @GeneratedValue
     private Integer id;
+
     private String contents;
+
+    public Program() {
+
+    }
+    public Program(List<Integer> contents) {
+        this.contents = listToString(contents);
+    }
 
     public void setId(Integer id) {
         this.id = id;
@@ -30,10 +39,14 @@ public class Program {
     }
 
     public void setContents(List<Integer> contents) {
+        this.contents = listToString(contents);
+    }
+
+    private String listToString(List<Integer> contents) {
         String contentsString = "";
         for (int i=0; i<contents.size(); i++) {
             contentsString.concat(String.valueOf(contents.get(i)));
         }
-        this.contents = contentsString;
+        return contentsString;
     }
 }
