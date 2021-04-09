@@ -21,6 +21,13 @@ async def run_computer(websocket):
             print("SLEEPING")
 
 
+async def get_computer_state_and_send_to_server(websocket):
+    data = next(computer.yield_computer_state(computer))
+    print(data)
+    data_json = json.dumps(data)
+    await websocket.send(data_json)
+
+
 async def execute_one_cycle_and_send_update_to_server(websocket):
     for i in range (2) :
         data = next(computer.execute_one_click_and_yield_computer_state(computer))
@@ -30,8 +37,10 @@ async def execute_one_cycle_and_send_update_to_server(websocket):
 
 async def resetComputer(websocket):
     global computer
+    ram = computer.ram.state
     computer = Computer()
-    await execute_one_cycle_and_send_update_to_server(websocket)
+    computer.ram.state = ram
+    await get_computer_state_and_send_to_server(websocket)
 
 
 async def receive(message, websocket):

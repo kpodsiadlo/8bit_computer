@@ -9,6 +9,9 @@ class Computer:
         computer.clock.tick(computer)
         yield computer.get_state(computer)
 
+    def yield_computer_state(self, computer):
+        yield computer.get_state(computer)
+
     @staticmethod
     def get_state(computer):
 
