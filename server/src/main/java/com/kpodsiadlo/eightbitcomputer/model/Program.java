@@ -10,13 +10,14 @@ public class Program {
 
     @Id @GeneratedValue
     private Integer id;
-
+    private String name;
     private String contents;
 
     public Program() {
 
     }
-    public Program(List<String> contents) {
+    public Program(String name, List<String> contents) {
+        this.name = name;
         this.contents = listToString(contents);
     }
 
@@ -26,6 +27,18 @@ public class Program {
 
     public Integer getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
     }
 
     public List<String>getContents() {
@@ -38,10 +51,11 @@ public class Program {
     }
 
     private String listToString(List<String> contents) {
-        String contentsString = "";
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i=0; i<contents.size(); i++) {
-            contentsString += (contents.get(i)) + ",";
+            stringBuilder.append(contents.get(i));
+            stringBuilder.append(",");
         }
-        return contentsString;
+        return stringBuilder.toString();
     }
 }
