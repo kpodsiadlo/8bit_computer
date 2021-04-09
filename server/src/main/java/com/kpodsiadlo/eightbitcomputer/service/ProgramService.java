@@ -5,6 +5,7 @@ import com.kpodsiadlo.eightbitcomputer.model.Program;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 @RequestScoped
 public class ProgramService {
@@ -29,6 +30,9 @@ public class ProgramService {
         return programDao.remove(id);
     }
 
+    public List<Program> getAll(){
+        return programDao.getAll();
+    }
 
 }
 

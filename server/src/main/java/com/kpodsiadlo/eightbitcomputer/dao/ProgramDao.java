@@ -5,6 +5,8 @@ import com.kpodsiadlo.eightbitcomputer.model.Program;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
 
 @Stateless
 public class ProgramDao {
@@ -35,5 +37,11 @@ public class ProgramDao {
             return true;
         }
         return false;
+    }
+
+    public List<Program> getAll() {
+        Query select_p_from_program_p = entityManager.createQuery("Select p from Program p");
+        return select_p_from_program_p.getResultList();
+
     }
 }

@@ -281,6 +281,20 @@ function addSourceToJSONMessage(jsonMessage) {
 }
 
 
+function getPrograms() {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        console.log("onreadystatechange");
+        if (this.readyState == 4 && this.status == 200) {
+            var incomingJson = JSON.parse(this.responseText);
+            document.getElementById("programs-display").innerHTML =
+            JSON.stringify(incomingJson);
+        }
+    };
+    xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
+    xmlhttp.send();
+}
+
 const machine_code = {
     "0000": "nop",
     "0001": "lda",

@@ -11,22 +11,29 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
+@Path("/program")
+
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ProgramController {
+
+    @GET
+    @Path("/{id}")
+    public Program readProgram(@PathParam("id") Integer id) {
+        return programService.readProgram(id);
+    }
 
     @Inject
     ProgramService programService;
 
     @GET
-    @Path("/program/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Program readProgram(@PathParam("id") Integer id) {
-        return programService.readProgram(id);
+    public List<Program> getAll(){
+        return programService.getAll();
     }
 
     @POST
-    @Path("/program")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Program createProgram(Program program) {
         return programService.createProgram(program);
     }
