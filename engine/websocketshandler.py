@@ -22,7 +22,8 @@ async def run_computer(websocket):
 
 
 async def execute_one_cycle_and_send_update_to_server(websocket):
-    data = next(computer.execute_one_click_and_yield_computer_state(computer))
+    for i in range (2) :
+        data = next(computer.execute_one_click_and_yield_computer_state(computer))
     print(data)
     data_json = json.dumps(data)
     await websocket.send(data_json)

@@ -5,21 +5,30 @@ div {
     border-width: thin;
 }
 
+.table-instruction-register{
+    table-layout: fixed;
+    width: 100%;
+}
+
 
 input[type=number]{
-    width: 60px;
+    width: 40px;
 }
 
 input[type=number].memory-cell-binary{
-    width: 140px;
+    width: 90px;
 }
 
 input[type=number].binary{
-    width: 140px;
+    width: 95px;
 }
 
 input[type=number].memory-cell-decimal{
-    width: 60px;
+    width: 50px;
+}
+
+input[type=number].binary-4-digits{
+    width:60px;
 }
 
 .on {

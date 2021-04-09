@@ -29,12 +29,23 @@
                 <span class="badge badge-secondary" id="RAM_IN">IN</span>
             </div>
             <div class="row" id="instruction-register">
-                <label for="instruction-register-display-higher-bits">Instruction:</label>
-                <input type="number" size="4" value="0" id="instruction-register-display-higher-bits">
-                <label for="instruction-register-display-lower-bits">Value:</label>
-                <input type="number" size="4" value="0" id="instruction-register-display-lower-bits">
-                <span class="badge badge-secondary" id="IregisterOUT">VALUE OUT</span>
-                <span class="badge badge-secondary" id="IregisterIN">IN</span>
+                <table class="table-instruction-register">
+                    <tr>
+                        <td>
+                            <label for="instruction-register-display-higher-bits">Instruction:</label>
+                            <input type="number" class="binary-4-digits" value="0" id="instruction-register-display-higher-bits">
+                            <span id ="instruction-register-opcode"></span>
+                        </td>
+                        <td>
+                            <label for="instruction-register-display-lower-bits">Value:</label>
+                            <input type="number" size="4" value="0" id="instruction-register-display-lower-bits">
+                            <span class="badge badge-secondary" id="IregisterOUT">VALUE OUT</span>
+                            <span class="badge badge-secondary" id="IregisterIN">IN</span>
+                        </td>
+                    </tr>
+                </table>
+
+
             </div>
             <div class="row" id="microinstruction-counter">
                 <label for="microinstruction-counter-display">Microinstruction Counter: </label>
