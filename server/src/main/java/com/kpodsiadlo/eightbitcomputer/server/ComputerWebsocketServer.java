@@ -59,6 +59,7 @@ public class ComputerWebsocketServer {
         logger.info("SendRamUpdateToReceivingSessions");
         JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
         objectBuilder.add("SOURCE", "Server");
+        objectBuilder.add("ramUpdate", true);
         objectBuilder.add("memoryContents", sessionHandler.getRamContents());
         sessionHandler.sendToAllReceivingSessions(objectBuilder.build().toString(), session);
     }

@@ -66,7 +66,7 @@ async def receive(message, websocket):
     try:
         ramUpdate = message_json["ramUpdate"]
     except KeyError:
-        print("No ram in json")
+        print("This is not a RamUpdate")
 
     if clockRunning is not None:
         if not clockRunning:
@@ -80,7 +80,7 @@ async def receive(message, websocket):
     elif reset is not None:
         await resetComputer(websocket)
     elif ramUpdate is not None:
-        computer.ram.state = json.loads(ramUpdate)
+        computer.ram.state = message_json['memoryContents']
         await get_computer_state_and_send_to_server(websocket)
 
 
