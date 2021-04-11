@@ -22,27 +22,26 @@ function updateDisplays(computerData) {
     updateBus(computerData.bus);
     updateControlLights(computerData.logic);
     updateFlags(computerData.flags)
-    updateMemoryContents(computerData.memoryContents);
+    updateMemoryContentsDisplay(computerData.memoryContents);
     highlightCurrentMemoryAddress(computerData.memoryAddress)
     updateClockRunning(computerData.clockRunning)
 }
-
+/*
 function sendComputerStateToServer() {
     let computerState = getComputerState();
     socket.send(JSON.stringify(computerState));
-
 }
+ */
 
-function sendMemoryContentsToServer(){
-    let memoryContents = getRamState();
+function sendProgramToServer(program){
     let jsonObject = {};
     jsonObject["Source"] = "Webpage";
     jsonObject["ramUpdate"] = true;
-    jsonObject["memoryContents"] = memoryContents;
+    jsonObject["memoryContents"] = program;
     console.log(jsonObject);
     socket.send(JSON.stringify(jsonObject));
 }
-
+/*
 function getComputerState() {
     computerState = {};
     ram = getRamState();
@@ -50,7 +49,9 @@ function getComputerState() {
     computerState.memoryContents = ram;
     computerState.memoryAddress = memoryAddress;
 }
+ */
 
+/*
 function getRamState() {
     ramState = []
     for (i = 0; i < 16; i++) {
@@ -58,6 +59,14 @@ function getRamState() {
     }
     return ramState
 }
+
+ */
+
+/*function getMemoryAddress() {
+    return document.getElementById("memory-address-display").value;
+}
+
+ */
 
 function onReset() {
     resetMessage = {"reset": true};
@@ -67,10 +76,6 @@ function onReset() {
         document.getElementById("toggle-clock-button").value = "START";
         enableManualClockIncrease();
     }
-}
-
-function getMemoryAddress() {
-    return document.getElementById("memory-address-display").value;
 }
 
 function updateControlLights(logic) {
@@ -117,7 +122,7 @@ function updateCurrentMemoryValue(address, contents) {
         decTo8DigitBin(contents[address]);
 }
 
-function updateMemoryContents(data) {
+function updateMemoryContentsDisplay(data) {
     updateBinaryValue(data);
     updateDecimalValue(data);
     updateInstruction(data);
@@ -298,7 +303,8 @@ function getPrograms() {
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
             updateProgramList(incomingJson);
-            updateMemoryContentsFromDatabase(incomingJson[0].contents);
+            let decimalValues = convertMemoryContentsFromDatabaseAsDecimalValues(incomingJson[0].contents);
+            updateMemoryContentsDisplay(decimalValues)
         }
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
@@ -319,7 +325,7 @@ function getPrograms() {
     }
 }
 
-function updateMemoryContentsFromDatabase(stringBinaryValues){
+function convertMemoryContentsFromDatabaseAsDecimalValues(stringBinaryValues){
     decimalValues = [];
     for (let i = 0; i < 16; i++) {
         if (i<stringBinaryValues.length) {
@@ -330,25 +336,29 @@ function updateMemoryContentsFromDatabase(stringBinaryValues){
             decimalValues[i] = 0;
         }
     }
-    updateMemoryContents(decimalValues)
+    return decimalValues;
 }
 
 function onSelectProgram(selector){
-    getProgram(selector.value);
-    sendMemoryContentsToServer();
+    program = getProgramFromDatabase(selector.value);
+    updateMemoryContentsDisplay(program);
+    sendProgramToServer(program);
 }
 
-function getProgram(id) {
+
+function getProgramFromDatabase(id) {
+    var decimalValues = [];
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
-            updateMemoryContentsFromDatabase(incomingJson.contents)
+            decimalValues = convertMemoryContentsFromDatabaseAsDecimalValues(incomingJson.contents)
         }
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/" + id, true);
     xmlhttp.send();
+    return decimalValues;
 }
 
 
