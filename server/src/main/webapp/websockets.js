@@ -303,7 +303,7 @@ function getPrograms() {
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
             updateProgramList(incomingJson);
-            let decimalValues = convertMemoryContentsFromDatabaseAsDecimalValues(incomingJson[0].contents);
+            let decimalValues = convertMemoryContentsFromDatabaseToDecimalValuesArray(incomingJson[0].contents);
             updateMemoryContentsDisplay(decimalValues)
         }
     };
@@ -325,7 +325,7 @@ function getPrograms() {
     }
 }
 
-function convertMemoryContentsFromDatabaseAsDecimalValues(stringBinaryValues){
+function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValues){
     decimalValues = [];
     for (let i = 0; i < 16; i++) {
         if (i<stringBinaryValues.length) {
@@ -340,25 +340,23 @@ function convertMemoryContentsFromDatabaseAsDecimalValues(stringBinaryValues){
 }
 
 function onSelectProgram(selector){
-    program = getProgramFromDatabase(selector.value);
-    updateMemoryContentsDisplay(program);
-    sendProgramToServer(program);
+    getProgramFromDatabase(selector.value);
+
 }
 
-
-function getProgramFromDatabase(id) {
-    var decimalValues = [];
+function getProgramFromDatabase(databaseId) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
-            decimalValues = convertMemoryContentsFromDatabaseAsDecimalValues(incomingJson.contents)
+            let program = convertMemoryContentsFromDatabaseToDecimalValuesArray(incomingJson.contents)
+            updateMemoryContentsDisplay(program);
+            sendProgramToServer(program);
         }
     };
-    xmlhttp.open("GET", "http://localhost:8080/server/api/program/" + id, true);
+    xmlhttp.open("GET", "http://localhost:8080/server/api/program/" + databaseId, true);
     xmlhttp.send();
-    return decimalValues;
 }
 
 
