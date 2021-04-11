@@ -20,32 +20,35 @@ async def run_computer(websocket):
             await asyncio.sleep(1)
             print("SLEEPING")
 
-
-async def get_computer_state_and_send_to_server(websocket):
-    data = next(computer.yield_computer_state(computer))
+async def send_to_server(websocket, data):
     print(data)
     data_json = json.dumps(data)
     await websocket.send(data_json)
+
+
+async def get_computer_state_and_send_to_server(websocket):
+    data = next(computer.yield_computer_state(computer))
+    await send_to_server(websocket, data)
 
 
 async def execute_one_cycle_and_send_update_to_server(websocket):
     for i in range (2) :
         data = next(computer.execute_one_click_and_yield_computer_state(computer))
-    print(data)
-    data_json = json.dumps(data)
-    await websocket.send(data_json)
+    await send_to_server(websocket, data)
+
 
 async def resetComputer(websocket):
-    ram = computer.ram.state
-    print(ram)
-    computer.__init_computer__()
-    print(computer.ram.state)
+    computer.reset_computer_except_ram()
     await get_computer_state_and_send_to_server(websocket)
 
 
 async def receive(message, websocket):
     message_json = json.loads(message)
     print("Data received" + message_json.__str__())
+    await process_incoming_message(message_json, websocket)
+
+
+async def process_incoming_message(message_json, websocket):
     clockRunning = None
     reset = None
     tick = None
@@ -82,7 +85,6 @@ async def receive(message, websocket):
     elif ramUpdate is not None:
         computer.ram.state = message_json['memoryContents']
         await get_computer_state_and_send_to_server(websocket)
-
 
 
 async def producer_handler(websocket):

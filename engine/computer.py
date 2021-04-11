@@ -44,11 +44,11 @@ class Computer:
         return state
 
     def __init__(self):
-        self.__init_computer__()
+        self.reset_computer_except_ram()
         self.ram = self.RAM()
 
 
-    def __init_computer__(self):
+    def reset_computer_except_ram(self):
         self.clock = self.Clock()
         self.pc = self.ProgramCounter()
         self.ic = self.InstructionCounter()
