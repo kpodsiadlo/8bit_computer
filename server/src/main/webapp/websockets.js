@@ -340,11 +340,11 @@ function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValue
 }
 
 function onSelectProgram(selector){
-    getProgramFromDatabase(selector.value);
+    getProgramFromDatabaseAndSendToEngine(selector.value);
 
 }
 
-function getProgramFromDatabase(databaseId) {
+function getProgramFromDatabaseAndSendToEngine(databaseId) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         console.log("onreadystatechange");
