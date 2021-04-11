@@ -10,11 +10,16 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,6 +36,9 @@ public class ComputerSessionHandler {
             return IncomingMessageType.TICK;
         } else if (checkForKeyInMessage(message, "reset")) {
             return IncomingMessageType.RESET;
+        } else if (checkForKeyInMessage(message, "ramUpdate")) {
+            updateComputerWithJackson(message);
+            return IncomingMessageType.RAM_UPDATE;
         } else {
             updateComputerWithJackson(message);
             return IncomingMessageType.UPDATE;
@@ -71,6 +79,17 @@ public class ComputerSessionHandler {
         return s;
     }
 
+    public JsonArray getRamContents(){
+        logger.info("getRamContents");
+        List<Integer> memoryContents = computer.getMemoryContents();
+        JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
+        JsonArrayBuilder arrayBuilder = JsonProvider.provider().createArrayBuilder();
+        for (int i = 0; i < memoryContents.size(); i++) {
+            arrayBuilder.add(memoryContents.get(i));
+        }
+        return arrayBuilder.build();
+    }
+
     public void logJsonError(String jsonValueMissing) {
         String message = MessageFormat.format("{0} not found in incoming JSON '{}'", jsonValueMissing);
         logger.error(message);
@@ -94,6 +113,7 @@ public class ComputerSessionHandler {
     }
 
     public void sendToAllReceivingSessions(String message, Session transmittingSession) {
+        logger.info(message);
         Set<Session> receivingSessions = new HashSet<>(sessions);
         receivingSessions.remove(transmittingSession);
         receivingSessions.forEach(session -> sendToSession(session, message));

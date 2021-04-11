@@ -28,9 +28,19 @@ function updateDisplays(computerData) {
 }
 
 function sendComputerStateToServer() {
-    computerState = getComputerState();
+    let computerState = getComputerState();
     socket.send(JSON.stringify(computerState));
 
+}
+
+function sendMemoryContentsToServer(){
+    let memoryContents = getRamState();
+    let jsonObject = {};
+    jsonObject["Source"] = "Webpage";
+    jsonObject["ramUpdate"] = true;
+    jsonObject["memoryContents"] = memoryContents;
+    console.log(jsonObject);
+    socket.send(JSON.stringify(jsonObject));
 }
 
 function getComputerState() {
@@ -44,7 +54,7 @@ function getComputerState() {
 function getRamState() {
     ramState = []
     for (i = 0; i < 16; i++) {
-        ramState[i] = document.getElementById("mem" + i + "-decimal-value").value;
+        ramState[i] = parseInt(document.getElementById("mem" + i + "-decimal-value").value);
     }
     return ramState
 }
@@ -323,10 +333,9 @@ function updateMemoryContentsFromDatabase(stringBinaryValues){
     updateMemoryContents(decimalValues)
 }
 
-
-function selectProgram(){
-    var programSelector = document.getElementById("program-selector");
-    getProgram(programSelector.value);
+function onSelectProgram(selector){
+    getProgram(selector.value);
+    sendMemoryContentsToServer();
 }
 
 function getProgram(id) {

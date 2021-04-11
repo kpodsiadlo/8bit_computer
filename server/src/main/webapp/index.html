@@ -106,7 +106,7 @@
     </div>
     <div class="row">
         <div class=col-6>
-            <select id="program-selector" name="Select Program:" size="1" onchange="selectProgram()">
+            <select id="program-selector" name="Select Program:" size="1" onchange="onSelectProgram(this)">
 
             </select>
             <table class="tg">
@@ -251,8 +251,6 @@
             </table>
         </div>
         <div class="col-6">
-            <input type="button" class="btn btn-block" value="Get Programs" onclick="getPrograms()">
-            <span id="programs-display"></span>
         </div>
     </div>
 </div>

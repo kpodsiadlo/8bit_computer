@@ -4,7 +4,7 @@ import asyncio
 import websockets
 
 uri = "ws://localhost:8080/server/computer"
-time_interval_in_seconds = 0.01
+time_interval_in_seconds = 0.1
 computer = Computer()
 
 
@@ -36,10 +36,10 @@ async def execute_one_cycle_and_send_update_to_server(websocket):
     await websocket.send(data_json)
 
 async def resetComputer(websocket):
-    global computer
     ram = computer.ram.state
-    computer = Computer()
-    computer.ram.state = ram
+    print(ram)
+    computer.__init_computer__()
+    print(computer.ram.state)
     await get_computer_state_and_send_to_server(websocket)
 
 
@@ -49,7 +49,7 @@ async def receive(message, websocket):
     clockRunning = None
     reset = None
     tick = None
-
+    ramUpdate = None
 
     try:
         clockRunning = message_json["clockRunning"]
@@ -58,11 +58,15 @@ async def receive(message, websocket):
     try:
         reset = message_json["reset"]
     except KeyError:
-        pass
+        print("No Reset in Json")
     try:
         tick = message_json["tick"]
     except KeyError:
-        pass
+        print("No tick in json")
+    try:
+        ramUpdate = message_json["ramUpdate"]
+    except KeyError:
+        print("No ram in json")
 
     if clockRunning is not None:
         if not clockRunning:
@@ -75,6 +79,9 @@ async def receive(message, websocket):
         await execute_one_cycle_and_send_update_to_server(websocket)
     elif reset is not None:
         await resetComputer(websocket)
+    elif ramUpdate is not None:
+        computer.ram.state = json.loads(ramUpdate)
+        await get_computer_state_and_send_to_server(websocket)
 
 
 

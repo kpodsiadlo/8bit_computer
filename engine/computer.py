@@ -44,6 +44,11 @@ class Computer:
         return state
 
     def __init__(self):
+        self.__init_computer__()
+        self.ram = self.RAM()
+
+
+    def __init_computer__(self):
         self.clock = self.Clock()
         self.pc = self.ProgramCounter()
         self.ic = self.InstructionCounter()
@@ -56,7 +61,6 @@ class Computer:
         self.alu = self.ALU(self.regA, self.regB)
         self.instruction_register = self.InstructionRegister()
         self.mar = self.MAR()
-        self.ram = self.RAM()
         self.display = self.Display()
 
     def do(self, computer):

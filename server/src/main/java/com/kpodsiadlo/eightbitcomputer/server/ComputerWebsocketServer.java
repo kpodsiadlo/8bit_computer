@@ -50,7 +50,17 @@ public class ComputerWebsocketServer {
             sendTickToRecevingSessions(session);
         } else if(messageType.equals(IncomingMessageType.RESET)) {
             sendResetToReceivingSessions(session);
+        } else if (messageType.equals(IncomingMessageType.RAM_UPDATE)) {
+            sendRamUpdateToReceivingSessions(session);
         }
+    }
+
+    private void sendRamUpdateToReceivingSessions(Session session) {
+        logger.info("SendRamUpdateToReceivingSessions");
+        JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
+        objectBuilder.add("SOURCE", "Server");
+        objectBuilder.add("memoryContents", sessionHandler.getRamContents());
+        sessionHandler.sendToAllReceivingSessions(objectBuilder.build().toString(), session);
     }
 
     private void sendResetToReceivingSessions(Session session) {
