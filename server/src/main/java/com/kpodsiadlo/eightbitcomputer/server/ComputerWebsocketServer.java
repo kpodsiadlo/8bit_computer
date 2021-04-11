@@ -41,7 +41,7 @@ public class ComputerWebsocketServer {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.info("OnMessage");
-        logger.info(message);
+        logger.info("Received: {}",message);
         JsonObject jsonMessage = JsonUtils.getJsonObject(message);
         IncomingMessageType messageType = sessionHandler.processJsonMessage(jsonMessage);
         if (messageType.equals(IncomingMessageType.UPDATE)) {
@@ -52,7 +52,14 @@ public class ComputerWebsocketServer {
             sendResetEngineToReceivingSessions(session);
         } else if (messageType.equals(IncomingMessageType.RAM_UPDATE)) {
             sendRamUpdateToReceivingSessions(session);
+        } else if (messageType.equals(IncomingMessageType.PING)) {
+            sendPingToReceivingSessions(session);
         }
+    }
+
+    private void sendPingToReceivingSessions(Session session) {
+        logger.debug("sendPingToReceivingSessions");
+        sessionHandler.sendToAllReceivingSessions(generateControlMessage("ping"), session);
     }
 
     private void sendRamUpdateToReceivingSessions(Session session) {

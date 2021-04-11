@@ -4,5 +4,6 @@ public enum IncomingMessageType {
     UPDATE,
     EXECUTE_ONE_CLOCK_CYCLE,
     RESET_ENGINE,
-    RAM_UPDATE
+    RAM_UPDATE,
+    PING
 }

@@ -17,7 +17,7 @@ async def run_computer(websocket):
             await execute_one_cycle_and_send_update_to_server(websocket)
         else:
             await asyncio.sleep(1)
-            await get_computer_state_and_send_to_server(websocket)
+            await send_ping(websocket)
 
 
 async def send_to_server(websocket, data):
@@ -33,7 +33,6 @@ async def execute_one_cycle_and_send_update_to_server(websocket):
     for i in range (2) :
         data = next(computer.execute_one_click_and_yield_computer_state(computer))
     await send_to_server(websocket, data)
-
 
 async def resetComputer(websocket):
     computer.reset_computer_except_ram()
@@ -83,6 +82,10 @@ async def process_incoming_message(message_json, websocket):
     elif ramUpdate is not None:
         computer.ram.state = message_json['memoryContents']
         await get_computer_state_and_send_to_server(websocket)
+
+async def send_ping(websocket):
+    data={'ping': True}
+    await send_to_server(websocket, data)
 
 
 async def producer_handler(websocket):

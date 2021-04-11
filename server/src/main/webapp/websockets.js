@@ -13,7 +13,9 @@ function onMessage(event) {
     console.log("Event received");
     let computerData = JSON.parse(event.data);
     console.log(computerData);
-    updateDisplays(computerData);
+    if (computerData.update != undefined) {
+        updateDisplays(computerData);
+    }
     resetTimer();
 }
 

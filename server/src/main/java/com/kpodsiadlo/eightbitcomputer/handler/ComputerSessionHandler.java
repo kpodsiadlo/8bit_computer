@@ -39,6 +39,8 @@ public class ComputerSessionHandler {
         } else if (checkForKeyInMessage(message, "ramUpdate")) {
             updateComputerWithJackson(message);
             return IncomingMessageType.RAM_UPDATE;
+        } else if (checkForKeyInMessage(message, "ping")) {
+            return IncomingMessageType.PING;
         } else {
             updateComputerWithJackson(message);
             return IncomingMessageType.UPDATE;
@@ -71,12 +73,17 @@ public class ComputerSessionHandler {
         String s = "";
         try {
             s = objectMapper.writeValueAsString(computer);
-            s = "" + "{\"SOURCE\":\"server\", " + s.substring(1);
+            s = insertDataAtTheBeginningOfJsonString(s, "SOURCE", "\"Server\"");
+            s = insertDataAtTheBeginningOfJsonString(s, "update", "true");
         } catch (JsonProcessingException e) {
             logJsonError("Error while parsing computer model");
 
         }
         return s;
+    }
+
+    private String insertDataAtTheBeginningOfJsonString(String jsonString, String key, String value) {
+        return "\"" + key + "\":" + value + ", " + jsonString.substring(1);
     }
 
     public JsonArray getRamContents(){
@@ -113,7 +120,7 @@ public class ComputerSessionHandler {
     }
 
     public void sendToAllReceivingSessions(String message, Session transmittingSession) {
-        logger.info(message);
+        logger.info("Sending: {}", message);
         Set<Session> receivingSessions = new HashSet<>(sessions);
         receivingSessions.remove(transmittingSession);
         receivingSessions.forEach(session -> sendToSession(session, message));
