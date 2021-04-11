@@ -6,14 +6,18 @@
     <link rel="stylesheet" href="css/style.css">
     <title>8bit computer</title>
 </head>
-<body onload = getPrograms()>
+<body onload=onLoad()>
 <div class="container">
     <div class="row">
         <div class="col-5">
+            <div class="row" id="indicators">
+                <span class ="badge badge-info" id="connection-indicator"></span>
+                <span id="clock-running-display">Clock: Stopped</span>
+
+            </div>
             <div class="row" id="clock">
                 <input class="btn btn-danger" type=button id="toggle-clock-button" value="START"
                        onclick="onToggleClock()">
-                <span id ="clock-running-display">Clock: Stopped</span>
                 <input class="btn btn-success" type=button id="manual-clock-button" value="TICK"
                        onclick="onTick()">
                 <input class="btn btn-outline-warning" type=button id="reset" value="RESET"
@@ -35,8 +39,9 @@
                     <tr>
                         <td>
                             <label for="instruction-register-display-higher-bits">Instruction:</label>
-                            <input type="number" class="binary-4-digits" value="0" id="instruction-register-display-higher-bits">
-                            <span id ="instruction-register-opcode"></span>
+                            <input type="number" class="binary-4-digits" value="0"
+                                   id="instruction-register-display-higher-bits">
+                            <span id="instruction-register-opcode"></span>
                         </td>
                         <td>
                             <label for="instruction-register-display-lower-bits">Value:</label>

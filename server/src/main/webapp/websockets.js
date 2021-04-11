@@ -1,6 +1,11 @@
 const socket = new WebSocket("ws://localhost:8080/server/computer");
 socket.onmessage = onMessage;
 
+
+function onLoad(){
+    getProgramsfromDatabase();
+}
+
 function onMessage(event) {
     console.log("Event received");
     let computerData = JSON.parse(event.data);
@@ -143,6 +148,7 @@ function updateMemoryContentsDisplay(data) {
     }
 
     function updateInstruction(data) {
+        let instructionBinaryData;
         for (let i = 0; i < data.length; i++) {
             instructionBinaryData = decTo8DigitBin(data[i]).substring(0, 4);
             opcode = machine_code[instructionBinaryData];
@@ -295,16 +301,15 @@ function addSourceToJSONMessage(jsonMessage) {
 
 }
 
-
-function getPrograms() {
+function getProgramsfromDatabase() {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
             updateProgramList(incomingJson);
-            let decimalValues = convertMemoryContentsFromDatabaseToDecimalValuesArray(incomingJson[0].contents);
-            updateMemoryContentsDisplay(decimalValues)
+            firstProgramId = incomingJson[0].id
+            getProgramFromDatabaseAndSendToEngine(firstProgramId)
         }
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
