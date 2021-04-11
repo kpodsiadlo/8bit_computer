@@ -351,7 +351,6 @@ function getProgramFromDatabase(databaseId) {
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
             let program = convertMemoryContentsFromDatabaseToDecimalValuesArray(incomingJson.contents)
-            updateMemoryContentsDisplay(program);
             sendProgramToServer(program);
         }
     };
