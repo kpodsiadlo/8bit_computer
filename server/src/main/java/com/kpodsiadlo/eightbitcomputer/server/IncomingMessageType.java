@@ -2,7 +2,7 @@ package com.kpodsiadlo.eightbitcomputer.server;
 
 public enum IncomingMessageType {
     UPDATE,
-    TICK,
-    RESET,
+    EXECUTE_ONE_CLOCK_CYCLE,
+    RESET_ENGINE,
     RAM_UPDATE
 }

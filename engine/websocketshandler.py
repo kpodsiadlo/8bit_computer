@@ -1,35 +1,33 @@
+from typing import Any
+
 from computer import Computer
 import json
 import asyncio
 import websockets
 
 uri = "ws://localhost:8080/server/computer"
-time_interval_in_seconds = 0.1
+clock_speed = 10
+period = 1/clock_speed
 computer = Computer()
-
-
-# computer.clock.start(computer)
-
 
 async def run_computer(websocket):
     while True:
         if computer.clock.clock_running == True:
-            await asyncio.sleep(float(time_interval_in_seconds))
+            await asyncio.sleep(float(period))
             await execute_one_cycle_and_send_update_to_server(websocket)
         else:
             await asyncio.sleep(1)
-            print("SLEEPING")
+            await get_computer_state_and_send_to_server(websocket)
+
 
 async def send_to_server(websocket, data):
     print(data)
     data_json = json.dumps(data)
     await websocket.send(data_json)
 
-
 async def get_computer_state_and_send_to_server(websocket):
     data = next(computer.yield_computer_state(computer))
     await send_to_server(websocket, data)
-
 
 async def execute_one_cycle_and_send_update_to_server(websocket):
     for i in range (2) :

@@ -46,10 +46,10 @@ public class ComputerWebsocketServer {
         IncomingMessageType messageType = sessionHandler.processJsonMessage(jsonMessage);
         if (messageType.equals(IncomingMessageType.UPDATE)) {
             sendUpdatedComputerToReceivingSessions(session);
-        } else if (messageType.equals(IncomingMessageType.TICK)) {
-            sendTickToRecevingSessions(session);
-        } else if(messageType.equals(IncomingMessageType.RESET)) {
-            sendResetToReceivingSessions(session);
+        } else if (messageType.equals(IncomingMessageType.EXECUTE_ONE_CLOCK_CYCLE)) {
+            sendExecuteOneClockCycleToRecevingSessions(session);
+        } else if(messageType.equals(IncomingMessageType.RESET_ENGINE)) {
+            sendResetEngineToReceivingSessions(session);
         } else if (messageType.equals(IncomingMessageType.RAM_UPDATE)) {
             sendRamUpdateToReceivingSessions(session);
         }
@@ -64,12 +64,12 @@ public class ComputerWebsocketServer {
         sessionHandler.sendToAllReceivingSessions(objectBuilder.build().toString(), session);
     }
 
-    private void sendResetToReceivingSessions(Session session) {
+    private void sendResetEngineToReceivingSessions(Session session) {
         logger.debug("SendResetToReceivingSessions");
         sessionHandler.sendToAllReceivingSessions(generateControlMessage("reset"), session);
     }
 
-    private void sendTickToRecevingSessions(Session session) {
+    private void sendExecuteOneClockCycleToRecevingSessions(Session session) {
         logger.debug("SendTickToReceivingSessions");
         sessionHandler.sendToAllReceivingSessions(generateControlMessage("tick"), session);
     }
@@ -85,7 +85,6 @@ public class ComputerWebsocketServer {
     private void sendUpdatedComputerToReceivingSessions(Session transmittingSession) {
         logger.info("sendUpdatedComputerToReceivingSessions");
         String computerState = sessionHandler.getComputerStateAsJson();
-        logger.info("Sending: {}", computerState);
         sessionHandler.sendToAllReceivingSessions(computerState,transmittingSession);
     }
 

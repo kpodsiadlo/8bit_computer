@@ -1,9 +1,12 @@
 const socket = new WebSocket("ws://localhost:8080/server/computer");
 socket.onmessage = onMessage;
+connectionTimer = 1;
+setInterval(updateConnectionIndicator, 1000);
 
 
-function onLoad(){
+function onLoad() {
     getProgramsfromDatabase();
+    updateConnectionIndicator();
 }
 
 function onMessage(event) {
@@ -11,6 +14,25 @@ function onMessage(event) {
     let computerData = JSON.parse(event.data);
     console.log(computerData);
     updateDisplays(computerData);
+    resetTimer();
+}
+
+function updateConnectionIndicator() {
+    connectionTimer -= 1;
+    if (checkConnectionStatus()) {
+        document.getElementById("connection-indicator").innerText = "CONNECTED";
+    } else {
+        document.getElementById("connection-indicator").innerText = "DISCONNECTED";
+    }
+}
+
+
+function checkConnectionStatus() {
+    return (connectionTimer > 0);
+}
+
+function resetTimer() {
+    connectionTimer = 3 ;
 }
 
 function updateDisplays(computerData) {
@@ -31,6 +53,7 @@ function updateDisplays(computerData) {
     highlightCurrentMemoryAddress(computerData.memoryAddress)
     updateClockRunning(computerData.clockRunning)
 }
+
 /*
 function sendComputerStateToServer() {
     let computerState = getComputerState();
@@ -38,7 +61,7 @@ function sendComputerStateToServer() {
 }
  */
 
-function sendProgramToServer(program){
+function sendProgramToServer(program) {
     let jsonObject = {};
     jsonObject["Source"] = "Webpage";
     jsonObject["ramUpdate"] = true;
@@ -46,6 +69,7 @@ function sendProgramToServer(program){
     console.log(jsonObject);
     socket.send(JSON.stringify(jsonObject));
 }
+
 /*
 function getComputerState() {
     computerState = {};
@@ -303,7 +327,7 @@ function addSourceToJSONMessage(jsonMessage) {
 
 function getProgramsfromDatabase() {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
+    xmlhttp.onreadystatechange = function () {
         console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
@@ -318,7 +342,7 @@ function getProgramsfromDatabase() {
     function updateProgramList(incomingListOfPrograms) {
         var displayedListOfPrograms = document.getElementById("program-selector");
         result = "";
-        for (i=0; i<incomingListOfPrograms.length; i++) {
+        for (i = 0; i < incomingListOfPrograms.length; i++) {
             result += createOptionEntry(incomingListOfPrograms[i]);
         }
         displayedListOfPrograms.innerHTML = result;
@@ -330,28 +354,27 @@ function getProgramsfromDatabase() {
     }
 }
 
-function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValues){
+function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValues) {
     decimalValues = [];
     for (let i = 0; i < 16; i++) {
-        if (i<stringBinaryValues.length) {
+        if (i < stringBinaryValues.length) {
             decimalValue = parseInt(stringBinaryValues[i], 2);
             decimalValues[i] = decimalValue;
-        }
-        else {
+        } else {
             decimalValues[i] = 0;
         }
     }
     return decimalValues;
 }
 
-function onSelectProgram(selector){
+function onSelectProgram(selector) {
     getProgramFromDatabaseAndSendToEngine(selector.value);
 
 }
 
 function getProgramFromDatabaseAndSendToEngine(databaseId) {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
+    xmlhttp.onreadystatechange = function () {
         console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);

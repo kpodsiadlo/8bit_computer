@@ -33,9 +33,9 @@ public class ComputerSessionHandler {
 
     public IncomingMessageType processJsonMessage(JsonObject message) {
         if (checkForKeyInMessage(message, "tick")) {
-            return IncomingMessageType.TICK;
+            return IncomingMessageType.EXECUTE_ONE_CLOCK_CYCLE;
         } else if (checkForKeyInMessage(message, "reset")) {
-            return IncomingMessageType.RESET;
+            return IncomingMessageType.RESET_ENGINE;
         } else if (checkForKeyInMessage(message, "ramUpdate")) {
             updateComputerWithJackson(message);
             return IncomingMessageType.RAM_UPDATE;
