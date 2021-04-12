@@ -11,7 +11,7 @@ machine_code = {
     "jc" : 0b0111,
     "jz" : 0b1000,
     "out": 0b1110,
-    "hlt": 0b1111
+    "hlt": 0b1111,
 }
 
 output = []                                         # initialize output

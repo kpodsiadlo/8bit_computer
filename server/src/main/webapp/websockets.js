@@ -177,7 +177,7 @@ function updateMemoryAddress(data) {
 
 function updateCurrentMemoryValue(address, contents) {
     document.getElementById("memory-value-display").value =
-        decTo8DigitBin(contents[address]);
+        decTo8DigitBinString(contents[address]);
 }
 
 function updateMemoryContentsDisplay(data) {
@@ -189,7 +189,7 @@ function updateMemoryContentsDisplay(data) {
     function updateBinaryValue(data) {
         for (let i = 0; i < data.length; i++) {
             document.getElementById("mem" + i + "-binary-value").value =
-                decTo8DigitBin(data[i]);
+                decTo8DigitBinString(data[i]);
         }
     }
 
@@ -203,7 +203,7 @@ function updateMemoryContentsDisplay(data) {
     function updateInstruction(data) {
         let instructionBinaryData;
         for (let i = 0; i < data.length; i++) {
-            instructionBinaryData = decTo8DigitBin(data[i]).substring(0, 4);
+            instructionBinaryData = decTo8DigitBinString(data[i]).substring(0, 4);
             opcode = machine_code[instructionBinaryData];
             if (opcode !== undefined) {
                 document.getElementById("mem" + i + "-instruction").innerText =
@@ -215,12 +215,12 @@ function updateMemoryContentsDisplay(data) {
     function updateInstructionValue(data) {
         for (let i = 0; i < data.length; i++) {
             document.getElementById("mem" + i + "-instruction-value").value =
-                parseInt((decTo8DigitBin(data[i]).substring(4)), 2);
+                parseInt((decTo8DigitBinString(data[i]).substring(4)), 2);
         }
     }
 }
 
-function decTo8DigitBin(dec) {
+function decTo8DigitBinString(dec) {
     let bin = dec.toString(2);
     return bin.padStart(8, "0");
 }
@@ -233,7 +233,7 @@ function highlightCurrentMemoryAddress(memoryAddress) {
 
 
 function updateInstructionRegisterHigherBits(data) {
-    var instructionInBinary = decTo8DigitBin(data).substring(4);
+    var instructionInBinary = decTo8DigitBinString(data).substring(4);
     document.getElementById("instruction-register-display-higher-bits").value = instructionInBinary;
     var opcode = machine_code[instructionInBinary];
     document.getElementById("instruction-register-opcode").innerText = ("(" + opcode + ")").toUpperCase();

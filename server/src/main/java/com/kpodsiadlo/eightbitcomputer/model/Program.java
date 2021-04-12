@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Program {
@@ -57,5 +58,20 @@ public class Program {
             stringBuilder.append(",");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Program program = (Program) o;
+        return Objects.equals(id, program.id) &&
+                Objects.equals(name, program.name) &&
+                Objects.equals(contents, program.contents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, contents);
     }
 }
