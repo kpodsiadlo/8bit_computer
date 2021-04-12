@@ -11,17 +11,18 @@ period = 1/clock_speed
 computer = Computer()
 
 async def run_computer(websocket):
+    await get_computer_state_and_send_to_server(websocket)
     while True:
         if computer.clock.clock_running == True:
-            await asyncio.sleep(float(period))
             await execute_one_cycle_and_send_update_to_server(websocket)
+            await asyncio.sleep(float(period))
         else:
-            await asyncio.sleep(1)
             await send_ping(websocket)
+            await asyncio.sleep(1)
 
 
 async def send_to_server(websocket, data):
-    print(data)
+    #print(data)
     data_json = json.dumps(data)
     await websocket.send(data_json)
 
@@ -35,8 +36,8 @@ async def execute_one_cycle_and_send_update_to_server(websocket):
     await send_to_server(websocket, data)
 
 async def resetComputer(websocket):
-    computer.reset_computer_except_ram()
-    await get_computer_state_and_send_to_server(websocket)
+        computer.reset_computer_except_ram()
+        await execute_one_cycle_and_send_update_to_server(websocket)
 
 
 async def receive(message, websocket):
@@ -46,45 +47,37 @@ async def receive(message, websocket):
 
 
 async def process_incoming_message(message_json, websocket):
-    clockRunning = None
-    reset = None
-    tick = None
-    ramUpdate = None
+    message_type = None
 
     try:
-        clockRunning = message_json["clockRunning"]
+        message_type = message_json['type']
     except KeyError:
-        print("No Clock Information in JSON")
-    try:
-        reset = message_json["reset"]
-    except KeyError:
-        print("No Reset in Json")
-    try:
-        tick = message_json["tick"]
-    except KeyError:
-        print("No tick in json")
-    try:
-        ramUpdate = message_json["ramUpdate"]
-    except KeyError:
-        print("This is not a RamUpdate")
+        print("Json contains no \"type\" field")
 
-    if clockRunning is not None:
-        if not clockRunning:
+    if message_type is not None:
+        if message_type == 'advanceClock':
+            await execute_one_cycle_and_send_update_to_server(websocket)
+
+        if message_type == 'clockRunning':
+            clockRunning = message_json['clockRunning']
+            if clockRunning:
+                computer.clock.start(computer)
+                print("START")
+            else:
+                computer.clock.stop(computer)
+                print("STOP")
+
+        if message_type == 'ramUpdate':
+            computer.ram.state = message_json['memoryContents']
+            await get_computer_state_and_send_to_server(websocket)
+
+        if message_type == 'reset':
             computer.clock.stop(computer)
-            print("STOP")
-        if clockRunning:
-            computer.clock.start(computer)
-            print("START")
-    elif tick is not None:
-        await execute_one_cycle_and_send_update_to_server(websocket)
-    elif reset is not None:
-        await resetComputer(websocket)
-    elif ramUpdate is not None:
-        computer.ram.state = message_json['memoryContents']
-        await get_computer_state_and_send_to_server(websocket)
+            await resetComputer(websocket)
+
 
 async def send_ping(websocket):
-    data={'ping': True}
+    data={'type': 'ping'}
     await send_to_server(websocket, data)
 
 

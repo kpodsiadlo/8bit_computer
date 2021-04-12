@@ -12,8 +12,10 @@ function onLoad() {
 function onMessage(event) {
     console.log("Event received");
     let computerData = JSON.parse(event.data);
-    console.log(computerData);
-    if (computerData.update != undefined) {
+    if (computerData.type !== "ping") {
+        console.log(computerData);
+    }
+    if (computerData.type === "displayUpdate") {
         updateDisplays(computerData);
     }
     resetTimer();
@@ -66,7 +68,7 @@ function sendComputerStateToServer() {
 function sendProgramToServer(program) {
     let jsonObject = {};
     jsonObject["Source"] = "Webpage";
-    jsonObject["ramUpdate"] = true;
+    jsonObject["type"] = "ramUpdate";
     jsonObject["memoryContents"] = program;
     console.log(jsonObject);
     socket.send(JSON.stringify(jsonObject));
@@ -100,7 +102,7 @@ function getRamState() {
  */
 
 function onReset() {
-    resetMessage = {"reset": true};
+    resetMessage = {"type": "reset"};
     socket.send(JSON.stringify(resetMessage));
     var toggleClockButton = document.getElementById("toggle-clock-button");
     if (toggleClockButton.value === "STOP") {
@@ -110,14 +112,14 @@ function onReset() {
 }
 
 function updateControlLights(logic) {
-    console.log("update instructions");
+    //console.log("update instructions");
     Object.keys(logic).forEach(function (key) {
         changeColor(key, logic[key]);
     })
 }
 
 function updateFlags(flags) {
-    console.log("update flags");
+    //console.log("update flags");
     Object.keys(flags).forEach(function (key) {
         changeColor(key, flags[key]);
     })
@@ -248,7 +250,7 @@ function updateBus(data) {
 
 function updateClockRunning(data) {
     var clockStatus = document.getElementById("clock-running-display");
-    console.log("clockStatus" + data);
+    //console.log("clockStatus" + data);
     if (data === true) {
         clockStatus.innerText = "Clock: Running";
         disableManualClockIncrease();
@@ -274,8 +276,8 @@ function disableManualClockIncrease() {
 
 }
 
-function onTick() {
-    let jsonMessage = {"tick": true};
+function onManualClockAdvance() {
+    let jsonMessage = {"type": "advanceClock"};
     jsonMessage = addSourceToJSONMessage(jsonMessage)
     socket.send(JSON.stringify(jsonMessage));
 }
@@ -290,6 +292,7 @@ function sendUpdate() {
     console.log("sendUpdate");
     let programCounter = parseInt(document.getElementById("program-counter-display").value);
     let jsonMessage = {
+        "type": "fullUpdate",
         "programCounter": programCounter
     };
     jsonMessage = addSourceToJSONMessage(jsonMessage)
@@ -302,7 +305,9 @@ function onToggleClock() {
     let toggleButton = document.getElementById("toggle-clock-button");
     switch (toggleButton.value) {
         case "STOP": {
-            let jsonMessage = {"clockRunning": false};
+            let jsonMessage = {"type": "clockRunning",
+                "clockRunning": false,
+            };
             jsonMessage = addSourceToJSONMessage(jsonMessage)
             socket.send(JSON.stringify(jsonMessage));
             toggleButton.value = "START";
@@ -310,8 +315,9 @@ function onToggleClock() {
 
         }
         case "START": {
-            let jsonMessage =
-                {"clockRunning": true};
+            let jsonMessage = {"type": "clockRunning",
+                "clockRunning": true,
+            };
             jsonMessage = addSourceToJSONMessage(jsonMessage)
             socket.send(JSON.stringify(jsonMessage));
             toggleButton.value = "STOP";

@@ -25,6 +25,7 @@ class Computer:
         state = {
             # Names use Java convention for interoperability
             "source": "Engine",
+            "type": "displayUpdate",
             "clockRunning": computer.clock.clock_running,
             "memoryAddress": computer.mar.state,
             "memoryContents": computer.ram.state,
@@ -64,13 +65,12 @@ class Computer:
         self.display = self.Display()
 
     def do(self, computer):
+        self.buss.reset(computer)
         # increase:
 
         self.ic.increase(computer)
-
-        self.buss.reset(computer)
-
         self.decoder.do(computer)
+        self.pc.increase(computer)
 
         # outs
 
@@ -81,7 +81,6 @@ class Computer:
         self.instruction_register.do_out(computer)
         self.ram.do_out(computer)
 
-        self.pc.increase(computer)
         # ins
         self.flag_register.do_in(computer)
         self.pc.do_in(computer)
