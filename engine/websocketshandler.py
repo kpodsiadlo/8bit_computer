@@ -68,8 +68,12 @@ async def process_incoming_message(message_json, websocket):
                 print("STOP")
 
         if message_type == 'ramUpdate':
-            computer.ram.state = message_json['memoryContents']
-            await get_computer_state_and_send_to_server(websocket)
+            clockRunning = computer.clock.clock_running
+            if clockRunning:
+                computer.ram.state = message_json['memoryContents']
+            else:
+                computer.ram.state = message_json['memoryContents']
+                await resetComputer(websocket)
 
         if message_type == 'reset':
             computer.clock.stop(computer)

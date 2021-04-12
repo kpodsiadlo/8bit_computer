@@ -349,7 +349,7 @@ function getProgramsfromDatabase() {
 
     function updateProgramList(incomingListOfPrograms) {
         var displayedListOfPrograms = document.getElementById("program-selector");
-        result = "";
+        result = "<option value=\"\" selected=\"\" disabled=\"\">Select program:</option>";
         for (i = 0; i < incomingListOfPrograms.length; i++) {
             result += createOptionEntry(incomingListOfPrograms[i]);
         }

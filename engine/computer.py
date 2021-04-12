@@ -1,5 +1,5 @@
 import input_data
-
+import random
 filename = 'fibonacci'
 
 
@@ -117,7 +117,7 @@ class Computer:
 
     class RAM:
         def __init__(self):
-            self.state = input_data.get_input_data(filename)
+            self.state = [random.randint(0, 255) for memory_cell in range(16)]
 
         def do_in(self, computer):
             if computer.clock.state == 1:
