@@ -1,24 +1,83 @@
 const socket = new WebSocket("ws://localhost:8080/server/computer");
 socket.onmessage = onMessage;
+socket.onopen = onOpen;
 connectionTimer = 1;
 setInterval(updateConnectionIndicator, 1000);
 
 
 function onLoad() {
     getProgramsfromDatabase();
+}
+
+function onOpen() {
     updateConnectionIndicator();
+    getComputerStatus();
 }
 
 function onMessage(event) {
     console.log("Event received");
-    let computerData = JSON.parse(event.data);
-    if (computerData.type !== "ping") {
-        console.log(computerData);
-    }
-    if (computerData.type === "displayUpdate") {
-        updateDisplays(computerData);
-    }
+    let incomingData = JSON.parse(event.data);
+    console.log(incomingData);
     resetTimer();
+    processMessage(incomingData)
+
+}
+
+function processMessage(incomingData) {
+    if (incomingData.type === "clockStopped") {
+        enableManualClockIncrease();
+        updateClockRunning(false);
+    }
+    if (incomingData.type === "displayUpdate") {
+        updateDisplays(incomingData);
+    }
+}
+
+function onSelectProgram(selector) {
+    getProgramFromDatabaseAndSendToEngine(selector.value);
+
+}
+
+function onToggleClock() {
+    console.log("onToggleClock")
+    let toggleButton = document.getElementById("toggle-clock-button");
+    switch (toggleButton.value) {
+        case "STOP": {
+            let jsonMessage = {"type": "clockEnabled",
+                "clockEnabled": false,
+            };
+            jsonMessage = addSourceToJSONMessage(jsonMessage)
+            socket.send(JSON.stringify(jsonMessage));
+            toggleButton.value = "START";
+            break;
+
+        }
+        case "START": {
+            let jsonMessage = {"type": "clockEnabled",
+                "clockEnabled": true,
+            };
+            jsonMessage = addSourceToJSONMessage(jsonMessage)
+            socket.send(JSON.stringify(jsonMessage));
+            toggleButton.value = "STOP";
+            break;
+        }
+    }
+}
+
+function onReset() {
+    resetMessage = {"type": "reset"};
+    socket.send(JSON.stringify(resetMessage));
+    var toggleClockButton = document.getElementById("toggle-clock-button");
+    if (toggleClockButton.value === "STOP") {
+        document.getElementById("toggle-clock-button").value = "START";
+        enableManualClockIncrease();
+    }
+}
+
+function onManualClockAdvance() {
+    let jsonMessage = {"type": "advanceClock"};
+    jsonMessage = addSourceToJSONMessage(jsonMessage)
+    socket.send(JSON.stringify(jsonMessage));
 }
 
 function updateConnectionIndicator() {
@@ -31,6 +90,14 @@ function updateConnectionIndicator() {
 }
 
 
+function getComputerStatus() {
+    var jsonMessage = {
+        "Source": "Webpage",
+        "type": "getUpdate"
+    }
+    socket.send(JSON.stringify(jsonMessage));
+}
+
 function checkConnectionStatus() {
     return (connectionTimer > 0);
 }
@@ -38,6 +105,7 @@ function checkConnectionStatus() {
 function resetTimer() {
     connectionTimer = 3 ;
 }
+
 
 function updateDisplays(computerData) {
     updateMemoryAddress(computerData.memoryAddress);
@@ -58,12 +126,7 @@ function updateDisplays(computerData) {
     updateClockRunning(computerData.clockRunning)
 }
 
-/*
-function sendComputerStateToServer() {
-    let computerState = getComputerState();
-    socket.send(JSON.stringify(computerState));
-}
- */
+
 
 function sendProgramToServer(program) {
     let jsonObject = {};
@@ -72,43 +135,6 @@ function sendProgramToServer(program) {
     jsonObject["memoryContents"] = program;
     console.log(jsonObject);
     socket.send(JSON.stringify(jsonObject));
-}
-
-/*
-function getComputerState() {
-    computerState = {};
-    ram = getRamState();
-    memoryAddress = getMemoryAddress();
-    computerState.memoryContents = ram;
-    computerState.memoryAddress = memoryAddress;
-}
- */
-
-/*
-function getRamState() {
-    ramState = []
-    for (i = 0; i < 16; i++) {
-        ramState[i] = parseInt(document.getElementById("mem" + i + "-decimal-value").value);
-    }
-    return ramState
-}
-
- */
-
-/*function getMemoryAddress() {
-    return document.getElementById("memory-address-display").value;
-}
-
- */
-
-function onReset() {
-    resetMessage = {"type": "reset"};
-    socket.send(JSON.stringify(resetMessage));
-    var toggleClockButton = document.getElementById("toggle-clock-button");
-    if (toggleClockButton.value === "STOP") {
-        document.getElementById("toggle-clock-button").value = "START";
-        enableManualClockIncrease();
-    }
 }
 
 function updateControlLights(logic) {
@@ -201,11 +227,9 @@ function decTo8DigitBin(dec) {
 }
 
 function highlightCurrentMemoryAddress(memoryAddress) {
-
     var rows = document.querySelectorAll(".memory-cell-container");
     rows.forEach(row => row.classList.remove("current-memory-address"))
     document.getElementById("memory-cell-container-" + memoryAddress).classList.add("current-memory-address");
-
 }
 
 
@@ -273,58 +297,6 @@ function disableManualClockIncrease() {
     manualClock.classList.remove("btn-success");
     manualClock.classList.add("btn-secondary");
     manualClock.disabled = true;
-
-}
-
-function onManualClockAdvance() {
-    let jsonMessage = {"type": "advanceClock"};
-    jsonMessage = addSourceToJSONMessage(jsonMessage)
-    socket.send(JSON.stringify(jsonMessage));
-}
-
-function onProgramCounterIncrease() {
-    var currentValue = parseInt(document.getElementById("program-counter-display").value);
-    updateProgramCounterDisplay(currentValue + 1)
-    sendUpdate();
-}
-
-function sendUpdate() {
-    console.log("sendUpdate");
-    let programCounter = parseInt(document.getElementById("program-counter-display").value);
-    let jsonMessage = {
-        "type": "fullUpdate",
-        "programCounter": programCounter
-    };
-    jsonMessage = addSourceToJSONMessage(jsonMessage)
-    console.log(jsonMessage);
-    socket.send(JSON.stringify(jsonMessage));
-}
-
-function onToggleClock() {
-    console.log("onToggleClock")
-    let toggleButton = document.getElementById("toggle-clock-button");
-    switch (toggleButton.value) {
-        case "STOP": {
-            let jsonMessage = {"type": "clockRunning",
-                "clockRunning": false,
-            };
-            jsonMessage = addSourceToJSONMessage(jsonMessage)
-            socket.send(JSON.stringify(jsonMessage));
-            toggleButton.value = "START";
-            break;
-
-        }
-        case "START": {
-            let jsonMessage = {"type": "clockRunning",
-                "clockRunning": true,
-            };
-            jsonMessage = addSourceToJSONMessage(jsonMessage)
-            socket.send(JSON.stringify(jsonMessage));
-            toggleButton.value = "STOP";
-            break;
-        }
-    }
-
 }
 
 function addSourceToJSONMessage(jsonMessage) {
@@ -336,12 +308,9 @@ function addSourceToJSONMessage(jsonMessage) {
 function getProgramsfromDatabase() {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
-        console.log("onreadystatechange");
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
             updateProgramList(incomingJson);
-            firstProgramId = incomingJson[0].id
-            getProgramFromDatabaseAndSendToEngine(firstProgramId)
         }
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
@@ -375,11 +344,6 @@ function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValue
     return decimalValues;
 }
 
-function onSelectProgram(selector) {
-    getProgramFromDatabaseAndSendToEngine(selector.value);
-
-}
-
 function getProgramFromDatabaseAndSendToEngine(databaseId) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
@@ -394,7 +358,6 @@ function getProgramFromDatabaseAndSendToEngine(databaseId) {
     xmlhttp.send();
 }
 
-
 const machine_code = {
     "0000": "nop",
     "0001": "lda",
@@ -408,3 +371,39 @@ const machine_code = {
     "1110": "out",
     "1111": "hlt"
 }
+
+
+/*
+function sendComputerStateToServer() {
+    let computerState = getComputerState();
+    socket.send(JSON.stringify(computerState));
+}
+ */
+
+
+/*
+function getComputerState() {
+    computerState = {};
+    ram = getRamState();
+    memoryAddress = getMemoryAddress();
+    computerState.memoryContents = ram;
+    computerState.memoryAddress = memoryAddress;
+}
+ */
+
+/*
+function getRamState() {
+    ramState = []
+    for (i = 0; i < 16; i++) {
+        ramState[i] = parseInt(document.getElementById("mem" + i + "-decimal-value").value);
+    }
+    return ramState
+}
+
+ */
+
+/*function getMemoryAddress() {
+    return document.getElementById("memory-address-display").value;
+}
+
+ */

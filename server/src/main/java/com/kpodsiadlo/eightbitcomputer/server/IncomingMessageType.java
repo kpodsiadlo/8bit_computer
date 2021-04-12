@@ -5,9 +5,10 @@ public enum IncomingMessageType {
     ADVANCECLOCK,
     RESET,
     RAMUPDATE,
-    PING,
+    CLOCKSTOPPED,
     DISPLAYUPDATE,
-    CLOCKRUNNING,
+    CLOCKENABLED,
+    GETUPDATE,
     ERROR
 
 }

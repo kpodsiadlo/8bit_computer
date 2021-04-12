@@ -58,8 +58,8 @@ async def process_incoming_message(message_json, websocket):
         if message_type == 'advanceClock':
             await execute_one_cycle_and_send_update_to_server(websocket)
 
-        if message_type == 'clockRunning':
-            clockRunning = message_json['clockRunning']
+        if message_type == 'clockEnabled':
+            clockRunning = message_json['clockEnabled']
             if clockRunning:
                 computer.clock.start(computer)
                 print("START")
@@ -79,9 +79,12 @@ async def process_incoming_message(message_json, websocket):
             computer.clock.stop(computer)
             await resetComputer(websocket)
 
+        if message_type == 'getUpdate':
+            await get_computer_state_and_send_to_server(websocket)
+
 
 async def send_ping(websocket):
-    data={'type': 'ping'}
+    data={'type': 'clockStopped'}
     await send_to_server(websocket, data)
 
 
