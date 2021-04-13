@@ -196,7 +196,7 @@
             <input type="button" class="btn btn-block" value="Compile!" onclick="compile()">
         </div>
         <div class="col-4">
-            <div id="compiler-display"></div>
+            <div><pre id="compiler-display"></pre></div>
         </div>
     </div>
 </div>

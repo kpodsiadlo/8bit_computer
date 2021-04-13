@@ -3,8 +3,6 @@ function compile() {
     sendToCompilerJS(program);
 }
 
-
-
 function getUserProgram() {
     let instructions = [];
     let values = [];
@@ -27,12 +25,24 @@ function sendToCompilerJS(jsonObject) {
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
-            $('#compiler-display').html(incomingJson);
+            console.log(incomingJson);
+            formattedProgram = formatIncomingProgramForDisplaying(incomingJson.contents)
+            $('#compiler-display').text(formattedProgram);
+
         }
     }
     xmlhttp.open("POST", "http://localhost:8080/server/api/compiler/", true);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    console.log(jsonObject);
-    console.log(JSON.stringify(jsonObject))
     xmlhttp.send(JSON.stringify(jsonObject));
+}
+
+function formatIncomingProgramForDisplaying(program){
+    let formattedProgram = "";
+    program.forEach(value => addToFormattedProgram(value));
+    formattedProgram.substr(0, -2);
+    return formattedProgram;
+
+    function addToFormattedProgram(value){
+        formattedProgram += value + "\n"
+    }
 }
