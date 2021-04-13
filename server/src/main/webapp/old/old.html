@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="EN">
 <head>
-    <link rel="stylesheet" href="css/bootstrap_4.3.1_css_bootstrap.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/bootstrap_4.3.1_css_bootstrap.css">
+    <link rel="stylesheet" href="../css/style.css">
     <title>8bit computer</title>
 </head>
 <body onload=onLoad()>
@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-5">
             <div class="row" id="indicators">
-                <span class ="badge badge-info" id="connection-indicator"></span>
+                <span class="badge badge-info" id="connection-indicator"></span>
                 <span id="clock-running-display">Clock: Stopped</span>
 
             </div>
@@ -108,7 +108,7 @@
         </div>
     </div>
     <div class="row">
-        <div class=col-6>
+        <div class=col-5>
             <select id="program-selector" name="Select Program:" size="1" onchange="onSelectProgram(this)">
 
             </select>
@@ -253,10 +253,34 @@
                 </tr>
             </table>
         </div>
-        <div class="col-6">
+        <div class=col-7>
+            <form>
+                <table class=tg>
+                    <thead>
+                    <row>
+                        <th class="tg-0lax">
+                            Memory<br>location
+                        </th>
+                        <th class="tg-0lax">
+                            Instruction
+                        </th>
+                        <th class="tg-0lax">
+                            Value
+                        </th>
+                    </row>
+                    </thead>
+                    <tbody>
+                    <td class=tg-0lax id="mem01">
+                        <Select name="instruction[0]" id="instruction-0">
+                            <option value="">
+                            </option>
+                        </Select>
+                    </tbody>
+                </table>
+            </form>
         </div>
     </div>
 </div>
 </body>
-<script src="websockets.js"></script>
+<script src="../websockets.js"></script>
 </html>

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class CompilerTest {
+class CompilerTest {
     private Compiler compiler;
 
     private static Stream<Arguments> dataAndResults() {
@@ -37,26 +37,25 @@ public class CompilerTest {
                 Arrays.asList(15, 0, 14, 13, 14, 15, 14, 10,
                         2, 6, 14, 0, 0, 1, 84, 84);
 
-
         return Stream.of(
                 arguments(add3_instructions, add3_values, add3),
                 arguments(divisor_instructions, divisor_values, divisor));
     }
 
     @ParameterizedTest
-    @DisplayName("Correctly compiles add3 program")
+    @DisplayName("Correctly compiles two programs")
     @MethodSource("dataAndResults")
-    public void shouldTestAllTheProgramsCorrectly(List<String> instructions, List<Integer> values, Program testProgram) {
+    void shouldTestAllTheProgramsCorrectly(List<String> instructions, List<Integer> values, Program testProgram) {
         IncomingUserProgram incomingUserProgram = new IncomingUserProgram();
         incomingUserProgram.setInstructions(instructions);
         incomingUserProgram.setValues(values);
         Program compiledProgram = compiler.compile(incomingUserProgram);
 
-        Assertions.assertTrue(compiledProgram.equals(testProgram));
+        Assertions.assertEquals(testProgram, compiledProgram);
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         compiler = new Compiler();
     }
 }
