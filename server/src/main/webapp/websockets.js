@@ -7,7 +7,7 @@ enableIncomingMessageLogging = true;
 enableOutcomingMessageLogging = true;
 
 
-function sendToSocket(jsonMessage) {
+function sendJsonObjectToSocket(jsonMessage) {
     if (enableOutcomingMessageLogging) {
         console.log("Sending: ")
         console.log(jsonMessage);
@@ -56,7 +56,7 @@ function onToggleClock() {
             let jsonMessage = {"type": "clockEnabled",
                 "clockEnabled": false,
             };
-            sendToSocket(jsonMessage);
+            sendJsonObjectToSocket(jsonMessage);
             toggleButton.value = "START";
             break;
 
@@ -66,7 +66,7 @@ function onToggleClock() {
                 "clockEnabled": true,
             };
             toggleButton.value = "STOP";
-            sendToSocket(jsonMessage);
+            sendJsonObjectToSocket(jsonMessage);
             break;
         }
     }
@@ -74,7 +74,7 @@ function onToggleClock() {
 
 function onReset() {
     var resetMessage = {"type": "reset"};
-    sendToSocket(resetMessage);
+    sendJsonObjectToSocket(resetMessage);
     var toggleClockButton = document.getElementById("toggle-clock-button");
     if (toggleClockButton.value === "STOP") {
         document.getElementById("toggle-clock-button").value = "START";
@@ -84,7 +84,7 @@ function onReset() {
 
 function onManualClockAdvance() {
     let jsonMessage = {"type": "advanceClock"};
-    sendToSocket(jsonMessage);
+    sendJsonObjectToSocket(jsonMessage);
 }
 
 function updateConnectionIndicator() {
@@ -101,7 +101,7 @@ function getComputerStatus() {
     var jsonMessage = {
         "type": "getUpdate"
     }
-    sendToSocket(jsonMessage);
+    sendJsonObjectToSocket(jsonMessage);
 }
 
 function checkConnectionStatus() {
@@ -112,11 +112,11 @@ function resetTimer() {
     connectionTimer = 3 ;
 }
 
-function sendProgramToServer(program) {
+function sendProgramAsIntArrayToServer(program) {
     let jsonMessage = {};
     jsonMessage["type"] = "ramUpdate";
     jsonMessage["memoryContents"] = program;
-    sendToSocket(jsonMessage);
+    sendJsonObjectToSocket(jsonMessage);
 }
 
 function updateDisplays(computerData) {
@@ -348,7 +348,7 @@ function getProgramFromDatabaseAndSendToEngine(databaseId) {
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
             let program = convertMemoryContentsFromDatabaseToDecimalValuesArray(incomingJson.contents)
-            sendProgramToServer(program);
+            sendProgramAsIntArrayToServer(program);
         }
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/" + databaseId, true);

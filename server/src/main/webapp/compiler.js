@@ -1,9 +1,11 @@
-function compile() {
-    let program = getUserProgram();
+var userProgramAsIntArray = null;
+
+function onCompile() {
+    let program = getUserProgramFromInput();
     sendToCompilerJS(program);
 }
 
-function getUserProgram() {
+function getUserProgramFromInput() {
     let instructions = [];
     let values = [];
 
@@ -26,14 +28,19 @@ function sendToCompilerJS(jsonObject) {
         if (this.readyState == 4 && this.status == 200) {
             var incomingJson = JSON.parse(this.responseText);
             console.log(incomingJson);
-            formattedProgram = formatIncomingProgramForDisplaying(incomingJson.contents)
-            $('#compiler-display').text(formattedProgram);
 
+            let formattedProgram = formatIncomingProgramForDisplaying(incomingJson.contents)
+            $('#compiler-display').text(formattedProgram);
+            userProgramAsIntArray = incomingJson.contents.map(value=>{return parseInt(value, 2)});
         }
     }
     xmlhttp.open("POST", "http://localhost:8080/server/api/compiler/", true);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlhttp.send(JSON.stringify(jsonObject));
+}
+
+function onSendProgramToComputer() {
+    sendProgramAsIntArrayToServer(userProgramAsIntArray);
 }
 
 function formatIncomingProgramForDisplaying(program){

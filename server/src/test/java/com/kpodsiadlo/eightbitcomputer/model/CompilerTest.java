@@ -50,7 +50,6 @@ class CompilerTest {
         incomingUserProgram.setInstructions(instructions);
         incomingUserProgram.setValues(values);
         Program compiledProgram = compiler.compile(incomingUserProgram);
-
         Assertions.assertEquals(testProgram, compiledProgram);
     }
 

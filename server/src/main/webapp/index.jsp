@@ -1,15 +1,15 @@
-<%@ page import="java.util.List" %>
 <%@page language="java" contentType="text/html; ISO-8859-1" pageEncoding="UTF-8" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.kpodsiadlo.eightbitcomputer.model.Compiler" %>
 <%@ page import="java.util.Set" %>
 
 <!DOCTYPE HTML>
 <html lang="EN">
 <head>
-    <link rel="stylesheet" href="css/bootstrap_4.3.1_css_bootstrap.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
-    <script src="jquery-3.6.0.min.js"></script>
-    <script src="sendToCompiler.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="compiler.js"></script>
     <script src="websockets.js"></script>
     <title>8bit computer</title>
 </head>
@@ -193,10 +193,11 @@
                     </tbody>
                 </table>
             </form>
-            <input type="button" class="btn btn-block" value="Compile!" onclick="compile()">
+            <input type="button" class="btn btn-block" value="Compile!" onclick="onCompile()">
         </div>
         <div class="col-4">
             <div><pre id="compiler-display"></pre></div>
+            <input type="button" class="btn btn-block" value="Send To Computer!" onclick="onSendProgramToComputer()">
         </div>
     </div>
 </div>
