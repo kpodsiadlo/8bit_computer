@@ -74,4 +74,13 @@ public class Program {
     public int hashCode() {
         return Objects.hash(id, name, contents);
     }
+
+    @Override
+    public String toString() {
+        return "Program{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
+    }
 }

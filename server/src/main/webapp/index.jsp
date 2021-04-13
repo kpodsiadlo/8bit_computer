@@ -8,6 +8,9 @@
 <head>
     <link rel="stylesheet" href="css/bootstrap_4.3.1_css_bootstrap.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="sendToCompiler.js"></script>
+    <script src="websockets.js"></script>
     <title>8bit computer</title>
 </head>
 <body onload=onLoad()>
@@ -150,42 +153,38 @@
 
             </table>
         </div>
-        <div class=col-7>
+        <div class=col-3>
+            <span>Create your own program:</span>
             <form>
-                <table class=tg>
+                <table class=tg id="compiler-input">
                     <thead>
                     <tr>
-                        <th class="tg-0lax">
-                            Memory<br>location
-                        </th>
-                        <th class="tg-0lax">
-                            Instruction
-                        </th>
-                        <th class="tg-0lax">
-                            Value
-                        </th>
+                        <th class="tg-0lax">Address</th>
+                        <th class="tg-0lax">Instruction</th>
+                        <th class="tg-0lax">Value</th>
                     </tr>
                     </thead>
                     <tbody>
                     <%
-                        for (int i = 0; i < 16; i++) {
+                        for (int i = 0; i < cellNumberList.size(); i++) {
                     %>
-                    <tr     >
+                    <tr>
                         <td class="tg-0lax"><%=i%>
                         </td>
-                        <td class=tg-0lax id="mem<%=i%>-instruction">
-                            <Select name="instructions[<%=i%>]">
+                        <td class=tg-0lax>
+                            <Select id="assembly-instruction-<%=i%>">
                                 <% Set<String> instructions = Compiler.getInstructions();
                                     for (String instruction : instructions) {%>
-                                <option
-                                        <%if (instruction.equals("nop")) {%>selected=""<% }%>
-                                        value="<%=instruction%>"><%=instruction%></option>
+                                <option <%if (instruction.equals("nop")) {
+                                %>selected="" <% }
+                                %>value="<%=instruction%>"><%=instruction%>
+                                </option>
                                 <% } %>
-                                <option value="value">value</option>
+                                <option value="assembly-value">value</option>
                             </Select>
                         </td>
                         <td class="tg-0lax">
-                            <input type=number name=values[<%=i%>]>
+                            <input type=number id=assembly-value-<%=i%>>
                         </td>
                     </tr>
                     <%
@@ -193,12 +192,13 @@
                     %>
                     </tbody>
                 </table>
-                <input type='submit' value="OK">
             </form>
+            <input type="button" class="btn btn-block" value="Compile!" onclick="compile()">
+        </div>
+        <div class="col-4">
             <div id="compiler-display"></div>
         </div>
     </div>
 </div>
 </body>
-<script src="websockets.js"></script>
 </html>

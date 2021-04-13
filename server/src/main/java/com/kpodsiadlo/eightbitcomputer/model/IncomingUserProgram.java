@@ -31,4 +31,11 @@ public class IncomingUserProgram {
         this.values = values;
     }
 
+    @Override
+    public String toString() {
+        return "IncomingUserProgram{" +
+                "instructions=" + instructions +
+                ", values=" + values +
+                '}';
+    }
 }
