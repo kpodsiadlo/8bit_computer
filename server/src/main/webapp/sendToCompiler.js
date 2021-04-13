@@ -30,7 +30,7 @@ function sendToCompilerJS(jsonObject) {
             $('#compiler-display').html(incomingJson);
         }
     }
-    xmlhttp.open("GET", "http://localhost:8080/server/api/compiler/", true);
+    xmlhttp.open("POST", "http://localhost:8080/server/api/compiler/", true);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     console.log(jsonObject);
     console.log(JSON.stringify(jsonObject))

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -25,7 +25,7 @@ public class CompilerController {
     @Inject
     Compiler compiler;
 
-    @GET
+    @POST
     public Program compileProgram(IncomingUserProgram incomingProgram) {
         logger.info(incomingProgram.toString());
         return compiler.compile(incomingProgram);
