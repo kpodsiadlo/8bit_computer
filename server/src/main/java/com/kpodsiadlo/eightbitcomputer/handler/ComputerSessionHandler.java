@@ -41,7 +41,7 @@ public class ComputerSessionHandler {
     }
 
     public void sendToAllOtherSessions(String message, Session transmittingSession) {
-        logger.info("Sending: {}", message);
+        logger.debug("Sending: {}", message);
         Set<Session> receivingSessions = new HashSet<>(sessions);
         receivingSessions.remove(transmittingSession);
         receivingSessions.forEach(session -> sendToSession(session, message));

@@ -18,8 +18,6 @@ public class ComputerMessageHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public String processMessage(String message) {
-        logger.info("OnMessage");
-        logger.info("Received: {}", message);
         JsonObject jsonMessage = JsonUtils.getJsonObject(message);
         IncomingMessageType messageType = getJsonMessageType(jsonMessage);
 
@@ -35,7 +33,7 @@ public class ComputerMessageHandler {
     private IncomingMessageType getJsonMessageType(JsonObject message) {
         if (checkForKeyInMessage(message, "type")) {
             String type = message.getString("type");
-            logger.info(type);
+            logger.debug(type);
             return IncomingMessageType.valueOf(type.toUpperCase());
         } else
             return IncomingMessageType.ERROR;

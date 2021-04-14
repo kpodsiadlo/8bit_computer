@@ -36,6 +36,8 @@ public class ComputerWebsocketServer {
 
     @OnMessage
     public void onMessage(String message, Session originSession) {
+        logger.debug("onMessage:");
+        logger.debug("Received: {}", message);
         sessionHandler.forwardMessage(message, originSession);
     }
 
