@@ -81,41 +81,4 @@ public class ComputerWebsocketServer {
         logger.error("ERROR - no message type in JSON. \nMessage: {}, Session: {}",message, originSession.getId());
     }
 
-
-    /*    private void sendPingToReceivingSessions(Session session) {
-            logger.debug("sendPingToReceivingSessions");
-            sessionHandler.sendToAllReceivingSessions(generateControlMessage("ping"), session);
-        }
-
-        private void sendRamUpdateToReceivingSessions(Session session) {
-            logger.info("SendRamUpdateToReceivingSessions");
-            JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
-            objectBuilder.add("SOURCE", "Server");
-            objectBuilder.add("ramUpdate", true);
-            objectBuilder.add("memoryContents", sessionHandler.getRamContents());
-            sessionHandler.sendToAllReceivingSessions(objectBuilder.build().toString(), session);
-        }
-
-        private void sendResetEngineToReceivingSessions(Session session) {
-            logger.debug("SendResetToReceivingSessions");
-            sessionHandler.sendToAllReceivingSessions(generateControlMessage("reset"), session);
-        }
-
-        private void sendExecuteOneClockCycleToRecevingSessions(Session session) {
-            logger.debug("SendTickToReceivingSessions");
-            sessionHandler.sendToAllReceivingSessions(generateControlMessage("tick"), session);
-        }
-
-
-
-        private String generateControlMessage(String message) {
-            logger.debug(message);
-            JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
-            objectBuilder.add("SOURCE", "Server");
-            objectBuilder.add(message, true);
-            return objectBuilder.build().toString();
-        }
-
-
-     */
 }
