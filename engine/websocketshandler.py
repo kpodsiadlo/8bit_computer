@@ -27,12 +27,12 @@ async def send_to_server(websocket, data):
     await websocket.send(data_json)
 
 async def get_computer_state_and_send_to_server(websocket):
-    data = next(computer.yield_computer_state(computer))
+    data = next(computer.yield_computer_state())
     await send_to_server(websocket, data)
 
 async def execute_one_cycle_and_send_update_to_server(websocket):
     for i in range (2) :
-        data = next(computer.execute_one_click_and_yield_computer_state(computer))
+        data = next(computer.execute_one_click_and_yield_computer_state())
     await send_to_server(websocket, data)
 
 async def resetComputer(websocket):

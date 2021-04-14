@@ -96,7 +96,7 @@ class Clock(Component):
         self.computer.clock.state = not self.computer.clock.state
         if self.computer.clock.state == 1:  ### only true tick
             # print("Tick: " + computer.clock.state.__str__())
-            self.computer.do(self.computer)
+            self.computer.do()
 
     def start(self):
         self.computer.clock.clock_running = True
