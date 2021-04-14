@@ -1,9 +1,8 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.kpodsiadlo.eightbitcomputer.model.Computer;
+import com.kpodsiadlo.eightbitcomputer.json.JsonUtils;
+import com.kpodsiadlo.eightbitcomputer.server.IncomingMessageType;
+import com.kpodsiadlo.eightbitcomputer.service.ComputerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +18,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ApplicationScoped
@@ -26,51 +26,19 @@ public class ComputerSessionHandler {
 
     private final Set<Session> sessions = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     @Inject
-    Computer computer;
+    ComputerService computerService;
 
-
-    public void updateComputerWithJackson(JsonObject message) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectReader objectReader = objectMapper.readerForUpdating(computer);
-        try {
-            computer = objectReader.readValue(message.toString());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void sendComputerToReceivingSessions(Session transmittingSession) {
         logger.info("sendUpdatedComputerToReceivingSessions");
-        String computerState = getComputerStateAsJson();
+        String computerState = computerService.getComputerStateAsJson();
         sendToAllReceivingSessions(computerState, transmittingSession);
-    }
-
-    public String getComputerStateAsJson() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String s = "";
-        try {
-            s = objectMapper.writeValueAsString(computer);
-            s = insertDataAtTheBeginningOfJsonString(s, "SOURCE", "\"Server\"");
-            s = insertDataAtTheBeginningOfJsonString(s, "update", "true");
-        } catch (JsonProcessingException e) {
-            logJsonError("Error while parsing computer model");
-
-        }
-        return s;
     }
 
     public void forwardMessage(String message, Session originSession) {
         sendToAllReceivingSessions(message, originSession);
-    }
-
-    private String insertDataAtTheBeginningOfJsonString(String jsonString, String key, String value) {
-        return "\"" + key + "\":" + value + ", " + jsonString.substring(1);
-    }
-
-    public void logJsonError(String jsonValueMissing) {
-        String message = MessageFormat.format("{0} not found in incoming JSON '{}'", jsonValueMissing);
-        logger.error(message);
     }
 
     public void addSession(Session session) {
@@ -98,15 +66,51 @@ public class ComputerSessionHandler {
 
     }
 
+    public void processMessage(String message, Session originSession) {
+        logger.info("OnMessage");
+        logger.info("Received: {}",message);
+        JsonObject jsonMessage = JsonUtils.getJsonObject(message);
+        IncomingMessageType messageType = getJsonMessageType(jsonMessage);
+        if (messageType.equals(IncomingMessageType.UPDATE)) {
+            computerService.updateComputerWithJackson(jsonMessage);
+            sendComputerToReceivingSessions(originSession);
+        } else if (messageType.equals(IncomingMessageType.ERROR)) {
+            logErrorMessage(message, originSession);
+        } else {
+            forwardMessage(message, originSession);
+        }
+    }
+
+    private IncomingMessageType getJsonMessageType(JsonObject message) {
+        if (checkForKeyInMessage(message, "type")) {
+            String type = message.getString("type");
+            logger.info(type);
+            return IncomingMessageType.valueOf(type.toUpperCase());
+        } else
+            return IncomingMessageType.ERROR;
+    }
+
+    private boolean checkForKeyInMessage(JsonObject message, String key) {
+        Optional<String> keyInJson = Optional.empty();
+        try {
+            keyInJson = Optional.of(message.getString(key));
+        } catch (NullPointerException ignored) {
+            logger.debug("No \"{}\" key in incoming Message", key);
+        }
+        return keyInJson.isPresent();
+    }
+
+    private void logErrorMessage(String message, Session originSession) {
+        logger.error("ERROR - no message type in JSON. \nMessage: {}, Session: {}",message, originSession.getId());
+    }
 
     public void sendToAllSessions(String message) {
-
         sessions.forEach(session -> sendToSession(session, message));
     }
 
     public JsonArray getRamContents() {
         logger.info("getRamContents");
-        List<Integer> memoryContents = computer.getMemoryContents();
+        List<Integer> memoryContents = computerService.getComputerMemoryContents();
         JsonObjectBuilder objectBuilder = JsonProvider.provider().createObjectBuilder();
         JsonArrayBuilder arrayBuilder = JsonProvider.provider().createArrayBuilder();
         for (int i = 0; i < memoryContents.size(); i++) {
@@ -115,138 +119,3 @@ public class ComputerSessionHandler {
         return arrayBuilder.build();
     }
 }
-/*
-    public String getComputerModelState() {
-        logger.info("getComputerState");
-
-        JsonObjectBuilder provider = JsonProvider.provider().createObjectBuilder();
-
-        provider.add("SOURCE", "Server");
-        provider.add("clockRunning", computer.getClockRunning());
-        provider.add("memoryAddress", computer.getMemoryAddress());
-        provider.add("instructionRegisterHigherBits", computer.getInstructionRegisterHigherBits());
-        provider.add("instructionRegisterLowerBits", computer.getInstructionRegisterLowerBits());
-        provider.add("microinstructionCounter", computer.getMicroinstructionCounter());
-        provider.add("programCounter", computer.getProgramCounter());
-        provider.add("registerA", computer.getRegisterA());
-        provider.add("registerB", computer.getRegisterB());
-        provider.add("output", computer.getOutput());
-        provider.add("bus", computer.getBus());
-        provider.add("alu", computer.getAlu());
-        provider.add("logic", JsonUtils.mapToJsonObject(computer.getLogic()));
-        provider.add("flags", JsonUtils.mapToJsonObject(computer.getFlags()));
-        provider.add("memoryContents", JsonUtils.listToJsonObject(computer.getMemoryContents()));
-
-        //DON'T CHANGE INTO AN INLINE VARIABLE!
-        JsonObject build = provider.build();
-
-        return build.toString();
-    }
-
-    private void updateComputer(JsonObject message) {
-        logger.info("updateComputer");
-        updateClockRunning(message);
-        updateMap(message, "logic");
-        updateMap(message, "flags");
-        updateIntegers(message);
-        updateMemoryContents(message);
-    }
-
-    private void updateClockRunning(JsonObject message) {
-        try {
-            boolean clockRunning = message.getBoolean("clockRunning");
-            computer.setClockRunning(clockRunning);
-        } catch (NullPointerException e) {
-            logJsonError("clockRunning");
-        }
-    }
-
-    private void updateMap(JsonObject message, String mapToExtract) {
-        JsonObject mapJson = null;
-
-        try {
-            mapJson = message.getJsonObject(mapToExtract);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logJsonError(mapToExtract);
-        }
-
-        HashMap<String, Integer> retrievedComponentData = null;
-        if (mapJson != null) {
-            logger.info("{}: {}",mapToExtract, mapJson);
-            try {
-                retrievedComponentData = new ObjectMapper().readValue(mapJson.toString(), HashMap.class);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (retrievedComponentData != null) {
-            if (mapToExtract.equals("logic")) {
-                computer.setLogic(retrievedComponentData);
-            }
-            if (mapToExtract.equals("flags")) {
-                computer.setFlags((retrievedComponentData));
-            }
-        }
-    }
-
-    private void updateIntegers(JsonObject message) {
-        List<String> integerComponents = Arrays.asList(
-                "memoryAddress",
-                "instructionRegisterHigherBits",
-                "instructionRegisterLowerBits",
-                "microinstructionCounter",
-                "programCounter",
-                "registerA",
-                "alu",
-                "registerB",
-                "output",
-                "bus"
-        );
-
-        for (String integerComponent : integerComponents) {
-            updateIntegersByReflection(message, integerComponent);
-        }
-    }
-
-    private void updateIntegersByReflection(JsonObject message, String integerComponent) {
-        Method method = null;
-        Optional<Integer> componentStatus = Optional.empty();
-
-        //Get the name of setter method
-        try {
-            String name = "set" + integerComponent.substring(0, 1).toUpperCase() + integerComponent.substring(1);
-            method = Computer.class.getMethod(name, Integer.class);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-        // get component Status
-        try {
-            componentStatus = Optional.of(message.getInt(integerComponent, 0));
-        } catch (NullPointerException | ClassCastException e) {
-            logJsonError(integerComponent);
-        }
-
-        // invoke the setter
-        Method finalMethod = method;
-        componentStatus.ifPresent(e -> {
-            try {
-                finalMethod.invoke(computer, e);
-                logger.info("Change {}: {}",integerComponent, e);
-            } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
-                illegalAccessException.printStackTrace();
-            }
-        });
-    }
-
-    private void updateMemoryContents(JsonObject message) {
-        Optional<JsonArray> jsonArrayOptional = Optional.ofNullable(message.getJsonArray("memoryContents"));
-        jsonArrayOptional.ifPresentOrElse(
-                opt -> computer.setMemoryContents(opt.getValuesAs(JsonNumber::intValue)),
-                () -> logJsonError("Memory Contents"));
-    }
-
-}
-     */
