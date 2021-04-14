@@ -27,7 +27,7 @@ public class ComputerService {
         }
     }
 
-    public String getComputerStateAsJson() {
+    public String getComputerStateAsJsonString() {
         ObjectMapper objectMapper = new ObjectMapper();
         String s = "";
         try {
@@ -36,7 +36,6 @@ public class ComputerService {
             s = insertDataAtTheBeginningOfJsonString(s, "update", "true");
         } catch (JsonProcessingException e) {
             logger.error("Error while parsing computer model");
-
         }
         return s;
     }

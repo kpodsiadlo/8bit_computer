@@ -5,13 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 @ApplicationScoped
-public class ComputerSessionHandler {
+public class ComputerSessionHandler implements MessageHandler {
 
     private final Set<Session> sessions = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -40,10 +41,10 @@ public class ComputerSessionHandler {
         }
     }
 
-    public void sendToAllOtherSessions(String message, Session transmittingSession) {
+    public void sendToAllOtherSessions(String message, Session originSession) {
         logger.debug("Sending: {}", message);
         Set<Session> receivingSessions = new HashSet<>(sessions);
-        receivingSessions.remove(transmittingSession);
+        receivingSessions.remove(originSession);
         receivingSessions.forEach(session -> sendToSession(session, message));
 
     }

@@ -7,12 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
+import javax.websocket.MessageHandler;
 import java.util.Optional;
 
+@ApplicationScoped
 @Stateless
-public class ComputerMessageHandler {
+public class ComputerMessageHandler implements MessageHandler {
     @Inject
     ComputerService computerService;
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -23,7 +26,7 @@ public class ComputerMessageHandler {
 
         if (messageType.equals(IncomingMessageType.UPDATE)) {
             computerService.updateComputerWithJackson(jsonMessage);
-            return computerService.getComputerStateAsJson();
+            return computerService.getComputerStateAsJsonString();
         } else if (messageType.equals(IncomingMessageType.ERROR)) {
             logErrorMessage(message);
         }
