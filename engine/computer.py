@@ -6,48 +6,8 @@ filename = 'fibonacci'
 
 class Computer:
 
-    def execute_one_click_and_yield_computer_state(self, computer):
-        computer.clock.tick()
-        yield computer.get_state(computer)
-
-    def yield_computer_state(self, computer):
-        yield computer.get_state(computer)
-
-    @staticmethod
-    def get_state(computer):
-
-        def get_logic(computer):
-            logic = computer.logic.__dict__
-            return logic
-
-        def get_flags(computer):
-            flags = {'carry': computer.flag_register.carry, "zero":computer.flag_register.zero}
-            return flags
-
-        state = {
-            # Names use Java convention for interoperability
-            "source": "Engine",
-            "type": "displayUpdate",
-            "clockRunning": computer.clock.clock_running,
-            "memoryAddress": computer.mar.state,
-            "memoryContents": computer.ram.state,
-            "instructionRegisterHigherBits": computer.instruction_register.higher_bits,
-            "instructionRegisterLowerBits": computer.instruction_register.lower_bits,
-            "microinstructionCounter": computer.ic.state,
-            "programCounter": computer.pc.state,
-            "registerA": computer.regA.state,
-            "alu": computer.alu.state,
-            "registerB": computer.regB.state,
-            "output": computer.display.state,
-            "bus": computer.buss.state,
-            "logic": get_logic(computer),
-            "flags": get_flags(computer)
-        }
-        return state
-
     def __init__(self):
         self.reset_computer_except_ram()
-        #self.ram = self.RAM()
         self.ram = RAM(computer=self)
 
     def reset_computer_except_ram(self):
@@ -64,6 +24,45 @@ class Computer:
         self.instruction_register = InstructionRegister(computer=self)
         self.mar = MAR(computer=self)
         self.display = Display(computer=self)
+
+    def execute_one_click_and_yield_computer_state(self, computer):
+        self.clock.tick()
+        yield self.get_state()
+
+    def yield_computer_state(self, computer):
+        yield self.get_state()
+
+
+    def get_state(self):
+
+        state = {
+            # Names use Java convention for interoperability
+            "source": "Engine",
+            "type": "displayUpdate",
+            "clockRunning": self.clock.clock_running,
+            "memoryAddress": self.mar.state,
+            "memoryContents": self.ram.state,
+            "instructionRegisterHigherBits": self.instruction_register.higher_bits,
+            "instructionRegisterLowerBits": self.instruction_register.lower_bits,
+            "microinstructionCounter": self.ic.state,
+            "programCounter": self.pc.state,
+            "registerA": self.regA.state,
+            "alu": self.alu.state,
+            "registerB": self.regB.state,
+            "output": self.display.state,
+            "bus": self.buss.state,
+            "logic": self.get_logic(),
+            "flags": self.get_flags()
+        }
+        return state
+
+    def get_logic(self):
+        logic = self.logic.__dict__
+        return logic
+
+    def get_flags(self):
+        flags = {'carry': self.flag_register.carry, "zero": self.flag_register.zero}
+        return flags
 
     def do(self, computer):
         self.buss.reset(computer=self)
