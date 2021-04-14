@@ -53,8 +53,8 @@ public class Program {
 
     private String listToString(List<String> contents) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i=0; i<contents.size(); i++) {
-            stringBuilder.append(contents.get(i));
+        for (String content : contents) {
+            stringBuilder.append(content);
             stringBuilder.append(",");
         }
         return stringBuilder.toString();

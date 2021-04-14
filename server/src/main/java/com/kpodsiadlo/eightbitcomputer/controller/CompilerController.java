@@ -20,14 +20,14 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class CompilerController {
 
-    private Logger logger = LoggerFactory.getLogger("CompilerService");
+    private final Logger logger = LoggerFactory.getLogger("CompilerService");
 
     @Inject
     Compiler compiler;
 
     @POST
     public Program compileProgram(IncomingUserProgram incomingProgram) {
-        logger.info(incomingProgram.toString());
+        logger.info("Incoming Program: {}",incomingProgram);
         return compiler.compile(incomingProgram);
     }
 }

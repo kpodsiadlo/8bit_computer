@@ -15,18 +15,17 @@ import java.util.logging.Logger;
 
 
 public class JsonUtils {
-    private final static Logger logger = Logger.getLogger("Utils");
+    private static final Logger logger = Logger.getLogger("Utils");
 
 
     public static JsonObject getJsonObject(String message) {
-        JsonObject jsonMessage = null;
+        JsonObject jsonMessage = JsonProvider.provider().createObjectBuilder().build();
         try (JsonReader jsonReader = Json.createReader(new StringReader(message))) {
             jsonMessage = jsonReader.readObject();
         } catch (Exception e) {
             Logger.getLogger("Utils/getJsonObject").severe(e.getMessage());
-        } finally {
-            return jsonMessage;
         }
+        return jsonMessage;
     }
 
     public static String mapToJsonString(Map<String, Integer> map) {

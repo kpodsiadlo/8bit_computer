@@ -3,6 +3,7 @@ package com.kpodsiadlo.eightbitcomputer.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.websocket.MessageHandler;

@@ -6,6 +6,7 @@ import com.kpodsiadlo.eightbitcomputer.service.ComputerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,7 +15,6 @@ import javax.websocket.MessageHandler;
 import java.util.Optional;
 
 @ApplicationScoped
-@Stateless
 public class ComputerMessageHandler implements MessageHandler {
     @Inject
     ComputerService computerService;

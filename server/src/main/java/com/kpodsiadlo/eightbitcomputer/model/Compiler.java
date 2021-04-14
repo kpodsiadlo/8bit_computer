@@ -3,8 +3,6 @@ package com.kpodsiadlo.eightbitcomputer.model;
 import com.google.common.base.Strings;
 
 import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,7 +18,7 @@ public class Compiler {
         Program compiledProgram = new Program();
         StringBuilder programBinary = new StringBuilder();
 
-        String instruction = "";
+        String instruction;
         Integer value;
         for (int i = 0; i < 16; i++) {
             try {
@@ -53,14 +51,6 @@ public class Compiler {
         return Strings.padStart((Integer.toBinaryString(integer)), pad, '0');
     }
 
-
-    private List<String> generateEmptyList() {
-        List<String> emptyList = new ArrayList<>();
-        for (int i = 0; i < 16; i++) {
-            emptyList.add(String.valueOf("00000000"));
-        }
-        return emptyList;
-    }
 
     private static Map<String, String> getOpcodes () {
         return Stream.of(new String[][]
