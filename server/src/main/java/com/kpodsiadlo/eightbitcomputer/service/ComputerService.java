@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.json.JsonObject;
-import java.util.List;
 
 @Stateless
 public class ComputerService {
@@ -40,10 +39,6 @@ public class ComputerService {
 
         }
         return s;
-    }
-
-    public List<Integer> getComputerMemoryContents() {
-        return computer.getMemoryContents();
     }
 
     private String insertDataAtTheBeginningOfJsonString(String jsonString, String key, String value) {

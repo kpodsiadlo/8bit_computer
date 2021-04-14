@@ -36,7 +36,7 @@ public class ComputerWebsocketServer {
 
     @OnMessage
     public void onMessage(String message, Session originSession) {
-        sessionHandler.processMessage(message, originSession);
+        sessionHandler.forwardMessage(message, originSession);
     }
 
     @OnError
