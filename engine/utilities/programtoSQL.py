@@ -1,4 +1,4 @@
-filename = "divisor"
+filename = "../programs/divisor"
 filename_to_write = filename + "_SQL"
 
 with open(filename, "r") as f:

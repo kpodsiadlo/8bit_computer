@@ -61,10 +61,10 @@ async def process_incoming_message(message_json, websocket):
         if message_type == 'clockEnabled':
             clockRunning = message_json['clockEnabled']
             if clockRunning:
-                computer.clock.start(computer)
+                computer.clock.start()
                 print("START")
             else:
-                computer.clock.stop(computer)
+                computer.clock.stop()
                 print("STOP")
 
         if message_type == 'ramUpdate':
@@ -76,7 +76,7 @@ async def process_incoming_message(message_json, websocket):
                 await resetComputer(websocket)
 
         if message_type == 'reset':
-            computer.clock.stop(computer)
+            computer.clock.stop()
             await resetComputer(websocket)
 
         if message_type == 'getUpdate':
