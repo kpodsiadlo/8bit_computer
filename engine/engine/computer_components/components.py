@@ -92,22 +92,22 @@ class ProgramCounter():
         if logic_PC_OUT == 1:
             bus.state = self.state
 
-class Clock(Component):
-    def __init__(self, computer):
-        super().__init__(computer)
+class Clock():
+    def __init__(self):
+        self.state = 0
         self.clock_running = False
 
-    def tick(self):
-        self.computer.clock.state = not self.computer.clock.state
-        if self.computer.clock.state == 1:  ### only true tick
+    def tick(self, computer):
+        self.state = not self.state
+        if self.state == 1:  ### only true tick
             # print("Tick: " + computer.clock.state.__str__())
-            self.computer.do()
+            computer.do()
 
     def start(self):
-        self.computer.clock.clock_running = True
+        self.clock_running = True
 
     def stop(self):
-        self.computer.clock.clock_running = False
+        self.clock_running = False
 
 
 class Bus:

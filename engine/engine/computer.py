@@ -12,7 +12,7 @@ class Computer:
         self.ram = RAM()
 
     def reset_computer_except_ram(self):
-        self.clock = Clock(computer=self)
+        self.clock = Clock()
         self.pc = ProgramCounter()
         self.ic = InstructionCounter(computer=self)
         self.flag_register = FlagRegister(computer=self)
@@ -27,7 +27,7 @@ class Computer:
         self.display = Display()
 
     def execute_one_click_and_yield_computer_state(self):
-        self.clock.tick()
+        self.clock.tick(self)
         yield self.get_state()
 
     def yield_computer_state(self):
