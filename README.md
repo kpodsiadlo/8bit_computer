@@ -5,7 +5,7 @@ Big thanks for inspiration!
 
 Stack:<br>
 Computer engine: Python 3.8<br>
-Web app: JAVA EE 8 + JSP on JBOSS 20.0.1<br>
+Web app: JAVA EE 8 + JSP on JBOSS 20<br>
 Communication over websockets (engine-webpage) and REST (database and compiler)<br>
 Persistence: MySQL/Hibernate
 
