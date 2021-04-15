@@ -1,6 +1,6 @@
 from typing import Any
 
-from computer import Computer
+from engine.computer import Computer
 import json
 import asyncio
 import websockets

@@ -1,7 +1,7 @@
-from components import RAM, Display, MAR, ALU, ProgramCounter, Clock, Bus, \
+from engine.computer_components.components import RAM, Display, MAR, ALU, ProgramCounter, Clock, Bus, \
     RegisterA, RegisterB, InstructionRegister, InstructionCounter
-from logic_and_flags import FlagRegister, Logic
-from decoder import Decoder
+from engine.computer_components.logic_and_flags import FlagRegister, Logic
+from engine.computer_components.decoder import Decoder
 
 filename = 'fibonacci'
 
@@ -9,7 +9,7 @@ class Computer:
 
     def __init__(self):
         self.reset_computer_except_ram()
-        self.ram = RAM(computer=self)
+        self.ram = RAM()
 
     def reset_computer_except_ram(self):
         self.clock = Clock(computer=self)
@@ -18,12 +18,12 @@ class Computer:
         self.flag_register = FlagRegister(computer=self)
         self.logic = Logic()
         self.decoder = Decoder(computer=self)
-        self.buss = Bus(computer=self)
+        self.bus = Bus(computer=self)
         self.regA = RegisterA(computer=self)
         self.regB = RegisterB(computer=self)
         self.alu = ALU(self.regA, self.regB, computer=self)
         self.instruction_register = InstructionRegister(computer=self)
-        self.mar = MAR(computer=self)
+        self.mar = MAR()
         self.display = Display(computer=self)
 
     def execute_one_click_and_yield_computer_state(self):
@@ -50,7 +50,7 @@ class Computer:
             "alu": self.alu.state,
             "registerB": self.regB.state,
             "output": self.display.state,
-            "bus": self.buss.state,
+            "bus": self.bus.state,
             "logic": self.get_logic(),
             "flags": self.get_flags()
         }
@@ -65,7 +65,7 @@ class Computer:
         return flags
 
     def do(self):
-        self.buss.reset(computer=self)
+        self.bus.reset(computer=self)
 
         # increase:
         self.ic.increase()
@@ -79,7 +79,7 @@ class Computer:
         self.regB.do_out()
         self.alu.do_out()
         self.instruction_register.do_out()
-        self.ram.do_out()
+        self.ram.do_out(self.clock, self.logic, self.mar, self.bus)
 
         # ins
         self.flag_register.do_in()
@@ -87,8 +87,8 @@ class Computer:
         self.regA.do_in()
         self.regB.do_in()
         self.instruction_register.do_in()
-        self.mar.do_in()
-        self.ram.do_in()
+        self.mar.do_in(self.clock, self.logic, self.bus)
+        self.ram.do_in(self.clock, self.logic, self.mar, self.bus)
         self.display.do_in()
 
 

@@ -6,14 +6,13 @@ setInterval(updateConnectionIndicator, 1000);
 enableIncomingMessageLogging = true;
 enableOutcomingMessageLogging = true;
 
-
 function sendJsonObjectToSocket(jsonMessage) {
     if (enableOutcomingMessageLogging) {
         console.log("Sending: ")
         console.log(jsonMessage);
     }
-    var jsonMessage = addSourceToJSONMessage(jsonMessage);
-    socket.send(JSON.stringify(jsonMessage));
+    let jsonMessageWithSource = addSourceToJSONMessage(jsonMessage);
+    socket.send(JSON.stringify(jsonMessageWithSource));
 }
 
 function onLoad() {
@@ -73,9 +72,9 @@ function onToggleClock() {
 }
 
 function onReset() {
-    var resetMessage = {"type": "reset"};
+    let resetMessage = {"type": "reset"};
     sendJsonObjectToSocket(resetMessage);
-    var toggleClockButton = document.getElementById("toggle-clock-button");
+    let toggleClockButton = document.getElementById("toggle-clock-button");
     if (toggleClockButton.value === "STOP") {
         document.getElementById("toggle-clock-button").value = "START";
         enableManualClockIncrease();
@@ -98,7 +97,7 @@ function updateConnectionIndicator() {
 
 
 function getComputerStatus() {
-    var jsonMessage = {
+    let jsonMessage = {
         "type": "getUpdate"
     }
     sendJsonObjectToSocket(jsonMessage);
@@ -226,16 +225,16 @@ function decTo8DigitBinString(dec) {
 }
 
 function highlightCurrentMemoryAddress(memoryAddress) {
-    var rows = document.querySelectorAll(".memory-cell-container");
+    let rows = document.querySelectorAll(".memory-cell-container");
     rows.forEach(row => row.classList.remove("current-memory-address"))
     document.getElementById("memory-cell-container-" + memoryAddress).classList.add("current-memory-address");
 }
 
 
 function updateInstructionRegisterHigherBits(data) {
-    var instructionInBinary = decTo8DigitBinString(data).substring(4);
+    let instructionInBinary = decTo8DigitBinString(data).substring(4);
     document.getElementById("instruction-register-display-higher-bits").value = instructionInBinary;
-    var opcode = machine_code[instructionInBinary];
+    let opcode = machine_code[instructionInBinary];
     document.getElementById("instruction-register-opcode").innerText = ("(" + opcode + ")").toUpperCase();
 }
 
@@ -272,7 +271,7 @@ function updateBus(data) {
 }
 
 function updateClockRunning(data) {
-    var clockStatus = document.getElementById("clock-running-display");
+    let clockStatus = document.getElementById("clock-running-display");
     if (data === true) {
         clockStatus.innerText = "Clock: Running";
         disableManualClockIncrease();
@@ -284,14 +283,14 @@ function updateClockRunning(data) {
 }
 
 function enableManualClockIncrease() {
-    var manualClock = document.getElementById("manual-clock-button");
+    let manualClock = document.getElementById("manual-clock-button");
     manualClock.classList.remove("btn-secondary");
     manualClock.classList.add("btn-success");
     manualClock.disabled = false;
 }
 
 function disableManualClockIncrease() {
-    var manualClock = document.getElementById("manual-clock-button");
+    let manualClock = document.getElementById("manual-clock-button");
     manualClock.classList.remove("btn-success");
     manualClock.classList.add("btn-secondary");
     manualClock.disabled = true;
@@ -304,10 +303,10 @@ function addSourceToJSONMessage(jsonMessage) {
 }
 
 function getProgramsfromDatabase() {
-    var xmlhttp = new XMLHttpRequest();
+    let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            var incomingJson = JSON.parse(this.responseText);
+            let incomingJson = JSON.parse(this.responseText);
             updateProgramList(incomingJson);
         }
     };
@@ -315,7 +314,7 @@ function getProgramsfromDatabase() {
     xmlhttp.send();
 
     function updateProgramList(incomingListOfPrograms) {
-        var displayedListOfPrograms = document.getElementById("program-selector");
+        let displayedListOfPrograms = document.getElementById("program-selector");
         result = "<option value=\"\" selected=\"\" disabled=\"\">Select program:</option>";
         for (i = 0; i < incomingListOfPrograms.length; i++) {
             result += createOptionEntry(incomingListOfPrograms[i]);
@@ -343,10 +342,10 @@ function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValue
 }
 
 function getProgramFromDatabaseAndSendToEngine(databaseId) {
-    var xmlhttp = new XMLHttpRequest();
+    let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            var incomingJson = JSON.parse(this.responseText);
+            let incomingJson = JSON.parse(this.responseText);
             let program = convertMemoryContentsFromDatabaseToDecimalValuesArray(incomingJson.contents)
             sendProgramAsIntArrayToServer(program);
         }
