@@ -10,15 +10,15 @@ class RAM :
     def __init__(self):
         self.state = [random.randint(0, 255) for memory_cell in range(16)]
 
-    def do_in(self, clock, logic, mar, bus):
-        if clock.state == 1:
-            if logic.RAM_IN == 1:
-                self.state[mar.state] = bus.state
+    def do_in(self, clock_state, logic_RAM_IN, mar_state, bus):
+        if clock_state == 1:
+            if logic_RAM_IN == 1:
+                self.state[mar_state] = bus.state
 
-    def do_out(self, clock, logic, mar, bus):
-        if clock.state == 1:
-            if logic.RAM_OUT == 1:
-                bus.state = self.state[mar.state]
+    def do_out(self, clock_state, logic_RAM_OUT, mar_state, bus):
+        if clock_state == 1:
+            if logic_RAM_OUT == 1:
+                bus.state = self.state[mar_state]
 
 
 class Display(Component):
@@ -106,13 +106,12 @@ class Clock(Component):
         self.computer.clock.clock_running = False
 
 
-class Bus(Component):
-    def __init__(self, computer):
-        super().__init__(computer)
+class Bus:
+    def __init__(self):
         self.state = None
 
-    def reset(self, computer):
-        computer.bus.state = None
+    def reset(self):
+        self.__init__()
 
 
 class RegisterA(Component):

@@ -79,7 +79,7 @@ class Computer:
         self.regB.do_out()
         self.alu.do_out()
         self.instruction_register.do_out()
-        self.ram.do_out(self.clock, self.logic, self.mar, self.bus)
+        self.ram.do_out(self.clock.state, self.logic.RAM_OUT, self.mar.state, self.bus)
 
         # ins
         self.flag_register.do_in()
@@ -88,7 +88,7 @@ class Computer:
         self.regB.do_in()
         self.instruction_register.do_in()
         self.mar.do_in(self.clock, self.logic, self.bus)
-        self.ram.do_in(self.clock, self.logic, self.mar, self.bus)
+        self.ram.do_in(self.clock.state, self.logic.RAM_IN, self.mar.state, self.bus)
         self.display.do_in()
 
 

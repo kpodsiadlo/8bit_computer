@@ -1,7 +1,6 @@
 import pytest
 
-from ..computer_components.components import RAM, Bus, Clock, MAR
-from ..computer_components.logic_and_flags import Logic
+from ..computer_components.components import RAM, Bus
 
 @pytest.fixture(autouse=True)
 def ram():
@@ -16,15 +15,21 @@ def test_values_between_0_and_255_in_ram_after_initialization(ram):
 def test_no_None_values_in_ram_after_initialization(ram):
     assert(all(item is not None for item in ram.state))
 
-def test_ram_updates_its_state_when_it_should(ram):
-    clock = Clock()
-    logic = Logic()
-    mar = MAR()
+@pytest.mark.parametrize("mar_state", list(range(15)))
+def test_ram_updates_its_state_when_Logic_RAM_IN_is_set_for_all_correct_ram_values(ram, mar_state):
+    clock_state = 1
+    logic_RAM_IN = 1
     bus = Bus()
     bus.state = 135
-    logic.RAM_IN = 1
-    clock.state = 1
-    mar.state = 7
-    ram.do_in(clock, logic, mar, bus)
-    assert(ram[mar.state] == bus.state)
+    ram.do_in(clock_state, logic_RAM_IN, mar_state, bus)
+    assert(ram.state[mar_state] == bus.state)
+
+@pytest.mark.parametrize("mar_state", list(range(15)))
+def test_ram_updates_buss_state_when_Logic_RAM_OUT_is_set_for_all_correct_ram_values(ram, mar_state):
+    clock_state = 1
+    logic_RAM_OUT = 1
+    bus = Bus()
+    bus.state = 135
+    ram.do_in(clock_state, logic_RAM_OUT, mar_state, bus)
+    assert(ram.state[mar_state] == bus.state)
 
