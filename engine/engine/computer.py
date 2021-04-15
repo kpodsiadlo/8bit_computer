@@ -1,6 +1,5 @@
 from engine.computer_components.components import RAM, Display, MAR, ALU, ProgramCounter, Clock, Bus, \
-    RegisterA, RegisterB, InstructionRegister, InstructionCounter
-from engine.computer_components.logic_and_flags import FlagRegister, Logic
+    RegisterA, RegisterB, InstructionRegister, InstructionCounter, FlagRegister
 from engine.computer_components.decoder import Decoder
 from engine.utilities.input_data import get_input_data
 
@@ -13,19 +12,19 @@ class Computer:
         self.ram = RAM()
 
     def reset_computer_except_ram(self):
-        self.clock = Clock()
-        self.pc = ProgramCounter()
-        self.ic = InstructionCounter()
-        self.flag_register = FlagRegister()
-        self.logic = Logic()
-        self.decoder = Decoder(computer=self)
         self.bus = Bus()
+        self.clock = Clock()
+        self.ic = InstructionCounter()
+        self.decoder = Decoder()
+
+        self.pc = ProgramCounter()
         self.regA = RegisterA()
         self.regB = RegisterB()
+        self.mar = MAR()
         self.alu = ALU(self.regA, self.regB)
         self.instruction_register = InstructionRegister()
-        self.mar = MAR()
         self.display = Display()
+        self.flag_register = FlagRegister()
 
     def execute_one_click_and_yield_computer_state(self):
         self.clock.tick(self)
@@ -58,7 +57,7 @@ class Computer:
         return state
 
     def get_logic(self):
-        logic = self.logic.__dict__
+        logic = self.decoder.logic.__dict__
         return logic
 
     def get_flags(self):
@@ -71,26 +70,26 @@ class Computer:
         # increase:
         self.ic.increase(self.clock.state)
 
-        self.decoder.do()
-        self.pc.increase(self.clock.state, self.logic.PC_enable)
+        self.decoder.do(self.ic.state, self.clock, self.instruction_register, self.flag_register)
+        self.pc.increase(self.clock.state, self.decoder.logic.PC_enable)
 
         # outs
-        self.pc.do_out(self.logic.PC_OUT, self.bus)
-        self.regA.do_out(self.clock.state, self.logic.AregisterOUT, self.bus)
-        self.regB.do_out(self.clock.state, self.logic.BregisterOUT, self.bus)
-        self.alu.do_out(self.regA.state, self.regB.state, self.logic.ALU_OUT, self.logic.ALU_Substract, self.bus)
-        self.instruction_register.do_out(self.clock.state, self.logic.IregisterOUT, self.bus)
-        self.ram.do_out(self.clock.state, self.logic.RAM_OUT, self.mar.state, self.bus)
+        self.pc.do_out(self.decoder.logic.PC_OUT, self.bus)
+        self.regA.do_out(self.clock.state, self.decoder.logic.AregisterOUT, self.bus)
+        self.regB.do_out(self.clock.state, self.decoder.logic.BregisterOUT, self.bus)
+        self.alu.do_out(self.regA.state, self.regB.state, self.decoder.logic.ALU_OUT, self.decoder.logic.ALU_Substract, self.bus)
+        self.flag_register.do_in(self.decoder.logic.flag_IN, self.alu.carry, self.alu.zero)
+        self.instruction_register.do_out(self.clock.state, self.decoder.logic.IregisterOUT, self.bus)
+        self.ram.do_out(self.clock.state, self.decoder.logic.RAM_OUT, self.mar.state, self.bus)
 
         # ins
-        self.flag_register.do_in(self.logic.flag_IN, self.alu.carry, self.alu.zero)
-        self.pc.do_in(self.logic.PC_Jump, self.bus)
-        self.regA.do_in(self.clock.state, self.logic.AregisterIN, self.bus)
-        self.regB.do_in(self.clock.state, self.logic.BregisterIN, self.bus)
-        self.instruction_register.do_in(self.clock.state, self.logic.IregisterIN, self.bus)
-        self.mar.do_in(self.clock, self.logic, self.bus)
-        self.ram.do_in(self.clock.state, self.logic.RAM_IN, self.mar.state, self.bus)
-        self.display.do_in(self.clock.state, self.logic.display_IN, self.bus)
+        self.pc.do_in(self.decoder.logic.PC_Jump, self.bus)
+        self.regA.do_in(self.clock.state, self.decoder.logic.AregisterIN, self.bus)
+        self.regB.do_in(self.clock.state, self.decoder.logic.BregisterIN, self.bus)
+        self.instruction_register.do_in(self.clock.state, self.decoder.logic.IregisterIN, self.bus)
+        self.mar.do_in(self.clock, self.decoder.logic, self.bus)
+        self.ram.do_in(self.clock.state, self.decoder.logic.RAM_IN, self.mar.state, self.bus)
+        self.display.do_in(self.clock.state, self.decoder.logic.display_IN, self.bus)
 
     def load_program(self, program_name):
         self.ram.state = get_input_data(program_name)

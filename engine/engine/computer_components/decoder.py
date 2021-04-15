@@ -1,108 +1,131 @@
-class Decoder:
-    def __init__(self, computer):
-        self.computer = computer
+class Logic:
+    def __init__(self):
+        self.AregisterIN = 0
+        self.AregisterOUT = 0
+        self.BregisterIN = 0
+        self.BregisterOUT = 0
+        self.IregisterIN = 0
+        self.IregisterOUT = 0
+        self.PC_enable = 0
+        self.PC_OUT = 0
+        self.PC_Jump = 0
+        self.ALU_OUT = 0
+        self.ALU_Substract = 0
+        self.RAM_IN = 0
+        self.RAM_OUT = 0
+        self.MAR_IN = 0
+        self.display_IN = 0
+        self.flag_IN = 0
 
-    def do(self):
+    def reset(self):
+        self.__init__()
+
+class Decoder:
+
+    def __init__(self):
+        self.logic = Logic()
+
+    def do(self, ic_state, clock_object, instruction_register_object, flag_register_object):
         # if clock.state == 1:
         #     print("T: " + ic.state.__str__())
 
-        self.computer.logic.reset()
-        if self.computer.ic.state == 0:  # Microinstruction 0 (Fetch)
-            self.computer.logic.PC_OUT = 1
-            self.computer.logic.MAR_IN = 1
-        elif self.computer.ic.state == 1:  # Microinstruction 1 (Fetch)
-            self.computer.logic.RAM_OUT = 1
-            self.computer.logic.IregisterIN = 1
-            self.computer.logic.PC_enable = 1
-        elif self.computer.ic.state > 1:
-            self.computer.decoder.execute()
+        self.logic.reset()
+        if ic_state == 0:  # Microinstruction 0 (Fetch)
+            self.logic.PC_OUT = 1
+            self.logic.MAR_IN = 1
+        elif ic_state == 1:  # Microinstruction 1 (Fetch)
+            self.logic.RAM_OUT = 1
+            self.logic.IregisterIN = 1
+            self.logic.PC_enable = 1
+        elif ic_state > 1:
+            self.execute(ic_state, instruction_register_object, flag_register_object, clock_object)
 
-    def execute(self):
+    def execute(self, ic_state, instruction_register_object, flag_register_object, clock_object):
 
-        if self.computer.instruction_register.higher_bits == 0:
+        if instruction_register_object.higher_bits == 0:
             print("NOP")
             pass
 
-        elif self.computer.instruction_register.higher_bits == 1:  ## lda  0001mmmm
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 1:  ## lda  0001
+            if ic_state == 2:
                 print("LDA")
-                self.computer.logic.IregisterOUT = 1
-                self.computer.logic.MAR_IN = 1
-            elif self.computer.ic.state == 3:
-                self.computer.logic.RAM_OUT = 1
-                self.computer.logic.AregisterIN = 1
+                self.logic.IregisterOUT = 1
+                self.logic.MAR_IN = 1
+            elif ic_state == 3:
+                self.logic.RAM_OUT = 1
+                self.logic.AregisterIN = 1
 
-        elif self.computer.instruction_register.higher_bits == 2:  # add    0010 mmmm
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 2:  # add    0010
+            if ic_state == 2:
                 print("ADD")
-                self.computer.logic.IregisterOUT = 1
-                self.computer.logic.MAR_IN = 1
-            elif self.computer.ic.state == 3:
-                self.computer.logic.RAM_OUT = 1
-                self.computer.logic.BregisterIN = 1
-            elif self.computer.ic.state == 4:
-                self.computer.logic.ALU_OUT = 1
-                self.computer.logic.AregisterIN = 1
-                self.computer.logic.flag_IN = 1
+                self.logic.IregisterOUT = 1
+                self.logic.MAR_IN = 1
+            elif ic_state == 3:
+                self.logic.RAM_OUT = 1
+                self.logic.BregisterIN = 1
+            elif ic_state == 4:
+                self.logic.ALU_OUT = 1
+                self.logic.AregisterIN = 1
+                self.logic.flag_IN = 1
 
-        elif self.computer.instruction_register.higher_bits == 3:  # subtract  0011
-            if self.computer.ic.state == 2:
-                self.computer.logic.IregisterOUT = 1
-                self.computer.logic.MAR_IN = 1
-            elif self.computer.ic.state == 3:
-                self.computer.logic.RAM_OUT = 1
-                self.computer.logic.BregisterIN = 1
-            if self.computer.ic.state == 4:
-                self.computer.logic.ALU_Substract = 1
-                self.computer.logic.ALU_OUT = 1
-                self.computer.logic.AregisterIN = 1
-                self.computer.logic.flag_IN = 1
+        elif instruction_register_object.higher_bits == 3:  # subtract  0011
+            if ic_state == 2:
+                self.logic.IregisterOUT = 1
+                self.logic.MAR_IN = 1
+            elif ic_state == 3:
+                self.logic.RAM_OUT = 1
+                self.logic.BregisterIN = 1
+            if ic_state == 4:
+                self.logic.ALU_Substract = 1
+                self.logic.ALU_OUT = 1
+                self.logic.AregisterIN = 1
+                self.logic.flag_IN = 1
 
 
-        elif self.computer.instruction_register.higher_bits == 4:  # sta 0100
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 4:  # sta 0100
+            if ic_state == 2:
                 print("STA")
-                self.computer.logic.IregisterOUT = 1
-                self.computer.logic.MAR_IN = 1
-            elif self.computer.ic.state == 3:
-                self.computer.logic.AregisterOUT = 1
-                self.computer.logic.RAM_IN = 1
+                self.logic.IregisterOUT = 1
+                self.logic.MAR_IN = 1
+            elif ic_state == 3:
+                self.logic.AregisterOUT = 1
+                self.logic.RAM_IN = 1
 
-        elif self.computer.instruction_register.higher_bits == 5:  # ldi 0101
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 5:  # ldi 0101
+            if ic_state == 2:
                 print("LDI")
-                self.computer.logic.IregisterOUT = 1
-                self.computer.logic.AregisterIN = 1
+                self.logic.IregisterOUT = 1
+                self.logic.AregisterIN = 1
 
-        elif self.computer.instruction_register.higher_bits == 6:  # jmp 0110
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 6:  # jmp 0110
+            if ic_state == 2:
                 print("JMP")
-                self.computer.logic.IregisterOUT = 1
-                self.computer.logic.PC_Jump = 1
+                self.logic.IregisterOUT = 1
+                self.logic.PC_Jump = 1
 
-        elif self.computer.instruction_register.higher_bits == 7:  # jc 0111
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 7:  # jc 0111
+            if ic_state == 2:
                 print("JC")
-                if self.computer.flag_register.carry == 1:
-                    self.computer.logic.IregisterOUT = 1
-                    self.computer.logic.PC_Jump = 1
+                if flag_register_object.carry == 1:
+                    self.logic.IregisterOUT = 1
+                    self.logic.PC_Jump = 1
 
-        elif self.computer.instruction_register.higher_bits == 8:  # jz 1000
-            if self.computer.ic.state == 2:
-                if self.computer.flag_register.zero == 1:
+        elif instruction_register_object.higher_bits == 8:  # jz 1000
+            if ic_state == 2:
+                if flag_register_object.zero == 1:
                     print("JZ")
-                    self.computer.logic.IregisterOUT = 1
-                    self.computer.logic.PC_Jump = 1
+                    self.logic.IregisterOUT = 1
+                    self.logic.PC_Jump = 1
 
         #########
 
-        elif self.computer.instruction_register.higher_bits == 14:  # display 1110
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 14:  # display 1110
+            if ic_state == 2:
                 print("OUT")
-                self.computer.logic.AregisterOUT = 1
-                self.computer.logic.display_IN = 1
+                self.logic.AregisterOUT = 1
+                self.logic.display_IN = 1
 
-        elif self.computer.instruction_register.higher_bits == 15:  # halt 1111
-            if self.computer.ic.state == 2:
+        elif instruction_register_object.higher_bits == 15:  # halt 1111
+            if ic_state == 2:
                 print("HLT")
-                self.computer.clock.stop()
+                clock_object.stop()

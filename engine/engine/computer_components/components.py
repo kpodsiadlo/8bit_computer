@@ -1,11 +1,5 @@
 import random
 
-class Component:
-    def __init__(self, computer):
-        self.state = 0
-        self.computer = computer
-
-
 class RAM :
     def __init__(self):
         self.state = [random.randint(0, 255) for memory_cell in range(16)]
@@ -192,3 +186,21 @@ class InstructionCounter():
                 self.state = 0
 
             # print("Instruction counter:" + self.state.__str__())
+
+class FlagRegister():
+    def __init__(self):
+        self.carry = 0
+        self.zero = 0
+
+    def do_in(self, logic_flag_IN, alu_carry, alu_zero):
+        if logic_flag_IN == 1:
+            self.carry = alu_carry
+            if self.carry == 1:
+                #                print("Carry Flag")
+                pass
+            self.zero = alu_zero
+            if self.zero == 1:
+                #                print("Zero Flag")
+                pass
+
+

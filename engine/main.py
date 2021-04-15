@@ -21,7 +21,7 @@ async def run_computer(websocket):
             await asyncio.sleep(float(period))
         else:
             await send_ping(websocket)
-            print(cycles_elapsed)
+            #print(cycles_elapsed)
             await asyncio.sleep(1)
 
 
