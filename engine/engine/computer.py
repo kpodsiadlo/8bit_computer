@@ -18,13 +18,13 @@ class Computer:
         self.flag_register = FlagRegister(computer=self)
         self.logic = Logic()
         self.decoder = Decoder(computer=self)
-        self.bus = Bus(computer=self)
+        self.bus = Bus()
         self.regA = RegisterA(computer=self)
         self.regB = RegisterB(computer=self)
         self.alu = ALU(self.regA, self.regB, computer=self)
         self.instruction_register = InstructionRegister(computer=self)
         self.mar = MAR()
-        self.display = Display(computer=self)
+        self.display = Display()
 
     def execute_one_click_and_yield_computer_state(self):
         self.clock.tick()
@@ -65,7 +65,7 @@ class Computer:
         return flags
 
     def do(self):
-        self.bus.reset(computer=self)
+        self.bus.reset()
 
         # increase:
         self.ic.increase()
@@ -89,6 +89,11 @@ class Computer:
         self.instruction_register.do_in()
         self.mar.do_in(self.clock, self.logic, self.bus)
         self.ram.do_in(self.clock.state, self.logic.RAM_IN, self.mar.state, self.bus)
-        self.display.do_in()
+        self.display.do_in(self.clock.state, self.logic.display_IN, self.bus)
+
+    def __eq__(self, other):
+        if isinstance(other, Computer):
+            return vars(self) == vars(other)
+        return False
 
 

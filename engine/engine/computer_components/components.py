@@ -21,11 +21,11 @@ class RAM :
                 bus.state = self.state[mar_state]
 
 
-class Display(Component):
-    def do_in(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.display_IN == 1:
-                self.state = self.computer.bus.state
+class Display:
+    def do_in(self, clock_state, logic_display_IN, bus):
+        if clock_state == 1:
+            if logic_display_IN == 1:
+                self.state = bus.state
                 print("\n#############")
                 print("Display: " + self.state.__str__())
                 print("#############")
