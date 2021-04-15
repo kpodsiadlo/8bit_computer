@@ -10,14 +10,18 @@ clock_speed = 10
 period = 1/clock_speed
 computer = Computer()
 
+
 async def run_computer(websocket):
+    cycles_elapsed = 0
     await get_computer_state_and_send_to_server(websocket)
     while True:
         if computer.clock.clock_running == True:
             await execute_one_cycle_and_send_update_to_server(websocket)
+            cycles_elapsed += 1
             await asyncio.sleep(float(period))
         else:
             await send_ping(websocket)
+            print(cycles_elapsed)
             await asyncio.sleep(1)
 
 

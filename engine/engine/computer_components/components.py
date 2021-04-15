@@ -181,13 +181,12 @@ class InstructionRegister():
         # print("Data         " + self.lower_bits.__str__())
 
 
-class InstructionCounter(Component):
-    def __init__(self, computer):
-        super().__init__(computer)
+class InstructionCounter():
+    def __init__(self):
         self.state = 4
 
-    def increase(self):
-        if self.computer.clock.state == 1:
+    def increase(self, clock_state):
+        if clock_state == 1:
             self.state += 1
             if self.state > 4:
                 self.state = 0

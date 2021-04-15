@@ -2,8 +2,9 @@ from engine.computer_components.components import RAM, Display, MAR, ALU, Progra
     RegisterA, RegisterB, InstructionRegister, InstructionCounter
 from engine.computer_components.logic_and_flags import FlagRegister, Logic
 from engine.computer_components.decoder import Decoder
+from engine.utilities.input_data import get_input_data
 
-filename = 'fibonacci'
+#filename = 'fibonacci'
 
 class Computer:
 
@@ -14,8 +15,8 @@ class Computer:
     def reset_computer_except_ram(self):
         self.clock = Clock()
         self.pc = ProgramCounter()
-        self.ic = InstructionCounter(computer=self)
-        self.flag_register = FlagRegister(computer=self)
+        self.ic = InstructionCounter()
+        self.flag_register = FlagRegister()
         self.logic = Logic()
         self.decoder = Decoder(computer=self)
         self.bus = Bus()
@@ -68,7 +69,7 @@ class Computer:
         self.bus.reset()
 
         # increase:
-        self.ic.increase()
+        self.ic.increase(self.clock.state)
 
         self.decoder.do()
         self.pc.increase(self.clock.state, self.logic.PC_enable)
@@ -82,7 +83,7 @@ class Computer:
         self.ram.do_out(self.clock.state, self.logic.RAM_OUT, self.mar.state, self.bus)
 
         # ins
-        self.flag_register.do_in()
+        self.flag_register.do_in(self.logic.flag_IN, self.alu.carry, self.alu.zero)
         self.pc.do_in(self.logic.PC_Jump, self.bus)
         self.regA.do_in(self.clock.state, self.logic.AregisterIN, self.bus)
         self.regB.do_in(self.clock.state, self.logic.BregisterIN, self.bus)
@@ -91,9 +92,7 @@ class Computer:
         self.ram.do_in(self.clock.state, self.logic.RAM_IN, self.mar.state, self.bus)
         self.display.do_in(self.clock.state, self.logic.display_IN, self.bus)
 
-    def __eq__(self, other):
-        if isinstance(other, Computer):
-            return vars(self) == vars(other)
-        return False
+    def load_program(self, program_name):
+        self.ram.state = get_input_data(program_name)
 
 
