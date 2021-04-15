@@ -24,7 +24,6 @@ class ComputerController():
             data = next(self.computer.toggle_clock_and_yield_computer_state())
         return data
 
-
     def reset_computer_and_return_state(self):
         self.computer.reset_computer_except_ram()
         data = next(self.computer.yield_computer_state())

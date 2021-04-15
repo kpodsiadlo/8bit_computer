@@ -30,6 +30,11 @@ async def send_to_server(websocket, data):
     await websocket.send(data_json)
 
 
+async def send_ping(websocket):
+    data = {'type': 'clockStopped'}
+    await send_to_server(websocket, data)
+
+
 async def receive(message, websocket):
     message_json = json.loads(message)
     print("Data received" + message_json.__str__())
@@ -50,22 +55,12 @@ async def process_incoming_message(message_json, websocket):
             await send_to_server(websocket, data)
 
         if message_type == 'clockEnabled':
-            clockRunning = message_json['clockEnabled']
-            if clockRunning:
-                controller.start_computer()
-                print("START")
-            else:
-                controller.stop_computer()
-                print("STOP")
+            start_or_stop_computer(message_json)
 
         if message_type == 'ramUpdate':
-            clockRunning = controller.get_clock_running_state()
-            if clockRunning:
-                controller.set_computer_ram(message_json['memoryContents'])
-            else:
-                controller.set_computer_ram(message_json['memoryContents'])
-                data = controller.reset_computer_and_return_state()
-                await send_to_server(websocket, data)
+            updateRam(message_json)
+            data = controller.get_computer_state()
+            await send_to_server(websocket, data)
 
         if message_type == 'reset':
             controller.stop_computer()
@@ -77,11 +72,23 @@ async def process_incoming_message(message_json, websocket):
             await send_to_server(data, websocket)
 
 
-async def send_ping(websocket):
-    data = {'type': 'clockStopped'}
-    await send_to_server(websocket, data)
+def start_or_stop_computer(message_json):
+    clockRunning = message_json['clockEnabled']
+    if clockRunning:
+        controller.start_computer()
+        print("START")
+    else:
+        controller.stop_computer()
+        print("STOP")
 
 
+
+def updateRam(message_json):
+    clockRunning = controller.get_clock_running_state()
+    if clockRunning:
+        controller.set_computer_ram(message_json['memoryContents'])
+    else:
+        controller.set_computer_ram(message_json['memoryContents'])
 
 
 async def producer_handler(websocket):
