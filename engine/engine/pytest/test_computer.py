@@ -15,10 +15,11 @@ def test_computer_runs_at_all():
 
 def test_computer_executes_fibonacci_correctly():
     cycles = 554
+    last_fibonacci_number = 233
     computer = Computer()
     computer.load_program("engine/programs/fibonacci")
     for i in range(cycles):
         for j in computer.toggle_clock_and_yield_computer_state():
             pass
-    assert(computer.display.state == 233)
+    assert(computer.display.state == last_fibonacci_number)
 
