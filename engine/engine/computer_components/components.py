@@ -22,6 +22,9 @@ class RAM :
 
 
 class Display:
+    def __init__(self):
+        self.state = 0
+
     def do_in(self, clock_state, logic_display_IN, bus):
         if clock_state == 1:
             if logic_display_IN == 1:
@@ -39,24 +42,23 @@ class MAR():
             if logic.MAR_IN == 1:
                 self.state = bus.state
 
-class ALU(Component):
-    def __init__(self, regA, regB, computer):
-        super().__init__(computer)
+class ALU():
+    def __init__(self, regA, regB):
         self.state = regA.state + regB.state
         self.zero = 0
         self.carry = 0
 
-    def do_out(self):
-        self.state = self.computer.regA.state + self.computer.regB.state
-        self.calculate()
-        if self.computer.logic.ALU_OUT == 1:
-            self.computer.bus.state = self.state
+    def do_out(self, register_a, register_b, logic_alu_out, logic_alu_subtract, bus):
+        self.state = register_a + register_b
+        self.calculate(register_a, register_b, logic_alu_subtract)
+        if logic_alu_out == 1:
+            bus.state = self.state
 
-    def calculate(self):
+    def calculate(self, register_a, register_b, logic_alu_subtract):
         self.zero = 0
         self.carry = 0
-        if self.computer.logic.ALU_Substract == 1:
-            self.state = self.computer.regA.state - self.computer.regB.state
+        if logic_alu_subtract == 1:
+            self.state = register_a - register_b
 
         if self.state > 255:
             self.state -= 256
@@ -69,24 +71,26 @@ class ALU(Component):
             self.state += 256
             self.carry = 1
 
-class ProgramCounter(Component):
+class ProgramCounter():
+    def __init__(self):
+        self.state = 0
 
-    def increase(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.PC_enable == 1:
+    def increase(self, clock_state, logic_PC_enable):
+        if clock_state == 1:
+            if logic_PC_enable == 1:
                 self.state += 1
                 #               print("PC: " + (self.state-1).__str__())
                 print(".", end="", flush=True)
             if self.state > 15:
                 self.state = 0
 
-    def do_in(self):
-        if self.computer.logic.PC_Jump == 1:
-            self.state = self.computer.bus.state
+    def do_in(self, logic_PC_JUMP, bus):
+        if logic_PC_JUMP == 1:
+            self.state = bus.state
 
-    def do_out(self):
-        if self.computer.logic.PC_OUT == 1:
-            self.computer.bus.state = self.state
+    def do_out(self, logic_PC_OUT, bus):
+        if logic_PC_OUT == 1:
+            bus.state = self.state
 
 class Clock(Component):
     def __init__(self, computer):
@@ -114,54 +118,59 @@ class Bus:
         self.__init__()
 
 
-class RegisterA(Component):
-    def do_in(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.AregisterIN == 1:
-                self.state = self.computer.bus.state
+class RegisterA():
+    def __init__(self):
+        self.state = 0
+
+    def do_in(self, clock_state, logic_AregisterIN, bus):
+        if clock_state == 1:
+            if logic_AregisterIN == 1:
+                self.state = bus.state
 
                 # print("RegA: " + self.state.__str__())
 
-    def do_out(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.AregisterOUT == 1:
-                self.computer.bus.state = self.state
+    def do_out(self, clock_state, logic_AregisterOUT, bus):
+        if clock_state == 1:
+            if logic_AregisterOUT == 1:
+                bus.state = self.state
 
                 # print("RegA: " + self.state.__str__())
 
-class RegisterB(Component):
+class RegisterB():
+    def __init__(self):
+        self.state = 0
 
-    def do_in(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.BregisterIN == 1:
-                self.state = self.computer.bus.state
-
-                # print("RegB: " + self.state.__str__())
-
-    def do_out(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.BregisterOUT == 1:
-                self.computer.bus.state = self.state
+    def do_in(self, clock_state, logic_BregisterIN, bus):
+        if clock_state == 1:
+            if logic_BregisterIN == 1:
+                self.state = bus.state
 
                 # print("RegB: " + self.state.__str__())
 
-class InstructionRegister(Component):
-    def __init__(self, computer):
-        super().__init__(computer)
+    def do_out(self, clock_state, logic_BregisterOUT, bus):
+        if clock_state == 1:
+            if logic_BregisterOUT == 1:
+                bus.state = self.state
+
+                # print("RegB: " + self.state.__str__())
+
+class InstructionRegister():
+    def __init__(self):
+        self.state = 0
         self.higher_bits = 0
         self.lower_bits = 0
 
-    def do_in(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.IregisterIN == 1:
-                self.state = self.computer.bus.state
+    def do_in(self, clock_state, logic_IregisterIN, bus):
+        if clock_state == 1:
+            if logic_IregisterIN == 1:
+                self.state = bus.state
                 self.split()
                 # print("Instruction register: " + self.state.__str__())
 
-    def do_out(self):
-        if self.computer.clock.state == 1:
-            if self.computer.logic.IregisterOUT == 1:
-                self.computer.bus.state = self.lower_bits
+    def do_out(self, clockState, logic_IregisterOUT, bus):
+        if clockState == 1:
+            if logic_IregisterOUT == 1:
+                bus.state = self.lower_bits
                 # print("Instruction register:: " + self.state.__str__())
 
     def split(self):

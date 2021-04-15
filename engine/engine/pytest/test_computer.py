@@ -6,6 +6,15 @@ def test_computer_initiates_at_all():
     computer = Computer()
     assert(computer)
 
+def test_computer_runs_at_all():
+    computer = Computer()
+    for i in range(200):
+        for i in computer.execute_one_click_and_yield_computer_state():
+            computer_state = i
+    assert(computer_state)
+
+
+
 # def test_computer_resets_logic_correctly():
 #     new_computer = Computer()
 #     test_computer = copy.copy(new_computer)
