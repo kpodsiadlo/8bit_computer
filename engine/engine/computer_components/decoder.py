@@ -20,12 +20,13 @@ class Logic:
     def reset(self):
         self.__init__()
 
+
 class Decoder:
 
     def __init__(self):
         self.logic = Logic()
 
-    def do(self, ic_state, clock_object, instruction_register_object, flag_register_object):
+    def set_instruction_register(self, ic_state, clock_object, flag_register_object, instruction_register_object):
         # if clock.state == 1:
         #     print("T: " + ic.state.__str__())
 

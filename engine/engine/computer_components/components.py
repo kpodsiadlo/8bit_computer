@@ -1,69 +1,23 @@
 import random
 
-class RAM :
-    def __init__(self):
-        self.state = [random.randint(0, 255) for memory_cell in range(16)]
 
-    def do_in(self, clock_state, logic_RAM_IN, mar_state, bus):
-        if clock_state == 1:
-            if logic_RAM_IN == 1:
-                self.state[mar_state] = bus.state
-
-    def do_out(self, clock_state, logic_RAM_OUT, mar_state, bus):
-        if clock_state == 1:
-            if logic_RAM_OUT == 1:
-                bus.state = self.state[mar_state]
-
-
-class Display:
+class Clock():
     def __init__(self):
         self.state = 0
+        self.clock_running = False
 
-    def do_in(self, clock_state, logic_display_IN, bus):
-        if clock_state == 1:
-            if logic_display_IN == 1:
-                self.state = bus.state
-                print("\n#############")
-                print("Display: " + self.state.__str__())
-                print("#############")
+    def toggle(self, computer):
+        self.state = not self.state
+        if self.state == 1:  ### only true tick
+            # print("Tick: " + computer.clock.state.__str__())
+            computer.emulate_components()
 
-class MAR():
-    def __init__(self):
-        self.state = 0
+    def start(self):
+        self.clock_running = True
 
-    def do_in(self, clock, logic, bus):
-        if clock.state == 1:
-            if logic.MAR_IN == 1:
-                self.state = bus.state
+    def stop(self):
+        self.clock_running = False
 
-class ALU():
-    def __init__(self, regA, regB):
-        self.state = regA.state + regB.state
-        self.zero = 0
-        self.carry = 0
-
-    def do_out(self, register_a, register_b, logic_alu_out, logic_alu_subtract, bus):
-        self.state = register_a + register_b
-        self.calculate(register_a, register_b, logic_alu_subtract)
-        if logic_alu_out == 1:
-            bus.state = self.state
-
-    def calculate(self, register_a, register_b, logic_alu_subtract):
-        self.zero = 0
-        self.carry = 0
-        if logic_alu_subtract == 1:
-            self.state = register_a - register_b
-
-        if self.state > 255:
-            self.state -= 256
-            self.carry = 1
-        #            print("ALU Carry")
-        if self.state == 0:
-            self.zero = 1
-        #            print("ALU ZERO")
-        if self.state < 0:
-            self.state += 256
-            self.carry = 1
 
 class ProgramCounter():
     def __init__(self):
@@ -78,30 +32,51 @@ class ProgramCounter():
             if self.state > 15:
                 self.state = 0
 
-    def do_in(self, logic_PC_JUMP, bus):
+    def get_data_from_bus(self, logic_PC_JUMP, bus):
         if logic_PC_JUMP == 1:
             self.state = bus.state
 
-    def do_out(self, logic_PC_OUT, bus):
+    def output_to_bus(self, logic_PC_OUT, bus):
         if logic_PC_OUT == 1:
             bus.state = self.state
 
-class Clock():
+
+class MAR():
     def __init__(self):
         self.state = 0
-        self.clock_running = False
 
-    def tick(self, computer):
-        self.state = not self.state
-        if self.state == 1:  ### only true tick
-            # print("Tick: " + computer.clock.state.__str__())
-            computer.do()
+    def get_data_from_bus(self, clock_state, logic, bus):
+        if clock_state == 1:
+            if logic.MAR_IN == 1:
+                self.state = bus.state
 
-    def start(self):
-        self.clock_running = True
 
-    def stop(self):
-        self.clock_running = False
+class RAM:
+    def __init__(self):
+        self.state = [random.randint(0, 255) for memory_cell in range(16)]
+
+    def get_data_from_bus(self, clock_state, logic_RAM_IN, mar_state, bus):
+        if clock_state == 1:
+            if logic_RAM_IN == 1:
+                self.state[mar_state] = bus.state
+
+    def output_to_bus(self, clock_state, logic_RAM_OUT, mar_state, bus):
+        if clock_state == 1:
+            if logic_RAM_OUT == 1:
+                bus.state = self.state[mar_state]
+
+
+class Display:
+    def __init__(self):
+        self.state = 0
+
+    def get_data_from_bus(self, clock_state, logic_display_IN, bus):
+        if clock_state == 1:
+            if logic_display_IN == 1:
+                self.state = bus.state
+                print("\n#############")
+                print("Display: " + self.state.__str__())
+                print("#############")
 
 
 class Bus:
@@ -112,56 +87,20 @@ class Bus:
         self.__init__()
 
 
-class RegisterA():
-    def __init__(self):
-        self.state = 0
-
-    def do_in(self, clock_state, logic_AregisterIN, bus):
-        if clock_state == 1:
-            if logic_AregisterIN == 1:
-                self.state = bus.state
-
-                # print("RegA: " + self.state.__str__())
-
-    def do_out(self, clock_state, logic_AregisterOUT, bus):
-        if clock_state == 1:
-            if logic_AregisterOUT == 1:
-                bus.state = self.state
-
-                # print("RegA: " + self.state.__str__())
-
-class RegisterB():
-    def __init__(self):
-        self.state = 0
-
-    def do_in(self, clock_state, logic_BregisterIN, bus):
-        if clock_state == 1:
-            if logic_BregisterIN == 1:
-                self.state = bus.state
-
-                # print("RegB: " + self.state.__str__())
-
-    def do_out(self, clock_state, logic_BregisterOUT, bus):
-        if clock_state == 1:
-            if logic_BregisterOUT == 1:
-                bus.state = self.state
-
-                # print("RegB: " + self.state.__str__())
-
 class InstructionRegister():
     def __init__(self):
         self.state = 0
         self.higher_bits = 0
         self.lower_bits = 0
 
-    def do_in(self, clock_state, logic_IregisterIN, bus):
+    def get_data_from_bus(self, clock_state, logic_IregisterIN, bus):
         if clock_state == 1:
             if logic_IregisterIN == 1:
                 self.state = bus.state
                 self.split()
                 # print("Instruction register: " + self.state.__str__())
 
-    def do_out(self, clockState, logic_IregisterOUT, bus):
+    def output_to_bus(self, clockState, logic_IregisterOUT, bus):
         if clockState == 1:
             if logic_IregisterOUT == 1:
                 bus.state = self.lower_bits
@@ -186,21 +125,3 @@ class InstructionCounter():
                 self.state = 0
 
             # print("Instruction counter:" + self.state.__str__())
-
-class FlagRegister():
-    def __init__(self):
-        self.carry = 0
-        self.zero = 0
-
-    def do_in(self, logic_flag_IN, alu_carry, alu_zero):
-        if logic_flag_IN == 1:
-            self.carry = alu_carry
-            if self.carry == 1:
-                #                print("Carry Flag")
-                pass
-            self.zero = alu_zero
-            if self.zero == 1:
-                #                print("Zero Flag")
-                pass
-
-

@@ -1,9 +1,8 @@
-from engine.computer_components.components import RAM, Display, MAR, ALU, ProgramCounter, Clock, Bus, \
-    RegisterA, RegisterB, InstructionRegister, InstructionCounter, FlagRegister
+from engine.computer_components.components import RAM, Display, MAR, ProgramCounter, Clock, Bus, \
+    InstructionRegister, InstructionCounter
+from engine.computer_components.alu import ALU
 from engine.computer_components.decoder import Decoder
 from engine.utilities.input_data import get_input_data
-
-#filename = 'fibonacci'
 
 class Computer:
 
@@ -14,25 +13,46 @@ class Computer:
     def reset_computer_except_ram(self):
         self.bus = Bus()
         self.clock = Clock()
-        self.ic = InstructionCounter()
+        self.instruction_counter = InstructionCounter()
         self.decoder = Decoder()
-
-        self.pc = ProgramCounter()
-        self.regA = RegisterA()
-        self.regB = RegisterB()
+        self.program_counter = ProgramCounter()
         self.mar = MAR()
-        self.alu = ALU(self.regA, self.regB)
+        self.alu = ALU()
         self.instruction_register = InstructionRegister()
         self.display = Display()
-        self.flag_register = FlagRegister()
 
-    def execute_one_click_and_yield_computer_state(self):
-        self.clock.tick(self)
+    def emulate_components(self):
+        self.bus.reset()
+
+        # increase:
+        self.instruction_counter.increase(self.clock.state)
+        self.decoder.set_instruction_register(self.instruction_counter.state, self.clock, self.alu.flag_register,
+                                              self.instruction_register)
+        self.program_counter.increase(self.clock.state, self.decoder.logic.PC_enable)
+
+        # outs
+        self.program_counter.output_to_bus(self.decoder.logic.PC_OUT, self.bus)
+        self.alu.register_a.output_to_bus(self.clock.state, self.decoder.logic.AregisterOUT, self.bus)
+        self.alu.output_to_bus(self.decoder.logic.ALU_OUT, self.decoder.logic.ALU_Substract, self.decoder.logic.flag_IN,
+                        self.bus)
+        self.instruction_register.output_to_bus(self.clock.state, self.decoder.logic.IregisterOUT, self.bus)
+        self.ram.output_to_bus(self.clock.state, self.decoder.logic.RAM_OUT, self.mar.state, self.bus)
+
+        # ins
+        self.program_counter.get_data_from_bus(self.decoder.logic.PC_Jump, self.bus)
+        self.alu.register_a.get_data_from_bus(self.clock.state, self.decoder.logic.AregisterIN, self.bus)
+        self.alu.register_b.get_data_from_bus(self.clock.state, self.decoder.logic.BregisterIN, self.bus)
+        self.instruction_register.get_data_from_bus(self.clock.state, self.decoder.logic.IregisterIN, self.bus)
+        self.mar.get_data_from_bus(self.clock.state, self.decoder.logic, self.bus)
+        self.ram.get_data_from_bus(self.clock.state, self.decoder.logic.RAM_IN, self.mar.state, self.bus)
+        self.display.get_data_from_bus(self.clock.state, self.decoder.logic.display_IN, self.bus)
+
+    def toggle_clock_and_yield_computer_state(self):
+        self.clock.toggle(self)
         yield self.get_state()
 
     def yield_computer_state(self):
         yield self.get_state()
-
 
     def get_state(self):
         state = {
@@ -44,11 +64,11 @@ class Computer:
             "memoryContents": self.ram.state,
             "instructionRegisterHigherBits": self.instruction_register.higher_bits,
             "instructionRegisterLowerBits": self.instruction_register.lower_bits,
-            "microinstructionCounter": self.ic.state,
-            "programCounter": self.pc.state,
-            "registerA": self.regA.state,
+            "microinstructionCounter": self.instruction_counter.state,
+            "programCounter": self.program_counter.state,
+            "registerA": self.alu.register_a.state,
             "alu": self.alu.state,
-            "registerB": self.regB.state,
+            "registerB": self.alu.register_b.state,
             "output": self.display.state,
             "bus": self.bus.state,
             "logic": self.get_logic(),
@@ -61,37 +81,8 @@ class Computer:
         return logic
 
     def get_flags(self):
-        flags = {'carry': self.flag_register.carry, "zero": self.flag_register.zero}
+        flags = {'carry': self.alu.flag_register.carry, "zero": self.alu.flag_register.zero}
         return flags
-
-    def do(self):
-        self.bus.reset()
-
-        # increase:
-        self.ic.increase(self.clock.state)
-
-        self.decoder.do(self.ic.state, self.clock, self.instruction_register, self.flag_register)
-        self.pc.increase(self.clock.state, self.decoder.logic.PC_enable)
-
-        # outs
-        self.pc.do_out(self.decoder.logic.PC_OUT, self.bus)
-        self.regA.do_out(self.clock.state, self.decoder.logic.AregisterOUT, self.bus)
-        self.regB.do_out(self.clock.state, self.decoder.logic.BregisterOUT, self.bus)
-        self.alu.do_out(self.regA.state, self.regB.state, self.decoder.logic.ALU_OUT, self.decoder.logic.ALU_Substract, self.bus)
-        self.flag_register.do_in(self.decoder.logic.flag_IN, self.alu.carry, self.alu.zero)
-        self.instruction_register.do_out(self.clock.state, self.decoder.logic.IregisterOUT, self.bus)
-        self.ram.do_out(self.clock.state, self.decoder.logic.RAM_OUT, self.mar.state, self.bus)
-
-        # ins
-        self.pc.do_in(self.decoder.logic.PC_Jump, self.bus)
-        self.regA.do_in(self.clock.state, self.decoder.logic.AregisterIN, self.bus)
-        self.regB.do_in(self.clock.state, self.decoder.logic.BregisterIN, self.bus)
-        self.instruction_register.do_in(self.clock.state, self.decoder.logic.IregisterIN, self.bus)
-        self.mar.do_in(self.clock, self.decoder.logic, self.bus)
-        self.ram.do_in(self.clock.state, self.decoder.logic.RAM_IN, self.mar.state, self.bus)
-        self.display.do_in(self.clock.state, self.decoder.logic.display_IN, self.bus)
 
     def load_program(self, program_name):
         self.ram.state = get_input_data(program_name)
-
-
