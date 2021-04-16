@@ -6,10 +6,10 @@ setInterval(updateConnectionIndicator, 1000);
 const enableIncomingMessageLogging = true;
 const enableOutcomingMessageLogging = true;
 
-const toggleClockButton = document.getElementById("toggle-clock-button");
-const advanceClockButton = document.getElementById("manual-clock-button");
-const resetButton = document.getElementById("reset");
-const programSelector = document.getElementById("program-selector");
+const toggleClockButton = document.querySelector("#toggle-clock-button");
+const advanceClockButton = document.querySelector("#manual-clock-button");
+const resetButton = document.querySelector("#reset");
+const programSelector = document.querySelector("#program-selector");
 const connectionIndicator = document.querySelector("#connection-indicator")
 
 window.addEventListener('load', (event) => {onLoad()});
@@ -96,16 +96,6 @@ function getComputerStatus() {
     sendJsonObjectToSocket(jsonMessage);
 }
 
-function sendJsonObjectToSocket(jsonMessage) {
-    if (enableOutcomingMessageLogging) {
-        console.log("Sending: ")
-        console.log(jsonMessage);
-    }
-    let jsonMessageWithSource = addSourceToJSONMessage(jsonMessage);
-    socket.send(JSON.stringify(jsonMessageWithSource));
-}
-
-
 function updateConnectionIndicator() {
     connectionTimer -= 1;
     if (checkConnectionStatus()) {
@@ -114,6 +104,7 @@ function updateConnectionIndicator() {
         connectionIndicator.innerText = "DISCONNECTED";
     }
 }
+
 
 function checkConnectionStatus() {
     return (connectionTimer > 0);
@@ -130,24 +121,20 @@ function sendProgramAsIntArrayToServer(program) {
     sendJsonObjectToSocket(jsonMessage);
 }
 
+function sendJsonObjectToSocket(jsonMessage) {
+    if (enableOutcomingMessageLogging) {
+        console.log("Sending: ")
+        console.log(jsonMessage);
+    }
+    let jsonMessageWithSource = addSourceToJSONMessage(jsonMessage);
+    socket.send(JSON.stringify(jsonMessageWithSource));
+}
+
 
 function addSourceToJSONMessage(jsonMessage) {
     jsonMessage["source"] = "WEBPAGE";
     return jsonMessage;
 
-}
-
-function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValues) {
-    let decimalValues = [];
-    for (let i = 0; i < 16; i++) {
-        if (i < stringBinaryValues.length) {
-            let decimalValue = parseInt(stringBinaryValues[i], 2);
-            decimalValues[i] = decimalValue;
-        } else {
-            decimalValues[i] = 0;
-        }
-    }
-    return decimalValues;
 }
 
 function getProgramFromDatabaseAndSendToEngine(databaseId) {
@@ -161,6 +148,19 @@ function getProgramFromDatabaseAndSendToEngine(databaseId) {
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/" + databaseId, true);
     xmlhttp.send();
+}
+
+function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValues) {
+    let decimalValues = [];
+    for (let i = 0; i < 16; i++) {
+        if (i < stringBinaryValues.length) {
+            let decimalValue = parseInt(stringBinaryValues[i], 2);
+            decimalValues[i] = decimalValue;
+        } else {
+            decimalValues[i] = 0;
+        }
+    }
+    return decimalValues;
 }
 
 function getProgramsfromDatabase() {
@@ -183,8 +183,7 @@ function getProgramsfromDatabase() {
         displayedListOfPrograms.innerHTML = result;
 
         function createOptionEntry(program) {
-            let entry = "<option value=\"" + program.id + "\">" + program.name + "</option>"
-            return entry;
+            return "<option value=\"" + program.id + "\">" + program.name + "</option>";
         }
     }
 }
