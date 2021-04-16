@@ -69,7 +69,7 @@ async def process_incoming_message(message_json, websocket):
 
         if message_type == 'getUpdate':
             data = controller.get_computer_state()
-            await send_to_server(data, websocket)
+            await send_to_server(websocket, data)
 
 
 def start_or_stop_computer(message_json):
