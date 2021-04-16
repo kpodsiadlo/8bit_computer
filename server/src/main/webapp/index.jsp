@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/style.css">
     <title>8bit computer</title>
 </head>
-<body onload=onLoad()>
+<body>
 <div class="container">
     <div class="row">
         <div class="col-5">
@@ -20,12 +20,9 @@
 
             </div>
             <div class="row" id="clock">
-                <input class="btn btn-danger" type=button id="toggle-clock-button" value="START"
-                       onclick="onToggleClock()">
-                <input class="btn btn-success" type=button id="manual-clock-button" value="TICK"
-                       onclick="onManualClockAdvance()">
-                <input class="btn btn-outline-warning" type=button id="reset" value="RESET"
-                       onclick="onReset()">
+                <input class="btn btn-danger" type=button id="toggle-clock-button" value="START">
+                <input class="btn btn-success" type=button id="manual-clock-button" value="TICK">
+                <input class="btn btn-outline-warning" type=button id="reset" value="RESET">
             </div>
             <div class="row" id="memory-address">
                 <label for="memory-address-display">Memory Address: </label>
@@ -114,7 +111,7 @@
     </div>
     <div class="row">
         <div class=col-5>
-            <select id="program-selector" name="Select Program:" size="1" onchange="onSelectProgram(this)">
+            <select id="program-selector" name="Select Program:" size="1">
 
             </select>
             <table class="tg">
@@ -199,7 +196,9 @@
     </div>
 </div>
 </body>
+<script src="main.js"></script>
+<script src="update.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="compiler.js"></script>
-<script src="websockets.js"></script>
+
 </html>
