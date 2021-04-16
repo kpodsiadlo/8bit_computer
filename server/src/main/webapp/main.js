@@ -6,36 +6,26 @@ setInterval(updateConnectionIndicator, 1000);
 const enableIncomingMessageLogging = true;
 const enableOutcomingMessageLogging = true;
 
-var toggleClockButton = document.getElementById("toggle-clock-button");
-var advanceClockButton = document.getElementById("manual-clock-button");
-var resetButton = document.getElementById("reset");
-var programSelector = document.getElementById("program-selector");
+const toggleClockButton = document.getElementById("toggle-clock-button");
+const advanceClockButton = document.getElementById("manual-clock-button");
+const resetButton = document.getElementById("reset");
+const programSelector = document.getElementById("program-selector");
+const connectionIndicator = document.querySelector("#connection-indicator")
 
-window.addEventListener('load', (event) => {
-    onLoad()
-});
+window.addEventListener('load', (event) => {onLoad()});
 toggleClockButton.addEventListener("click", onToggleClock)
 advanceClockButton.addEventListener("click", onManualClockAdvance)
 resetButton.addEventListener("click", onReset)
 programSelector.addEventListener("change", (event) => onSelectProgram(event.target))
 
 
-function sendJsonObjectToSocket(jsonMessage) {
-    if (enableOutcomingMessageLogging) {
-        console.log("Sending: ")
-        console.log(jsonMessage);
-    }
-    let jsonMessageWithSource = addSourceToJSONMessage(jsonMessage);
-    socket.send(JSON.stringify(jsonMessageWithSource));
+function onOpen() {
+    updateConnectionIndicator();
+    getComputerStatus();
 }
 
 function onLoad() {
     getProgramsfromDatabase();
-}
-
-function onOpen() {
-    updateConnectionIndicator();
-    getComputerStatus();
 }
 
 function onMessage(event) {
@@ -58,19 +48,14 @@ function onMessage(event) {
     }
 }
 
-function onSelectProgram(selector) {
-    getProgramFromDatabaseAndSendToEngine(selector.value);
-}
-
 function onToggleClock() {
-    let toggleButton = document.getElementById("toggle-clock-button");
-    switch (toggleButton.value) {
+    switch (toggleClockButton.value) {
         case "STOP": {
             let jsonMessage = {"type": "clockEnabled",
                 "clockEnabled": false,
             };
             sendJsonObjectToSocket(jsonMessage);
-            toggleButton.value = "START";
+            toggleClockButton.value = "START";
             break;
 
         }
@@ -78,19 +63,10 @@ function onToggleClock() {
             let jsonMessage = {"type": "clockEnabled",
                 "clockEnabled": true,
             };
-            toggleButton.value = "STOP";
+            toggleClockButton.value = "STOP";
             sendJsonObjectToSocket(jsonMessage);
             break;
         }
-    }
-}
-
-function onReset() {
-    let resetMessage = {"type": "reset"};
-    sendJsonObjectToSocket(resetMessage);
-    if (toggleClockButton.value === "STOP") {
-        document.getElementById("toggle-clock-button").value = "START";
-        enableManualClockIncrease();
     }
 }
 
@@ -99,13 +75,17 @@ function onManualClockAdvance() {
     sendJsonObjectToSocket(jsonMessage);
 }
 
-function updateConnectionIndicator() {
-    connectionTimer -= 1;
-    if (checkConnectionStatus()) {
-        document.getElementById("connection-indicator").innerText = "CONNECTED";
-    } else {
-        document.getElementById("connection-indicator").innerText = "DISCONNECTED";
+function onReset() {
+    let resetMessage = {"type": "reset"};
+    sendJsonObjectToSocket(resetMessage);
+    if (toggleClockButton.value === "STOP") {
+        toggleClockButton.value = "START";
+        enableManualClockIncrease();
     }
+}
+
+function onSelectProgram(selector) {
+    getProgramFromDatabaseAndSendToEngine(selector.value);
 }
 
 
@@ -114,6 +94,25 @@ function getComputerStatus() {
         "type": "getUpdate"
     }
     sendJsonObjectToSocket(jsonMessage);
+}
+
+function sendJsonObjectToSocket(jsonMessage) {
+    if (enableOutcomingMessageLogging) {
+        console.log("Sending: ")
+        console.log(jsonMessage);
+    }
+    let jsonMessageWithSource = addSourceToJSONMessage(jsonMessage);
+    socket.send(JSON.stringify(jsonMessageWithSource));
+}
+
+
+function updateConnectionIndicator() {
+    connectionTimer -= 1;
+    if (checkConnectionStatus()) {
+        connectionIndicator.innerText = "CONNECTED";
+    } else {
+        connectionIndicator.innerText = "DISCONNECTED";
+    }
 }
 
 function checkConnectionStatus() {
@@ -132,37 +131,10 @@ function sendProgramAsIntArrayToServer(program) {
 }
 
 
-
 function addSourceToJSONMessage(jsonMessage) {
     jsonMessage["source"] = "WEBPAGE";
     return jsonMessage;
 
-}
-
-function getProgramsfromDatabase() {
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            let incomingJson = JSON.parse(this.responseText);
-            updateProgramList(incomingJson);
-        }
-    };
-    xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
-    xmlhttp.send();
-
-    function updateProgramList(incomingListOfPrograms) {
-        let displayedListOfPrograms = document.getElementById("program-selector");
-        let result = "<option value=\"\" selected=\"\" disabled=\"\">Select program:</option>";
-        for (let i = 0; i < incomingListOfPrograms.length; i++) {
-            result += createOptionEntry(incomingListOfPrograms[i]);
-        }
-        displayedListOfPrograms.innerHTML = result;
-
-        function createOptionEntry(program) {
-            let entry = "<option value=\"" + program.id + "\">" + program.name + "</option>"
-            return entry;
-        }
-    }
 }
 
 function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValues) {
@@ -189,6 +161,32 @@ function getProgramFromDatabaseAndSendToEngine(databaseId) {
     };
     xmlhttp.open("GET", "http://localhost:8080/server/api/program/" + databaseId, true);
     xmlhttp.send();
+}
+
+function getProgramsfromDatabase() {
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            let incomingJson = JSON.parse(this.responseText);
+            updateProgramList(incomingJson);
+        }
+    };
+    xmlhttp.open("GET", "http://localhost:8080/server/api/program/", true);
+    xmlhttp.send();
+
+    function updateProgramList(incomingListOfPrograms) {
+        let displayedListOfPrograms = programSelector;
+        let result = "<option value=\"\" selected=\"\" disabled=\"\">Select program:</option>";
+        for (let i = 0; i < incomingListOfPrograms.length; i++) {
+            result += createOptionEntry(incomingListOfPrograms[i]);
+        }
+        displayedListOfPrograms.innerHTML = result;
+
+        function createOptionEntry(program) {
+            let entry = "<option value=\"" + program.id + "\">" + program.name + "</option>"
+            return entry;
+        }
+    }
 }
 
 const machine_code = {
