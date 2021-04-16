@@ -17,6 +17,61 @@ function updateDisplays(computerData) {
     updateClockRunning(computerData.clockRunning)
 }
 
+function updateMemoryAddress(data) {
+    document.getElementById("memory-address-display").value = data;
+}
+
+function updateCurrentMemoryValue(address, contents) {
+    document.getElementById("memory-value-display").value =
+        decTo8DigitBinString(contents[address]);
+}
+
+function highlightCurrentMemoryAddress(memoryAddress) {
+    let rows = document.querySelectorAll(".memory-cell-container");
+    rows.forEach(row => row.classList.remove("current-memory-address"))
+    document.getElementById("memory-cell-container-" + memoryAddress).classList.add("current-memory-address");
+}
+
+function updateProgramCounterDisplay(data) {
+    document.getElementById("program-counter-display").value = data;
+}
+
+
+function updateInstructionRegisterHigherBits(data) {
+    let instructionInBinary = decTo8DigitBinString(data).substring(4);
+    document.getElementById("instruction-register-display-higher-bits").value = instructionInBinary;
+    let opcode = machine_code[instructionInBinary];
+    document.getElementById("instruction-register-opcode").innerText = ("(" + opcode + ")").toUpperCase();
+}
+
+function updateInstructionRegisterLowerBits(data) {
+    document.getElementById("instruction-register-display-lower-bits").value = data;
+}
+
+function updateMicroinstructionCounter(data) {
+    document.getElementById("microinstruction-counter-display").value = data;
+}
+
+function updateRegisterADisplay(data) {
+    document.getElementById("register-a-display").value = data;
+}
+
+function updateALUDisplay(data) {
+    document.getElementById("alu-display").value = data;
+}
+
+function updateRegisterBDisplay(data) {
+    document.getElementById("register-b-display").value = data;
+}
+
+function updateOutputDisplay(data) {
+    document.getElementById("output-display").value = data;
+}
+
+function updateBus(data) {
+    document.getElementById("bus-display").value = data;
+}
+
 function updateControlLights(logic) {
     Object.keys(logic).forEach(function (key) {
         changeColor(key, logic[key]);
@@ -32,31 +87,14 @@ function updateFlags(flags) {
 function changeColor(element, boolean) {
     if (document.getElementById(element) != null) {
         if (boolean === 1) {
-            //if (document.getElementById(element).classList.contains("off")) {
             document.getElementById(element).classList.remove("off");
-            //}
-            //if (!document.getElementById(element.classList.contains("on"))) {
             document.getElementById(element).classList.add("on");
-            //}
         }
         if (boolean === 0) {
-            //if (document.getElementById(element).classList.contains("on")) {
             document.getElementById(element).classList.remove("on");
-            //}
-            //if (!document.getElementById(element.classList.contains("off"))) {
             document.getElementById(element).classList.add("off");
-            //}
         }
     }
-}
-
-function updateMemoryAddress(data) {
-    document.getElementById("memory-address-display").value = data;
-}
-
-function updateCurrentMemoryValue(address, contents) {
-    document.getElementById("memory-value-display").value =
-        decTo8DigitBinString(contents[address]);
 }
 
 function updateMemoryContentsDisplay(data) {
@@ -104,51 +142,6 @@ function decTo8DigitBinString(dec) {
     return bin.padStart(8, "0");
 }
 
-function highlightCurrentMemoryAddress(memoryAddress) {
-    let rows = document.querySelectorAll(".memory-cell-container");
-    rows.forEach(row => row.classList.remove("current-memory-address"))
-    document.getElementById("memory-cell-container-" + memoryAddress).classList.add("current-memory-address");
-}
-
-
-function updateInstructionRegisterHigherBits(data) {
-    let instructionInBinary = decTo8DigitBinString(data).substring(4);
-    document.getElementById("instruction-register-display-higher-bits").value = instructionInBinary;
-    let opcode = machine_code[instructionInBinary];
-    document.getElementById("instruction-register-opcode").innerText = ("(" + opcode + ")").toUpperCase();
-}
-
-function updateInstructionRegisterLowerBits(data) {
-    document.getElementById("instruction-register-display-lower-bits").value = data;
-}
-
-function updateMicroinstructionCounter(data) {
-    document.getElementById("microinstruction-counter-display").value = data;
-}
-
-function updateProgramCounterDisplay(data) {
-    document.getElementById("program-counter-display").value = data;
-}
-
-function updateRegisterADisplay(data) {
-    document.getElementById("register-a-display").value = data;
-}
-
-function updateALUDisplay(data) {
-    document.getElementById("alu-display").value = data;
-}
-
-function updateRegisterBDisplay(data) {
-    document.getElementById("register-b-display").value = data;
-}
-
-function updateOutputDisplay(data) {
-    document.getElementById("output-display").value = data;
-}
-
-function updateBus(data) {
-    document.getElementById("bus-display").value = data;
-}
 
 function updateClockRunning(data) {
     let clockStatus = document.getElementById("clock-running-display");
