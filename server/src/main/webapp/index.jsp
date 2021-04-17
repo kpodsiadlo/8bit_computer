@@ -187,11 +187,11 @@
                     </tbody>
                 </table>
             </form>
-            <input type="button" class="btn btn-block" value="Compile!" onclick="onCompile()">
+            <input type="button" class="btn btn-block" value="Compile!" id="compile-button">
         </div>
         <div class="col-4">
             <div><pre id="compiler-display"></pre></div>
-            <input type="button" class="btn btn-block" value="Send To Computer!" onclick="onSendProgramToComputer()">
+            <input type="button" class="btn btn-block" value="Send To Computer!" id="send-to-computer-button">
         </div>
     </div>
 </div>

@@ -1,4 +1,9 @@
 var userProgramAsIntArray = null;
+const compileButton = document.querySelector("#compile-button")
+const sendToComputerButton = document.querySelector("#send-to-computer-button")
+
+compileButton.addEventListener("click", onCompile)
+sendToComputerButton.addEventListener("click", onSendProgramToComputer)
 
 function onCompile() {
     let program = getUserProgramFromInput();
@@ -42,6 +47,7 @@ function sendToCompilerJS(jsonObject) {
 function onSendProgramToComputer() {
     sendProgramAsIntArrayToServer(userProgramAsIntArray);
 }
+
 
 function formatIncomingProgramForDisplaying(program){
     let formattedProgram = "";
