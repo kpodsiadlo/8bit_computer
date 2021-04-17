@@ -166,7 +166,7 @@
                         <td class="tg-0lax"><%=i%>
                         </td>
                         <td class=tg-0lax>
-                            <Select id="assembly-instruction-<%=i%>">
+                            <Select class="assembly-instruction" id="assembly-instruction-<%=i%>">
                                 <% Set<String> instructions = Compiler.getInstructions();
                                     for (String instruction : instructions) {%>
                                 <option <%if (instruction.equals("nop")) {
@@ -178,7 +178,7 @@
                             </Select>
                         </td>
                         <td class="tg-0lax">
-                            <input type=number id=assembly-value-<%=i%>>
+                            <input type=number class="assembly-value" id=assembly-value-<%=i%>>
                         </td>
                     </tr>
                     <%

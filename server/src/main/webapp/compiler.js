@@ -1,6 +1,9 @@
 var userProgramAsIntArray = null;
 const compileButton = document.querySelector("#compile-button")
 const sendToComputerButton = document.querySelector("#send-to-computer-button")
+const assemblyInstructions = document.querySelectorAll(".assembly-instruction")
+const assemblyValues = document.querySelectorAll(".assembly-value")
+const compilerDisplay = document.querySelector("#compiler-display")
 
 compileButton.addEventListener("click", onCompile)
 sendToComputerButton.addEventListener("click", onSendProgramToComputer)
@@ -14,16 +17,19 @@ function getUserProgramFromInput() {
     let instructions = [];
     let values = [];
 
-    for (i = 0; i < 16; i++) {
-        instructions[i] = $('#assembly-instruction-' + i).children("option:selected").val();
-        value = parseInt(($("#assembly-value-" + i).val()), 10);
+    assemblyInstructions.forEach((element) => {
+        instructions.push(element.value)
+    });
+    assemblyValues.forEach((element) => {
+        value = parseInt(element.value, 2);
         if (isNaN(value)) {
-            values[i] = 0;
+            values.push(0)
         } else {
-            values[i] = value;
+            values.push(value)
         }
-    }
-    jsonObject = {"instructions": instructions, "values": values};
+    });
+
+    jsonObject = {"instructions": instructions, "values": values}
     return jsonObject;
 }
 
@@ -35,8 +41,10 @@ function sendToCompilerJS(jsonObject) {
             console.log(incomingJson);
 
             let formattedProgram = formatIncomingProgramForDisplaying(incomingJson.contents)
-            $('#compiler-display').text(formattedProgram);
-            userProgramAsIntArray = incomingJson.contents.map(value=>{return parseInt(value, 2)});
+            compilerDisplay.innerText = formattedProgram;
+            userProgramAsIntArray = incomingJson.contents.map(value => {
+                return parseInt(value, 2)
+            });
         }
     }
     xmlhttp.open("POST", "http://localhost:8080/server/api/compiler/", true);
@@ -49,13 +57,13 @@ function onSendProgramToComputer() {
 }
 
 
-function formatIncomingProgramForDisplaying(program){
+function formatIncomingProgramForDisplaying(program) {
     let formattedProgram = "";
     program.forEach(value => addToFormattedProgram(value));
     formattedProgram.substr(0, -2);
     return formattedProgram;
 
-    function addToFormattedProgram(value){
+    function addToFormattedProgram(value) {
         formattedProgram += value + "\n"
     }
 }
