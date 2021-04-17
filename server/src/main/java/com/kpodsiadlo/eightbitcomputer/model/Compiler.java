@@ -13,46 +13,7 @@ public class Compiler {
 
     Map<String, String> opcodes = getOpcodes();
 
-
-    public Program compile(IncomingUserProgram incomingUserProgram) {
-        Program compiledProgram = new Program();
-        StringBuilder programBinary = new StringBuilder();
-
-        String instruction;
-        Integer value;
-        for (int i = 0; i < 16; i++) {
-            try {
-                instruction = incomingUserProgram.getInstructions().get(i);
-            } catch (IndexOutOfBoundsException e) {
-                instruction = "";
-            }
-
-            try {
-                value = incomingUserProgram.getValues().get(i);
-            } catch (IndexOutOfBoundsException e) {
-                value = 0;
-            }
-
-            String machineCodeInstruction = opcodes.getOrDefault(instruction, "");
-            if (machineCodeInstruction.equals("")) {
-                programBinary.append(convertToStringAndPad(value, 8));
-            } else {
-                String entry = machineCodeInstruction +
-                        convertToStringAndPad(value, 4);
-                programBinary.append(entry);
-            }
-            programBinary.append(",");
-        }
-        compiledProgram.setContents(programBinary.toString());
-        return compiledProgram;
-    }
-
-    private String convertToStringAndPad(Integer integer, Integer pad) {
-        return Strings.padStart((Integer.toBinaryString(integer)), pad, '0');
-    }
-
-
-    private static Map<String, String> getOpcodes () {
+    private static Map<String, String> getOpcodes() {
         return Stream.of(new String[][]
                 {
                         {"nop", "0000"},
@@ -69,8 +30,64 @@ public class Compiler {
                 }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
     }
 
-    public static Set<String> getInstructions() {
+    public static Set<String> getInstructionsFromOpcodes() {
         return getOpcodes().keySet();
+    }
+
+    public Program compile(IncomingUserProgram incomingUserProgram) {
+        Program compiledProgram = new Program();
+        StringBuilder programBinary = new StringBuilder();
+
+        for (int i = 0; i < 16; i++) {
+            String entry = createMachineCodeEntry(incomingUserProgram, i);
+            programBinary.append(entry);
+            programBinary.append(",");
+        }
+
+        compiledProgram.setContents(programBinary.toString());
+        return compiledProgram;
+    }
+
+    private String createMachineCodeEntry(IncomingUserProgram incomingUserProgram, int i) {
+        String instruction = getInstruction(incomingUserProgram, i);
+        String machineCodeInstruction = opcodes.getOrDefault(instruction, "");
+        Integer value = getValue(incomingUserProgram, i);
+        return createEntry(machineCodeInstruction, value);
+    }
+
+    private String createEntry(String machineCodeInstruction, Integer value) {
+        String entry;
+        if (machineCodeInstruction.equals("")) {
+            entry = (convertToStringAndPad(value, 8));
+        } else {
+            entry = machineCodeInstruction +
+                    convertToStringAndPad(value, 4);
+        }
+        return entry;
+    }
+
+    private Integer getValue(IncomingUserProgram incomingUserProgram, int i) {
+        Integer value;
+        try {
+            value = incomingUserProgram.getValues().get(i);
+        } catch (IndexOutOfBoundsException e) {
+            value = 0;
+        }
+        return value;
+    }
+
+    private String getInstruction(IncomingUserProgram incomingUserProgram, int i) {
+        String instruction;
+        try {
+            instruction = incomingUserProgram.getInstructions().get(i);
+        } catch (IndexOutOfBoundsException e) {
+            instruction = "";
+        }
+        return instruction;
+    }
+
+    private String convertToStringAndPad(Integer integer, Integer pad) {
+        return Strings.padStart((Integer.toBinaryString(integer)), pad, '0');
     }
 
 }

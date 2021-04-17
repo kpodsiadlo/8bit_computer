@@ -167,7 +167,7 @@
                         </td>
                         <td class=tg-0lax>
                             <Select class="assembly-instruction" id="assembly-instruction-<%=i%>">
-                                <% Set<String> instructions = Compiler.getInstructions();
+                                <% Set<String> instructions = Compiler.getInstructionsFromOpcodes();
                                     for (String instruction : instructions) {%>
                                 <option <%if (instruction.equals("nop")) {
                                 %>selected="" <% }
