@@ -1,6 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.server;
 
-import com.kpodsiadlo.eightbitcomputer.handler.ComputerSessionHandler;
+import com.kpodsiadlo.eightbitcomputer.handler.WebSocketsSessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint("/computer")
 public class WebsocketServer {
     @Inject
-    private ComputerSessionHandler sessionHandler;
+    private WebSocketsSessionHandler sessionHandler;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @OnOpen

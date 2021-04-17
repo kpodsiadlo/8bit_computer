@@ -1,4 +1,5 @@
 const socket = new WebSocket("ws://localhost:8080/server/computer");
+const startEngineUrl = "http://localhost:8080/server/api/engine/start"
 socket.onmessage = onMessage;
 socket.onopen = onOpen;
 let connectionTimer = 1;
@@ -11,12 +12,18 @@ const advanceClockButton = document.querySelector("#manual-clock-button");
 const resetButton = document.querySelector("#reset");
 const programSelector = document.querySelector("#program-selector");
 const connectionIndicator = document.querySelector("#connection-indicator")
+const powerUpButton = document.querySelector("#start-engine");
 
 window.addEventListener('load', onLoad);
 toggleClockButton.addEventListener("click", onToggleClock)
 advanceClockButton.addEventListener("click", onManualClockAdvance)
 resetButton.addEventListener("click", onReset)
 programSelector.addEventListener("change", (event) => onSelectProgram(event.target))
+powerUpButton.addEventListener("click", startEngine);
+
+function startEngine() {
+    fetch(startEngineUrl);
+}
 
 
 function onOpen() {
@@ -35,6 +42,7 @@ function onMessage(event) {
         console.log(incomingData);
     }
     resetTimer();
+    disableEnginePowerUpButton();
     processMessage(incomingData)
 
     function processMessage(processedData) {
@@ -88,7 +96,6 @@ function onSelectProgram(selector) {
     getProgramFromDatabaseAndSendToEngine(selector.value);
 }
 
-
 function getComputerStatus() {
     let jsonMessage = {
         "type": "getUpdate"
@@ -96,22 +103,37 @@ function getComputerStatus() {
     sendJsonObjectToSocket(jsonMessage);
 }
 
+
 function updateConnectionIndicator() {
     connectionTimer -= 1;
     if (checkConnectionStatus()) {
         connectionIndicator.innerText = "CONNECTED";
+        disableEnginePowerUpButton();
     } else {
         connectionIndicator.innerText = "DISCONNECTED";
+        enableEnginePowerUpButton();
     }
 }
-
 
 function checkConnectionStatus() {
     return (connectionTimer > 0);
 }
 
+
 function resetTimer() {
     connectionTimer = 3 ;
+}
+
+function disableEnginePowerUpButton() {
+    powerUpButton.setAttribute("disabled", "");
+    powerUpButton.classList.remove("btn-primary");
+    powerUpButton.classList.add("btn-secondary");
+}
+
+function enableEnginePowerUpButton() {
+    powerUpButton.removeAttribute("disabled")
+    powerUpButton.classList.remove("btn-secondary");
+    powerUpButton.classList.add("btn-primary");
 }
 
 function sendProgramAsIntArrayToServer(program) {

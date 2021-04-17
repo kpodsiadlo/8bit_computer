@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @ApplicationScoped
-public class ComputerSessionHandler implements MessageHandler {
+public class WebSocketsSessionHandler implements MessageHandler {
 
     private final Set<Session> sessions = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
