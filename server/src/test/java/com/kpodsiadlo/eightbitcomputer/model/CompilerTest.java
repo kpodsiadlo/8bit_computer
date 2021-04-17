@@ -17,8 +17,6 @@ class CompilerTest {
     private static Stream<Arguments> dataAndResults(){
         return ProgramProvider.getCompilerTestData();
     }
-
-
     @ParameterizedTest
     @DisplayName("Correctly compiles test programs")
     @MethodSource("dataAndResults")
