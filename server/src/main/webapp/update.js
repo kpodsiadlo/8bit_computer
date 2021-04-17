@@ -41,7 +41,12 @@ function updateInstructionRegisterHigherBits(data) {
     let instructionInBinary = decTo8DigitBinString(data).substring(4);
     document.getElementById("instruction-register-display-higher-bits").value = instructionInBinary;
     let opcode = machine_code[instructionInBinary];
-    document.getElementById("instruction-register-opcode").innerText = ("(" + opcode + ")").toUpperCase();
+    let opcodeDisplay = document.querySelector("#instruction-register-opcode")
+    if (opcode !== undefined) {
+        opcodeDisplay.innerText = ("(" + opcode + ")").toUpperCase();
+    } else {
+        opcodeDisplay.innerText = "";
+    }
 }
 
 function updateInstructionRegisterLowerBits(data) {
@@ -104,36 +109,35 @@ function updateMemoryContentsDisplay(data) {
     updateInstructionValue(data);
 
     function updateBinaryValue(data) {
-        for (let i = 0; i < data.length; i++) {
-            document.getElementById("mem" + i + "-binary-value").value =
-                decTo8DigitBinString(data[i]);
-        }
+        let binaryMemoryLocations = document.querySelectorAll(".memory-cell-binary")
+        binaryMemoryLocations.forEach((element, idx) => {
+            element.value = decTo8DigitBinString(data[idx])
+        })
     }
 
     function updateDecimalValue(data) {
-        for (let i = 0; i < data.length; i++) {
-            document.getElementById("mem" + i + "-decimal-value").value =
-                (data[i]);
-        }
+        let decimalMemoryLocations = document.querySelectorAll(".memory-cell-decimal")
+        decimalMemoryLocations.forEach((element, idx) => {
+            element.value = data[idx];
+        })
     }
 
     function updateInstruction(data) {
-        let instructionBinaryData;
-        for (let i = 0; i < data.length; i++) {
-            instructionBinaryData = decTo8DigitBinString(data[i]).substring(0, 4);
+        let instructionNames = document.querySelectorAll(".memory-cell-instruction")
+        instructionNames.forEach((element, idx) => {
+            let instructionBinaryData = decTo8DigitBinString(data[idx]).substring(0, 4);
             let opcode = machine_code[instructionBinaryData];
             if (opcode !== undefined) {
-                document.getElementById("mem" + i + "-instruction").innerText =
-                    opcode.toUpperCase();
-            }
-        }
+                element.textContent = opcode;
+                }
+        })
     }
 
     function updateInstructionValue(data) {
-        for (let i = 0; i < data.length; i++) {
-            document.getElementById("mem" + i + "-instruction-value").value =
-                parseInt((decTo8DigitBinString(data[i]).substring(4)), 2);
-        }
+        let instructionValues = document.querySelectorAll(".memory-cell-value")
+        instructionValues.forEach((element, idx) => {
+            element.value = parseInt(decTo8DigitBinString(data[idx]).substring(4), 2)
+        })
     }
 }
 
