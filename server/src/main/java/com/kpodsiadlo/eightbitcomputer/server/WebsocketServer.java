@@ -15,7 +15,7 @@ import javax.websocket.server.ServerEndpoint;
 
 @ApplicationScoped
 @ServerEndpoint("/computer")
-public class ComputerWebsocketServer{
+public class WebsocketServer {
     @Inject
     private ComputerSessionHandler sessionHandler;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

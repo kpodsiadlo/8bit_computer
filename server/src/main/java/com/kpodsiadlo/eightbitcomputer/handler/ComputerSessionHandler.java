@@ -18,11 +18,8 @@ public class ComputerSessionHandler implements MessageHandler {
     private final Set<Session> sessions = new HashSet<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    @Inject
-    ComputerMessageHandler messageHandler;
-
     public void forwardMessage(String message, Session originSession) {
-        sendToAllOtherSessions(messageHandler.processMessage(message), originSession);
+        sendToAllOtherSessions(message, originSession);
     }
 
     public void addSession(Session session) {
