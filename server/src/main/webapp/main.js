@@ -12,7 +12,7 @@ const resetButton = document.querySelector("#reset");
 const programSelector = document.querySelector("#program-selector");
 const connectionIndicator = document.querySelector("#connection-indicator")
 
-window.addEventListener('load', (event) => {onLoad()});
+window.addEventListener('load', onLoad);
 toggleClockButton.addEventListener("click", onToggleClock)
 advanceClockButton.addEventListener("click", onManualClockAdvance)
 resetButton.addEventListener("click", onReset)
@@ -30,7 +30,7 @@ function onLoad() {
 
 function onMessage(event) {
     let incomingData = JSON.parse(event.data);
-    if (enableOutcomingMessageLogging) {
+    if (enableIncomingMessageLogging) {
         console.log("Event received:");
         console.log(incomingData);
     }
@@ -155,8 +155,7 @@ function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValue
     let memorySize = 16
     for (let i = 0; i < memorySize; i++) {
         if (i < stringBinaryValues.length) {
-            let decimalValue = parseInt(stringBinaryValues[i], 2);
-            decimalValues[i] = decimalValue;
+            decimalValues[i] = parseInt(stringBinaryValues[i], 2);
         } else {
             decimalValues[i] = 0;
         }
