@@ -200,5 +200,4 @@
 <script src="update.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="compiler.js"></script>
-<script src="pythonEngineControl.js"></script>
 </html>
