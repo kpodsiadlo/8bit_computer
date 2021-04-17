@@ -136,8 +136,8 @@
                                                id="mem<%=cellNumber%>-binary-value"></td>
                     <td class="tg-0lax"><input type="number" class="memory-cell-decimal"
                                                id="mem<%=cellNumber%>-decimal-value"></td>
-                    <td class="tg-0lax"><span id="mem<%=cellNumber%>-instruction"></span></td>
-                    <td class="tg-0lax"><input type="number" class="memory-cell-decimal"
+                    <td class="tg-0lax"><span class="memory-cell-instruction" id="mem<%=cellNumber%>-instruction"></span></td>
+                    <td class="tg-0lax"><input type="number" class="memory-cell-value"
                                                id="mem<%=cellNumber%>-instruction-value"></td>
 
                 </tr>

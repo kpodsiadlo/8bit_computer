@@ -152,7 +152,8 @@ function getProgramFromDatabaseAndSendToEngine(databaseId) {
 
 function convertMemoryContentsFromDatabaseToDecimalValuesArray(stringBinaryValues) {
     let decimalValues = [];
-    for (let i = 0; i < 16; i++) {
+    let memorySize = 16
+    for (let i = 0; i < memorySize; i++) {
         if (i < stringBinaryValues.length) {
             let decimalValue = parseInt(stringBinaryValues[i], 2);
             decimalValues[i] = decimalValue;
