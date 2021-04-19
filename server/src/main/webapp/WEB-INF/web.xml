@@ -12,6 +12,8 @@
   <class-name>com.mysql.cj.jdbc.MysqlDataSource</class-name>
   <url>jdbc:mysql://0.0.0.0:3307/programs?useLegacyDatetimeCode=false&amp;
     serverTimezone=Europe/Warsaw</url>
+<!--  <url>jdbc:mysql://172.18.0.3:3306/programs?useLegacyDatetimeCode=false&amp;-->
+<!--    serverTimezone=Europe/Warsaw</url>-->
   <user>root</user>
   <password>toor</password>
 </data-source>

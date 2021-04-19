@@ -2,7 +2,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.kpodsiadlo.eightbitcomputer.model.Compiler" %>
 <%@ page import="java.util.Set" %>
-
 <!DOCTYPE HTML>
 <html lang="EN">
 <head>
@@ -196,8 +195,8 @@
     </div>
 </div>
 </body>
-<script src="main.js"></script>
-<script src="update.js"></script>
+<script src="script/main.js"></script>
+<script src="script/update.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="compiler.js"></script>
+<script src="script/compiler.js"></script>
 </html>
