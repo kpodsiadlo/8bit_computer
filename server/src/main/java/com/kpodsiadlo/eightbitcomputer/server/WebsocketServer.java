@@ -25,9 +25,7 @@ public class WebsocketServer {
     @OnOpen
     public void onOpen(Session session) {
         logger.info("OnOpen");
-        logger.info(session.getUserProperties().toString());
-        logger.info("Session id: "+ session.getId());
-        logger.info(("Query string: ") + session.getQueryString());
+        logger.info("Subprotocol: " + session.getNegotiatedSubprotocol());
         sessionHandler.addSession(session);
     }
 
