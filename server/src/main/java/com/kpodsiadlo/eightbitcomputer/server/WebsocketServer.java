@@ -1,11 +1,13 @@
 package com.kpodsiadlo.eightbitcomputer.server;
 
+import com.kpodsiadlo.eightbitcomputer.config.WebsocketServerConfigurator;
 import com.kpodsiadlo.eightbitcomputer.handler.WebSocketsSessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -14,7 +16,7 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 @ApplicationScoped
-@ServerEndpoint("/computer")
+@ServerEndpoint(value = "/computer", configurator =  WebsocketServerConfigurator.class)
 public class WebsocketServer {
     @Inject
     private WebSocketsSessionHandler sessionHandler;
@@ -22,7 +24,10 @@ public class WebsocketServer {
 
     @OnOpen
     public void onOpen(Session session) {
-        logger.debug("OnOpen");
+        logger.info("OnOpen");
+        logger.info(session.getUserProperties().toString());
+        logger.info("Session id: "+ session.getId());
+        logger.info(("Query string: ") + session.getQueryString());
         sessionHandler.addSession(session);
     }
 

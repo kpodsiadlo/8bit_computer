@@ -1,5 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.servlet;
 
+import com.kpodsiadlo.eightbitcomputer.config.WebsocketServerConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +20,7 @@ import java.util.stream.Collectors;
 
 @WebServlet("/index.html")
 public class DefaultServlet extends HttpServlet {
-    Logger logger = LoggerFactory.getLogger("DefaultServlet");
-
+    private static final Logger logger = LoggerFactory.getLogger("DefaultServlet");
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String cookieName = "8bitComputerCookie";

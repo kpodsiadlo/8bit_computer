@@ -1,17 +1,11 @@
 package com.kpodsiadlo.eightbitcomputer.config;
 
-import javax.websocket.HandshakeResponse;
-import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
+import java.util.List;
 
 public class WebsocketServerConfigurator extends ServerEndpointConfig.Configurator {
 
-    @Override
-    public void modifyHandshake(ServerEndpointConfig conf,
-            HandshakeRequest req,
-            HandshakeResponse resp) {
-
-        conf.getUserProperties().put("handshakereq", req);
+    public String getNegotiatedSubprotocol(List<String> supported, List<String> requested) {
+        return requested.get(0);
     }
-
 }
