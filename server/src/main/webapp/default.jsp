@@ -196,7 +196,8 @@
 </div>
 </body>
 <script type="application/javascript">
-    const socket = new WebSocket("ws://localhost:8080/server/computer");
+    const socket = new WebSocket("ws://localhost:8080/server/computer",
+        "${pageContext.request.getAttribute("8bitComputerCookie")}");
 </script>
 <script src="script/main.js"></script>
 <script src="script/update.js"></script>

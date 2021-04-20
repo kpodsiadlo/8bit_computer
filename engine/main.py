@@ -100,8 +100,6 @@ async def consumer_handler(websocket):
         await receive(message, websocket)
 
 
-
-
 async def handler():
     async with websockets.connect(uri) as websocket:
         consumer_task = asyncio.ensure_future(
