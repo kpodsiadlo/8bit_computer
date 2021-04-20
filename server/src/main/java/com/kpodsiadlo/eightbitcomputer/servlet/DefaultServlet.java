@@ -23,7 +23,6 @@ public class DefaultServlet extends HttpServlet {
         String name = "8bitComputerCookie";
         String value = UUID.randomUUID().toString();
         Cookie cookie = new Cookie(name, value);
-        resp.addCookie(cookie);
         requestDispatcher.forward(req, resp);
     }
 }

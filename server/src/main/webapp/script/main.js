@@ -1,4 +1,3 @@
-const socket = new WebSocket("ws://localhost:8080/server/computer");
 const startEngineUrl = "http://localhost:8080/server/api/engine/start"
 socket.onmessage = onMessage;
 socket.onopen = onOpen;
