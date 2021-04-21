@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class WebSocketsSessionHandler implements MessageHandler {
 
 
     public void forwardMessage(String message, Session originSession) {
-        sendToAllOtherSessions(message, originSession);
+        sendToSessionsWithTheSameUUID(message, originSession);
     }
 
 
@@ -28,7 +29,6 @@ public class WebSocketsSessionHandler implements MessageHandler {
         try {
             Set<Session> sessionsWithTheSameUUID = this.sessions.get(uuid);
             sessionsWithTheSameUUID.add(session);
-            this.sessions.put(uuid, sessionsWithTheSameUUID);
         } catch (NullPointerException e) {
             Set<Session> newCommonSessionsSet = new HashSet<Session>();
             newCommonSessionsSet.add(session);
@@ -37,16 +37,28 @@ public class WebSocketsSessionHandler implements MessageHandler {
     }
 
     public void removeSession(Session session) {
-        sessions.remove(session);
+        String uuid = session.getNegotiatedSubprotocol();
+        Set<Session> sessionsWithTheSameUUID = this.sessions.get(uuid);
+        sessionsWithTheSameUUID.remove(session);
+        if (sessionsWithTheSameUUID.isEmpty()) {
+            this.sessions.remove(uuid);
+        }
     }
 
     public void sendToSession(Session session, String message) {
-//        try {
-//            session.getBasicRemote().sendText(message);
-//        } catch (IOException e) {
-//            removeSession(session);
-//            logger.error(e.getMessage());
-//        }
+        try {
+            session.getBasicRemote().sendText(message);
+        } catch (IOException e) {
+            removeSession(session);
+            logger.error(e.getMessage());
+        }
+    }
+
+    public void sendToSessionsWithTheSameUUID(String message, Session originSession) {
+        String uuid = originSession.getNegotiatedSubprotocol();
+        Set<Session> sessionsWithTheSameUUID = new HashSet<Session>(sessions.get(uuid));
+        sessionsWithTheSameUUID.remove(originSession);
+        sessionsWithTheSameUUID.forEach(session -> sendToSession(session, message));
     }
 
     public void sendToAllOtherSessions(String message, Session originSession) {
