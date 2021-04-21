@@ -1,28 +1,23 @@
-const startEngineUrl = "http://localhost:8080/server/api/engine/start"
 socket.onmessage = onMessage;
 socket.onopen = onOpen;
 let connectionTimer = 1;
 setInterval(updateConnectionIndicator, 1000);
 const enableIncomingMessageLogging = true;
 const enableOutcomingMessageLogging = true;
-
 const toggleClockButton = document.querySelector("#toggle-clock-button");
+
 const advanceClockButton = document.querySelector("#manual-clock-button");
 const resetButton = document.querySelector("#reset");
 const programSelector = document.querySelector("#program-selector");
 const connectionIndicator = document.querySelector("#connection-indicator")
 const powerUpButton = document.querySelector("#start-engine");
-
 window.addEventListener('load', onLoad);
+
 toggleClockButton.addEventListener("click", onToggleClock)
 advanceClockButton.addEventListener("click", onManualClockAdvance)
 resetButton.addEventListener("click", onReset)
 programSelector.addEventListener("change", (event) => onSelectProgram(event.target))
 powerUpButton.addEventListener("click", startEngine);
-
-function startEngine() {
-    fetch(startEngineUrl);
-}
 
 
 function onOpen() {

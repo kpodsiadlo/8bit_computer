@@ -8,14 +8,14 @@ import java.io.IOException;
 
 public class EngineStarter {
 
-    public EngineStarter() throws InstantiationException {
-        throw new InstantiationException("This class should not be instantiated");
-    }
+//    public EngineStarter() throws InstantiationException {
+//        throw new InstantiationException("This class should not be instantiated");
+//    }
 
-    public static void startEngine()  {
+    public static void startEngine(String uuid)  {
 
         String engineFileDirectory = "/home/krzysztof/code/8bit_computer/engine/";
-        String engineFileName = "main.py";
+        String engineFileName = "websockets_client.py " + uuid;
         String python3 = "venv/bin/python3";
 
         String startPython =  engineFileDirectory + python3;

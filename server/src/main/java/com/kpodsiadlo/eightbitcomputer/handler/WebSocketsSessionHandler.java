@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,14 +24,15 @@ public class WebSocketsSessionHandler implements MessageHandler {
 
 
     public void addSession(Session session) {
-        Set<Session> commonSessions;
+        String uuid = session.getNegotiatedSubprotocol();
         try {
-            commonSessions = this.sessions.get(session.getNegotiatedSubprotocol());
-            commonSessions.add(session);
-            sessions.put(session.getNegotiatedSubprotocol(), commonSessions);
+            Set<Session> sessionsWithTheSameUUID = this.sessions.get(uuid);
+            sessionsWithTheSameUUID.add(session);
+            this.sessions.put(uuid, sessionsWithTheSameUUID);
         } catch (NullPointerException e) {
-            Set<Session> newCommonSessionsSet = Set.of(session);
-            this.sessions.put(session.getNegotiatedSubprotocol(), newCommonSessionsSet);
+            Set<Session> newCommonSessionsSet = new HashSet<Session>();
+            newCommonSessionsSet.add(session);
+            this.sessions.put(uuid, newCommonSessionsSet);
         }
     }
 

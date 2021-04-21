@@ -1,6 +1,7 @@
 package com.kpodsiadlo.eightbitcomputer.server;
 
 import com.kpodsiadlo.eightbitcomputer.config.WebsocketServerConfigurator;
+import com.kpodsiadlo.eightbitcomputer.engine.EngineStarter;
 import com.kpodsiadlo.eightbitcomputer.handler.WebSocketsSessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,8 @@ public class WebsocketServer {
 
     @OnError
     public void onError(Throwable error) {
-        logger.error("On Error: {}", error.getMessage());
+        logger.error("onError");
+        error.printStackTrace();
     }
 
 }
