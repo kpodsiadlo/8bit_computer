@@ -1,18 +1,24 @@
+const socket = new WebSocket("ws://localhost:8080/server/computer");
 socket.onmessage = onMessage;
 socket.onopen = onOpen;
 let connectionTimer = 1;
+
 setInterval(updateConnectionIndicator, 1000);
+
+let sessionId = null;
+const startEngineUrl = "http://localhost:8080/server/api/engine/start/"
+
 const enableIncomingMessageLogging = true;
 const enableOutcomingMessageLogging = true;
-const toggleClockButton = document.querySelector("#toggle-clock-button");
 
+const toggleClockButton = document.querySelector("#toggle-clock-button");
 const advanceClockButton = document.querySelector("#manual-clock-button");
 const resetButton = document.querySelector("#reset");
 const programSelector = document.querySelector("#program-selector");
 const connectionIndicator = document.querySelector("#connection-indicator")
 const powerUpButton = document.querySelector("#start-engine");
-window.addEventListener('load', onLoad);
 
+window.addEventListener('load', onLoad);
 toggleClockButton.addEventListener("click", onToggleClock)
 advanceClockButton.addEventListener("click", onManualClockAdvance)
 resetButton.addEventListener("click", onReset)
@@ -23,22 +29,25 @@ powerUpButton.addEventListener("click", startEngine);
 function onOpen() {
     updateConnectionIndicator();
     getComputerStatus();
-}
 
+}
 function onLoad() {
     getProgramsfromDatabase();
-}
 
+}
 function onMessage(event) {
     let incomingData = JSON.parse(event.data);
     if (enableIncomingMessageLogging) {
         console.log("Event received:");
         console.log(incomingData);
     }
+    if (!isNaN(incomingData.sessionId)) {
+        sessionId = incomingData.sessionId;
+    }
     resetTimer();
     disableEnginePowerUpButton();
-    processMessage(incomingData)
 
+    processMessage(incomingData)
     function processMessage(processedData) {
         if (processedData.type === "clockStopped") {
             enableManualClockIncrease();
@@ -48,8 +57,8 @@ function onMessage(event) {
             updateDisplays(incomingData);
         }
     }
-}
 
+}
 function onToggleClock() {
     switch (toggleClockButton.value) {
         case "STOP": {
@@ -70,6 +79,10 @@ function onToggleClock() {
             break;
         }
     }
+
+}
+function startEngine() {
+    fetch(startEngineUrl+sessionId);
 }
 
 function onManualClockAdvance() {

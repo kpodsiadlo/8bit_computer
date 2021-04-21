@@ -195,17 +195,6 @@
     </div>
 </div>
 </body>
-<script type="application/javascript">
-    const uuid = "${pageContext.request.getAttribute("8bitComputerCookie")}";
-    const socket = new WebSocket("ws://localhost:8080/server/computer",
-        uuid);
-</script>
-<script type=application/javascript>
-    const startEngineUrl = "http://localhost:8080/server/api/engine/start/"
-    function startEngine() {
-        fetch(startEngineUrl+uuid);
-    }
-</script>
 <script src="script/main.js"></script>
 <script src="script/update.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

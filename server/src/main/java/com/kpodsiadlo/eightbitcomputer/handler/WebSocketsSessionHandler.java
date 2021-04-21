@@ -20,28 +20,53 @@ public class WebSocketsSessionHandler implements MessageHandler {
 
 
     public void forwardMessage(String message, Session originSession) {
-        sendToSessionsWithTheSameUUID(message, originSession);
+        sendToRelatedSessions(message, originSession);
     }
 
 
     public void addSession(Session session) {
-        String uuid = session.getNegotiatedSubprotocol();
+        String sessionIdFromEngine = session.getNegotiatedSubprotocol();
+        if (sessionIdFromEngine.equals("")) {
+            logger.info("Browser registering");
+            String sessionId = session.getId();
+            addSessionToSessions(sessionId, session);
+            String sessionIdJson = "{\"sessionId\": \"" + sessionId + "\"}";
+            sendToSession(session, sessionIdJson);
+
+        } else {
+            logger.info("Engine registering");
+            addSessionToSessions(sessionIdFromEngine, session);
+        }
+    }
+
+    private void addSessionToSessions(String sessionId, Session session) {
         try {
-            Set<Session> sessionsWithTheSameUUID = this.sessions.get(uuid);
-            sessionsWithTheSameUUID.add(session);
+            Set<Session> commonSessions = sessions.get(sessionId);
+            commonSessions.add(session);
         } catch (NullPointerException e) {
-            Set<Session> newCommonSessionsSet = new HashSet<Session>();
+            Set<Session> newCommonSessionsSet = new HashSet<>();
             newCommonSessionsSet.add(session);
-            this.sessions.put(uuid, newCommonSessionsSet);
+            this.sessions.put(sessionId, newCommonSessionsSet);
         }
     }
 
     public void removeSession(Session session) {
-        String uuid = session.getNegotiatedSubprotocol();
-        Set<Session> sessionsWithTheSameUUID = this.sessions.get(uuid);
-        sessionsWithTheSameUUID.remove(session);
-        if (sessionsWithTheSameUUID.isEmpty()) {
-            this.sessions.remove(uuid);
+        String sessionIdFromEngine = session.getNegotiatedSubprotocol();
+        if (sessionIdFromEngine.equals(" ")) {
+            logger.info("Engine closed connection");
+            try {
+                Set<Session> commonSessions = this.sessions.get(sessionIdFromEngine);
+                commonSessions.remove(session);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        } else {
+            logger.info("Browser closed connection");
+            try {
+                sessions.remove(session.getId());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -54,11 +79,14 @@ public class WebSocketsSessionHandler implements MessageHandler {
         }
     }
 
-    public void sendToSessionsWithTheSameUUID(String message, Session originSession) {
-        String uuid = originSession.getNegotiatedSubprotocol();
-        Set<Session> sessionsWithTheSameUUID = new HashSet<Session>(sessions.get(uuid));
-        sessionsWithTheSameUUID.remove(originSession);
-        sessionsWithTheSameUUID.forEach(session -> sendToSession(session, message));
+    public void sendToRelatedSessions(String message, Session originSession) {
+        String sessionId = originSession.getNegotiatedSubprotocol();
+        if (sessionId.equals("")) {
+            sessionId = originSession.getId();
+        }
+        Set<Session> relatedSessions = new HashSet<>(sessions.get(sessionId));
+        relatedSessions.remove(originSession);
+        relatedSessions.forEach(session -> sendToSession(session, message));
     }
 
     public void sendToAllOtherSessions(String message, Session originSession) {
