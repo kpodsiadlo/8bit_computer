@@ -4,8 +4,8 @@ import sys
 import uuid
 from message_processor import WebsocketMessageProcessor
 
-# uuidSignature = sys.argv[1]
-uuidSignature = uuid.uuid4()
+uuidSignature = sys.argv[1]
+# uuidSignature = uuid.uuid4()
 protocols = [str(uuidSignature)]
 message_processor = WebsocketMessageProcessor()
 
