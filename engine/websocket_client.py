@@ -1,4 +1,5 @@
 from engine.computer_controller import ComputerController
+from message_processor import process_incoming_message
 import json
 import asyncio
 import websockets
@@ -39,61 +40,9 @@ async def send_ping(websocket):
 async def receive(message, websocket):
     message_json = json.loads(message)
     print("Data received" + message_json.__str__())
-    data = process_incoming_message(message_json)
+    data = process_incoming_message(message_json, controller)
     if data != None:
         await send_to_server(websocket, data)
-
-def process_incoming_message(message_json):
-    message_type = None
-
-    try:
-        message_type = message_json['type']
-    except KeyError:
-        print("Json contains no \"type\" field")
-
-    if message_type is not None:
-        if message_type == 'advanceClock':
-            data = controller.execute_one_computer_cycle_and_return_state()
-            return data
-
-        if message_type == 'clockEnabled':
-            start_or_stop_computer(message_json)
-            return None
-
-        if message_type == 'ramUpdate':
-            updateRam(message_json)
-            data = controller.get_computer_state()
-            return data
-
-        if message_type == 'reset':
-            controller.stop_computer()
-            data = controller.reset_computer_and_return_state()
-            return data
-
-        if message_type == 'getUpdate':
-            data = controller.get_computer_state()
-            return data
-
-    return None
-
-
-def start_or_stop_computer(message_json):
-    clockRunning = message_json['clockEnabled']
-    if clockRunning:
-        controller.start_computer()
-        print("START")
-    else:
-        controller.stop_computer()
-        print("STOP")
-
-
-
-def updateRam(message_json):
-    clockRunning = controller.get_clock_running_state()
-    if clockRunning:
-        controller.set_computer_ram(message_json['memoryContents'])
-    else:
-        controller.set_computer_ram(message_json['memoryContents'])
 
 
 async def producer_handler(websocket):
