@@ -6,6 +6,7 @@ let connectionTimer = 1;
 setInterval(updateConnectionIndicator, 1000);
 const enableIncomingMessageLogging = true;
 const enableOutcomingMessageLogging = true;
+let computerId = null;
 
 const toggleClockButton = document.querySelector("#toggle-clock-button");
 const advanceClockButton = document.querySelector("#manual-clock-button");
@@ -45,13 +46,18 @@ function onMessage(event) {
     disableEnginePowerUpButton();
     processMessage(incomingData)
 
-    function processMessage(processedData) {
-        if (processedData.type === "clockStopped") {
+    function processMessage(incomingData) {
+        if (incomingData.type === "clockStopped") {
             enableManualClockIncrease();
             updateClockRunning(false);
         }
-        if (processedData.type === "displayUpdate") {
+        if (incomingData.type === "displayUpdate") {
             updateDisplays(incomingData);
+        }
+        if (incomingData.source === "SERVER") {
+            if (incomingData.type === "id-assigment") {
+                computerId = incomingData.id;
+            }
         }
     }
 }
@@ -155,8 +161,10 @@ function sendJsonObjectToSocket(jsonMessage) {
 
 function addSourceToJSONMessage(jsonMessage) {
     jsonMessage["source"] = "WEBPAGE";
+    if (computerId !== null) {
+        jsonMessage["computerId"] = computerId;
+    }
     return jsonMessage;
-
 }
 
 function getProgramFromDatabaseAndSendToEngine(databaseId) {

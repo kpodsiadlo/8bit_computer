@@ -26,6 +26,14 @@ class WebsocketClient():
                 await asyncio.sleep(1)
 
 
+    async def receive(self, message, websocket):
+        message_json = json.loads(message)
+        print("Data received" + message_json.__str__())
+        data = process_incoming_message(message_json, self.controller)
+        if data != None:
+            await self.send_to_server(websocket, data)
+
+
     async def send_to_server(self, websocket, data):
         print("Data Being Sent:")
         print(data)
@@ -36,14 +44,6 @@ class WebsocketClient():
     async def send_ping(self, websocket):
         data = {'type': 'clockStopped'}
         await self.send_to_server(websocket, data)
-
-
-    async def receive(self, message, websocket):
-        message_json = json.loads(message)
-        print("Data received" + message_json.__str__())
-        data = process_incoming_message(message_json, self.controller)
-        if data != None:
-            await self.send_to_server(websocket, data)
 
 
     async def producer_handler(self, websocket):
