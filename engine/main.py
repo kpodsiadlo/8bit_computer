@@ -25,7 +25,8 @@ async def run_computer(websocket):
 
 
 async def send_to_server(websocket, data):
-    # print(data)
+    print("Data Being Sent:")
+    print(data)
     data_json = json.dumps(data)
     await websocket.send(data_json)
 
@@ -38,10 +39,11 @@ async def send_ping(websocket):
 async def receive(message, websocket):
     message_json = json.loads(message)
     print("Data received" + message_json.__str__())
-    await process_incoming_message(message_json, websocket)
+    data = process_incoming_message(message_json)
+    if data != None:
+        await send_to_server(websocket, data)
 
-
-async def process_incoming_message(message_json, websocket):
+def process_incoming_message(message_json):
     message_type = None
 
     try:
@@ -52,24 +54,27 @@ async def process_incoming_message(message_json, websocket):
     if message_type is not None:
         if message_type == 'advanceClock':
             data = controller.execute_one_computer_cycle_and_return_state()
-            await send_to_server(websocket, data)
+            return data
 
         if message_type == 'clockEnabled':
             start_or_stop_computer(message_json)
+            return None
 
         if message_type == 'ramUpdate':
             updateRam(message_json)
             data = controller.get_computer_state()
-            await send_to_server(websocket, data)
+            return data
 
         if message_type == 'reset':
             controller.stop_computer()
             data = controller.reset_computer_and_return_state()
-            await send_to_server(websocket, data)
+            return data
 
         if message_type == 'getUpdate':
             data = controller.get_computer_state()
-            await send_to_server(websocket, data)
+            return data
+
+    return None
 
 
 def start_or_stop_computer(message_json):
