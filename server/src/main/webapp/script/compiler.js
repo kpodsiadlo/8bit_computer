@@ -21,7 +21,7 @@ function getUserProgramFromInput() {
         instructions.push(element.value)
     });
     assemblyValues.forEach((element) => {
-        value = parseInt(element.value, 2);
+        value = parseInt(element.value, 10);
         if (isNaN(value)) {
             values.push(0)
         } else {
