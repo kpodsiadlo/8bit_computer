@@ -6,11 +6,10 @@ import websockets
 
 class WebsocketClient():
 
-    def __init__(self):
-        self.uri = "ws://localhost:8080/server/computer"
+    def __init__(self, clock_speed, uri):
         self.controller = ComputerController()
-        self.clock_speed = 10
-        self.period = 1 / self.clock_speed
+        self.uri = uri
+        self.period = 1 / clock_speed
 
 
     async def run_computer(self, websocket):
