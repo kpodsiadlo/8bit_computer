@@ -1,3 +1,5 @@
+from messages import MessageTypes
+
 def process_incoming_message(message_json, controller):
     #  Auxiliary functions
     def start_or_stop_computer():
@@ -39,6 +41,7 @@ def process_incoming_message(message_json, controller):
         if message_type is not None:
             if message_type == 'advanceClock':
                 data = controller.execute_one_computer_cycle_and_return_state()
+                data["type"] = MessageTypes.Engine.display_update
                 return data
 
             if message_type == 'clockEnabled':
@@ -48,15 +51,18 @@ def process_incoming_message(message_json, controller):
             if message_type == 'ramUpdate':
                 updateRam()
                 data = controller.get_computer_state()
+                data["type"] = MessageTypes.Engine.display_update
                 return data
 
             if message_type == 'reset':
                 controller.stop_computer()
                 data = controller.reset_computer_and_return_state()
+                data["type"] = MessageTypes.Engine.display_update
                 return data
 
             if message_type == 'getUpdate':
                 data = controller.get_computer_state()
+                data["type"] = MessageTypes.Engine.display_update
                 return data
 
     return None

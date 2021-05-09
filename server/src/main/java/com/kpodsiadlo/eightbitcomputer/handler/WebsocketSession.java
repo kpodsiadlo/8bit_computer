@@ -1,5 +1,7 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
+import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageSource;
+
 import javax.websocket.CloseReason;
 import javax.websocket.Extension;
 import javax.websocket.MessageHandler;
@@ -13,154 +15,191 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class ForwardingSession implements Session {
-    private final Session delegate;
-    public ForwardingSession(Session delegate) {
-        this.delegate = delegate;
+public class WebsocketSession implements Session {
+    private Session session;
+    private String originId;
+    private String targetId;
+    private MessageSource source;
+
+    WebsocketSession(Session session) {
+        this.session = session;
     }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    public String getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(String originId) {
+        this.originId = originId;
+    }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
+    }
+
+    public MessageSource getSource() {
+        return source;
+    }
+
+    public void setSource(MessageSource source) {
+        this.source = source;
+    }
+
 
     @Override
     public WebSocketContainer getContainer() {
-        return delegate.getContainer();
+        return session.getContainer();
     }
 
     @Override
     public void addMessageHandler(MessageHandler handler) throws IllegalStateException {
-        delegate.addMessageHandler(handler);
+        session.addMessageHandler(handler);
     }
 
     @Override
     public <T> void addMessageHandler(Class<T> clazz, MessageHandler.Whole<T> handler) {
-        delegate.addMessageHandler(clazz, handler);
+        session.addMessageHandler(clazz, handler);
     }
 
     @Override
     public <T> void addMessageHandler(Class<T> clazz, MessageHandler.Partial<T> handler) {
-        delegate.addMessageHandler(clazz, handler);
+        session.addMessageHandler(clazz, handler);
     }
 
     @Override
     public Set<MessageHandler> getMessageHandlers() {
-        return delegate.getMessageHandlers();
+        return session.getMessageHandlers();
     }
 
     @Override
     public void removeMessageHandler(MessageHandler handler) {
-        delegate.removeMessageHandler(handler);
+        session.removeMessageHandler(handler);
     }
 
     @Override
     public String getProtocolVersion() {
-        return delegate.getProtocolVersion();
+        return session.getProtocolVersion();
     }
 
     @Override
     public String getNegotiatedSubprotocol() {
-        return delegate.getNegotiatedSubprotocol();
+        return session.getNegotiatedSubprotocol();
     }
 
     @Override
     public List<Extension> getNegotiatedExtensions() {
-        return delegate.getNegotiatedExtensions();
+        return session.getNegotiatedExtensions();
     }
 
     @Override
     public boolean isSecure() {
-        return delegate.isSecure();
+        return session.isSecure();
     }
 
     @Override
     public boolean isOpen() {
-        return delegate.isOpen();
+        return session.isOpen();
     }
 
     @Override
     public long getMaxIdleTimeout() {
-        return delegate.getMaxIdleTimeout();
+        return session.getMaxIdleTimeout();
     }
 
     @Override
     public void setMaxIdleTimeout(long milliseconds) {
-        delegate.setMaxIdleTimeout(milliseconds);
+        session.setMaxIdleTimeout(milliseconds);
     }
 
     @Override
     public void setMaxBinaryMessageBufferSize(int length) {
-        delegate.setMaxBinaryMessageBufferSize(length);
+        session.setMaxBinaryMessageBufferSize(length);
     }
 
     @Override
     public int getMaxBinaryMessageBufferSize() {
-        return delegate.getMaxBinaryMessageBufferSize();
+        return session.getMaxBinaryMessageBufferSize();
     }
 
     @Override
     public void setMaxTextMessageBufferSize(int length) {
-        delegate.setMaxTextMessageBufferSize(length);
+        session.setMaxTextMessageBufferSize(length);
     }
 
     @Override
     public int getMaxTextMessageBufferSize() {
-        return delegate.getMaxTextMessageBufferSize();
+        return session.getMaxTextMessageBufferSize();
     }
 
     @Override
     public RemoteEndpoint.Async getAsyncRemote() {
-        return delegate.getAsyncRemote();
+        return session.getAsyncRemote();
     }
 
     @Override
     public RemoteEndpoint.Basic getBasicRemote() {
-        return delegate.getBasicRemote();
+        return session.getBasicRemote();
     }
 
     @Override
     public String getId() {
-        return delegate.getId();
+        return session.getId();
     }
 
     @Override
     public void close() throws IOException {
-        delegate.close();
+        session.close();
     }
 
     @Override
     public void close(CloseReason closeReason) throws IOException {
-        delegate.close(closeReason);
+        session.close(closeReason);
     }
 
     @Override
     public URI getRequestURI() {
-        return delegate.getRequestURI();
+        return session.getRequestURI();
     }
 
     @Override
     public Map<String, List<String>> getRequestParameterMap() {
-        return delegate.getRequestParameterMap();
+        return session.getRequestParameterMap();
     }
 
     @Override
     public String getQueryString() {
-        return delegate.getQueryString();
+        return session.getQueryString();
     }
 
     @Override
     public Map<String, String> getPathParameters() {
-        return delegate.getPathParameters();
+        return session.getPathParameters();
     }
 
     @Override
     public Map<String, Object> getUserProperties() {
-        return delegate.getUserProperties();
+        return session.getUserProperties();
     }
 
     @Override
     public Principal getUserPrincipal() {
-        return delegate.getUserPrincipal();
+        return session.getUserPrincipal();
     }
 
     @Override
     public Set<Session> getOpenSessions() {
-        return delegate.getOpenSessions();
+        return session.getOpenSessions();
     }
 }

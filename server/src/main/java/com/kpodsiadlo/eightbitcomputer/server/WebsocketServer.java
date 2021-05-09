@@ -1,5 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.server;
 
+import com.kpodsiadlo.eightbitcomputer.handler.ComputerMessageHandler;
 import com.kpodsiadlo.eightbitcomputer.handler.WebSocketsSessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +35,12 @@ public class WebsocketServer {
         }
     }
 
-    @OnMessage
-    public void onMessage(String message, Session originSession) {
-        logger.debug("onMessage:");
-        logger.debug("Received: {}", message);
-        sessionHandler.forwardMessage(message, originSession);
-    }
+//    @OnMessage
+//    public void onMessage(String message, Session originSession) {
+//        logger.debug("onMessage:");
+//        logger.debug("Received: {}", message);
+//        sessionHandler.forwardMessage(message);
+//    }
 
     @OnError
     public void onError(Throwable error) {

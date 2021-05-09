@@ -196,6 +196,7 @@
 </div>
 </body>
 <script src="script/main.js"></script>
+<script src="script/messageTypes.js"></script>
 <script src="script/update.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="script/compiler.js"></script>

@@ -3,6 +3,8 @@ package com.kpodsiadlo.eightbitcomputer.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageSource;
+import com.kpodsiadlo.eightbitcomputer.handler.messages.ServerMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,33 +13,27 @@ import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @ApplicationScoped
 public class WebSocketsSessionHandler implements MessageHandler {
 
-    private final Map<String, Session> sessions = new HashMap<>();
+    private final Map<String, WebsocketSession> sessions = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    public void forwardMessage(String message, Session originSession) {
-        sendToTargetSession(message, originSession);
-    }
-
     public void addSession(Session session) {
-        String computerId = UUID.randomUUID().toString();
-        sessions.put(computerId, session);
-        String message = String.format(
-                "{\"source\": \"SERVER\", \"type\": \"idAssigment\", \"id\":\"%s\"}",
-                computerId);
-        sendToSession(session, message);
+        WebsocketSession websocketSession = new WebsocketSession(session);
+        websocketSession.addMessageHandler(new ComputerMessageHandler(session, sessions));
+        String clientId = UUID.randomUUID().toString();
+        websocketSession.setOriginId(clientId);
+        sessions.put(clientId, websocketSession);
+        sendIdToClient(websocketSession, clientId);
     }
 
     public void removeSession(Session session) {
         String computerId = null;
-        for (Map.Entry<String, Session> stringSessionEntry : sessions.entrySet()) {
+        for (Map.Entry<String, WebsocketSession> stringSessionEntry : sessions.entrySet()) {
             if (stringSessionEntry.getValue().getId().equals(session.getId())) {
                 computerId = stringSessionEntry.getKey();
             }
@@ -56,31 +52,32 @@ public class WebSocketsSessionHandler implements MessageHandler {
         }
     }
 
-    public void sendToAllOtherSessions(String message, Session originSession) {
-        logger.debug("Sending: {}", message);
-        Set<Session> receivingSessions = new HashSet<>(sessions.values());
-        receivingSessions.remove(originSession);
-        receivingSessions.forEach(session -> sendToSession(session, message));
 
+
+
+    private void sendIdToClient(Session session, String clientId) {
+        IdAssignMessage idAssignMessage = getIdAssignMessage(clientId);
+        String jsonMessage = convertToJsonMessage(idAssignMessage);
+        sendToSession(session, jsonMessage);
     }
 
-    public void sendToTargetSession(String message, Session originSession) {
+    private String convertToJsonMessage(MessageHeader message) {
         ObjectMapper mapper = new ObjectMapper();
-        String targetId = null;
+        String jsonMessage = null;
         try {
-            JsonNode jsonNode = mapper.readTree(message);
-            targetId = jsonNode.get("targetId").textValue();
-        } catch (JsonProcessingException | NullPointerException e) {
-            logger.info("No targetId in message");
+            jsonMessage = mapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
-        if (targetId == null) {
-            return;
-        }
-        sendToSession(sessions.get(targetId), message);
+        return jsonMessage;
+    }
+
+    private IdAssignMessage getIdAssignMessage(String clientId) {
+        IdAssignMessage idAssignMessage = new IdAssignMessage();
+        idAssignMessage.setSource(MessageSource.SERVER);
+        idAssignMessage.setType(ServerMessage.idAssignment);
+        idAssignMessage.setId(clientId);
+        return idAssignMessage;
     }
 }
-
-//    public void sendToAllSessions(String message) {
-//        sessions.forEach(session -> sendToSession(session, message));
-//    }
 
