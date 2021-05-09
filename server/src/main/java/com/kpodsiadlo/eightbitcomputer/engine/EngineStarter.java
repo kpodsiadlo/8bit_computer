@@ -12,7 +12,7 @@ public class EngineStarter {
         throw new InstantiationException("This class should not be instantiated");
     }
 
-    public static void startEngine()  {
+    public static void startEngine(String clientId)  {
 
         String engineFileDirectory = "/home/krzysztof/code/8bit_computer/engine/";
         String engineFileName = "main.py";
@@ -20,7 +20,7 @@ public class EngineStarter {
 
         String startPython =  engineFileDirectory + python3;
         String startEngine = engineFileDirectory + engineFileName;
-        String line = startPython + " " + startEngine;
+        String line = startPython + " " + startEngine + " " + clientId;
 
         CommandLine startEngineCLI = CommandLine.parse(line);
         DefaultExecutor executor = new DefaultExecutor();

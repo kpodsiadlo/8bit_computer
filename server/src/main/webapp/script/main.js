@@ -1,12 +1,13 @@
 const socket = new WebSocket("ws://localhost:8080/server/computer");
-const startEngineUrl = "http://localhost:8080/server/api/engine/start"
+const startEngineUrl = "http://localhost:8080/server/api/engine/start/"
 socket.onmessage = onMessage;
 socket.onopen = onOpen;
 let connectionTimer = 1;
 setInterval(updateConnectionIndicator, 1000);
 const enableIncomingMessageLogging = true;
 const enableOutcomingMessageLogging = true;
-let computerId = null;
+let originId = null;
+let targetId = null;
 
 const toggleClockButton = document.querySelector("#toggle-clock-button");
 const advanceClockButton = document.querySelector("#manual-clock-button");
@@ -23,13 +24,14 @@ programSelector.addEventListener("change", (event) => onSelectProgram(event.targ
 powerUpButton.addEventListener("click", startEngine);
 
 function startEngine() {
-    fetch(startEngineUrl);
+    fetch(startEngineUrl+originId);
 }
 
 
 function onOpen() {
     updateConnectionIndicator();
     getComputerStatus();
+    disableEnginePowerUpButton()
 }
 
 function onLoad() {
@@ -56,7 +58,8 @@ function onMessage(event) {
         }
         if (incomingData.source === "SERVER") {
             if (incomingData.type === "idAssigment") {
-                computerId = incomingData.id;
+                originId = incomingData.id;
+                enableEnginePowerUpButton();
             }
         }
     }
@@ -161,8 +164,8 @@ function sendJsonObjectToSocket(jsonMessage) {
 
 function addSourceToJSONMessage(jsonMessage) {
     jsonMessage["source"] = "WEBPAGE";
-    if (computerId !== null) {
-        jsonMessage["computerId"] = computerId;
+    if (originId !== null) {
+        jsonMessage["originId"] = originId;
     }
     return jsonMessage;
 }

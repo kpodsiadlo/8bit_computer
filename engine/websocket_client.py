@@ -6,8 +6,9 @@ import websockets
 
 class WebsocketClient():
 
-    def __init__(self, clock_speed, uri):
-        self.computerId = None
+    def __init__(self, clock_speed, uri, targetId):
+        self.originId = None
+        self.targetId = targetId
         self.controller = ComputerController()
         self.uri = uri
         self.period = 1 / clock_speed
@@ -39,14 +40,15 @@ class WebsocketClient():
 
     def process_server_message(self, message_json):
         if message_json["type"] == "idAssigment":
-            self.computerId = message_json["id"]
+            self.originId = message_json["id"]
 
 
     async def send_to_server(self, websocket, data):
         print("Data Being Sent:")
         data["source"] = "ENGINE"
-        if self.computerId != None:
-            data["computerId"] = self.computerId
+        data["targetId"] = self.targetId
+        if self.originId != None:
+            data["originId"] = self.originId
         print(data)
         data_json = json.dumps(data)
         await websocket.send(data_json)
