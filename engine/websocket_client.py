@@ -39,15 +39,18 @@ class WebsocketClient():
         print("Data received" + message_json.__str__())
         data = process_incoming_message(message_json, self.controller)
         if data == "ServerData":
-            self.process_server_message(message_json)
+            await self.process_server_message(websocket, message_json)
         elif data != None:
             await self.send_to_server(websocket, data)
 
-    def process_server_message(self, message_json):
+    async def process_server_message(self, websocket, message_json):
         if message_json["type"] == MessageTypes.Server.origin_assignment:
             self.originId = message_json["id"]
         elif message_json["type"] == MessageTypes.Server.handshake_complete:
             self.connected = True
+            data = self.controller.get_computer_state()
+            data["type"] = MessageTypes.Engine.display_update
+            await self.send_to_server(websocket, data)
 
     async def send_to_server(self, websocket, data):
         print("Data Being Sent:")
