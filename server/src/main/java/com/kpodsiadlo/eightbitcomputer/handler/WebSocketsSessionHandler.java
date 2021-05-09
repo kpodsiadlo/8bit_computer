@@ -27,7 +27,7 @@ public class WebSocketsSessionHandler implements MessageHandler {
         String computerId = UUID.randomUUID().toString();
         sessions.put(computerId, session);
         String message = String.format(
-                "{\"source\": \"SERVER\", \"type\": \"id-assigment\", \"id\":\"%s\"}",
+                "{\"source\": \"SERVER\", \"type\": \"idAssigment\", \"id\":\"%s\"}",
                 computerId);
         sendToSession(session, message);
     }

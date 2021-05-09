@@ -55,7 +55,7 @@ function onMessage(event) {
             updateDisplays(incomingData);
         }
         if (incomingData.source === "SERVER") {
-            if (incomingData.type === "id-assigment") {
+            if (incomingData.type === "idAssigment") {
                 computerId = incomingData.id;
             }
         }

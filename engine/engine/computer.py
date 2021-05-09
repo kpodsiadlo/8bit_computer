@@ -57,7 +57,6 @@ class Computer:
     def get_state(self):
         state = {
             # Names use Java convention for interoperability
-            "source": "Engine",
             "type": "displayUpdate",
             "clockRunning": self.clock.clock_running,
             "memoryAddress": self.mar.state,

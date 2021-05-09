@@ -7,6 +7,7 @@ import websockets
 class WebsocketClient():
 
     def __init__(self, clock_speed, uri):
+        self.computerId = None
         self.controller = ComputerController()
         self.uri = uri
         self.period = 1 / clock_speed
@@ -30,12 +31,22 @@ class WebsocketClient():
         message_json = json.loads(message)
         print("Data received" + message_json.__str__())
         data = process_incoming_message(message_json, self.controller)
-        if data != None:
+        if data == "ServerData":
+            self.process_server_message(message_json)
+        elif data != None:
             await self.send_to_server(websocket, data)
+
+
+    def process_server_message(self, message_json):
+        if message_json["type"] == "idAssigment":
+            self.computerId = message_json["id"]
 
 
     async def send_to_server(self, websocket, data):
         print("Data Being Sent:")
+        data["source"] = "ENGINE"
+        if self.computerId != None:
+            data["computerId"] = self.computerId
         print(data)
         data_json = json.dumps(data)
         await websocket.send(data_json)
