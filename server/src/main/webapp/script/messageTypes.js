@@ -7,19 +7,21 @@ const MESSAGE_SOURCES =
 
 const MESSAGE_TYPES = {
     Engine: {
-        display_update : "displayUpdate",
-        connection_request : "connectToWebpage",
-        clock_stopped : "clockStopped"
+        displayUpdate : "displayUpdate",
+        connectionRequest : "connectToWebpage",
+        clockStopped : "clockStopped"
     },
     Server: {
-        target_assignment : "targetAssigment",
-        id_assignment : "idAssignment"
+        targetAssignment : "targetAssignment",
+        originAssignment : "originAssignment",
+        handshakeComplete : "handShakeComplete"
     },
     Webpage: {
-        register_request : "registerRequest",
-        clock_enabled : "clockEnabled",
-        advance_clock : "advanceClock",
+        registerRequest : "registerRequest",
+        clockEnabled : "clockEnabled",
+        advanceClock : "advanceClock",
         reset : "reset",
-        ram_update : "ramUpdate"
+        ramUpdate : "ramUpdate",
+        connectionACK : "connectionACK"
     }
 }

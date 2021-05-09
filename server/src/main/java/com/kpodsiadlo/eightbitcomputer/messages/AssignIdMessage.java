@@ -1,7 +1,7 @@
-package com.kpodsiadlo.eightbitcomputer.handler;
+package com.kpodsiadlo.eightbitcomputer.messages;
 
-class IdAssignMessage extends MessageHeader {
-    public IdAssignMessage(){
+class AssignIdMessage extends MessageHeader {
+    public AssignIdMessage(){
         super();
     }
 

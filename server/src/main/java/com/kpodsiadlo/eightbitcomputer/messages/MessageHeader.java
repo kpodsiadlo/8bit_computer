@@ -1,9 +1,9 @@
-package com.kpodsiadlo.eightbitcomputer.handler;
+package com.kpodsiadlo.eightbitcomputer.messages;
 
-import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageSource;
-import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageType;
+import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
+import com.kpodsiadlo.eightbitcomputer.messageType.MessageType;
 
-class MessageHeader {
+public class MessageHeader {
     private MessageSource source;
     private MessageType type;
     private String originId = null;

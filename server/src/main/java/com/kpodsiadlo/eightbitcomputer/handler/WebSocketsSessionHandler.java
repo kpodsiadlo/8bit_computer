@@ -1,17 +1,14 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageSource;
-import com.kpodsiadlo.eightbitcomputer.handler.messages.ServerMessage;
+import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
+import com.kpodsiadlo.eightbitcomputer.messageType.ServerMessage;
+import com.kpodsiadlo.eightbitcomputer.messages.IdDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -25,59 +22,36 @@ public class WebSocketsSessionHandler implements MessageHandler {
     public void addSession(Session session) {
         WebsocketSession websocketSession = new WebsocketSession(session);
         websocketSession.addMessageHandler(new ComputerMessageHandler(session, sessions));
+
         String clientId = UUID.randomUUID().toString();
         websocketSession.setOriginId(clientId);
         sessions.put(clientId, websocketSession);
-        sendIdToClient(websocketSession, clientId);
+
+        IdDispatcher idDispatcher = new IdDispatcher();
+        idDispatcher.sendIdToClient(websocketSession, ServerMessage.originAssignment,
+                clientId);
     }
 
     public void removeSession(Session session) {
-        String computerId = null;
+
+        WebsocketSession websocketSession = null;
         for (Map.Entry<String, WebsocketSession> stringSessionEntry : sessions.entrySet()) {
+            // Find enclosing websocketsession based on session_id
             if (stringSessionEntry.getValue().getId().equals(session.getId())) {
-                computerId = stringSessionEntry.getKey();
+                websocketSession = stringSessionEntry.getValue();
+                assert (websocketSession != null);
+                sessions.remove(websocketSession.getOriginId());
+                // If webpage, disconnect engine (for safety)
+                if (websocketSession.getSource().equals(MessageSource.WEBPAGE)) {
+                    sessions.remove(websocketSession.getTargetId());
+                }
             }
         }
-        if (computerId != null) {
-            sessions.remove(computerId);
-        }
+        assert websocketSession != null;
     }
 
-    public void sendToSession(Session session, String message) {
-        try {
-            session.getBasicRemote().sendText(message);
-        } catch (IOException e) {
-            removeSession(session);
-            logger.error(e.getMessage());
-        }
-    }
-
-
-
-
-    private void sendIdToClient(Session session, String clientId) {
-        IdAssignMessage idAssignMessage = getIdAssignMessage(clientId);
-        String jsonMessage = convertToJsonMessage(idAssignMessage);
-        sendToSession(session, jsonMessage);
-    }
-
-    private String convertToJsonMessage(MessageHeader message) {
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonMessage = null;
-        try {
-            jsonMessage = mapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return jsonMessage;
-    }
-
-    private IdAssignMessage getIdAssignMessage(String clientId) {
-        IdAssignMessage idAssignMessage = new IdAssignMessage();
-        idAssignMessage.setSource(MessageSource.SERVER);
-        idAssignMessage.setType(ServerMessage.idAssignment);
-        idAssignMessage.setId(clientId);
-        return idAssignMessage;
-    }
 }
+
+
+
 

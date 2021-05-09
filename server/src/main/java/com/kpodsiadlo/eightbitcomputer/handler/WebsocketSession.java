@@ -1,6 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
-import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageSource;
+import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
 
 import javax.websocket.CloseReason;
 import javax.websocket.Extension;

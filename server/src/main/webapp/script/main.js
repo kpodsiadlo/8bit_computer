@@ -36,7 +36,7 @@ function onOpen() {
 
 function sendIdAssigmentRequest() {
     let request = {}
-    request["type"] = MESSAGE_TYPES.Webpage.register_request
+    request["type"] = MESSAGE_TYPES.Webpage.registerRequest
     sendJsonObjectToSocket(request)
 }
 
@@ -55,34 +55,38 @@ function onMessage(event) {
     processMessage(incomingData)
 
     function processMessage(incomingData) {
-        if (incomingData.type === MESSAGE_TYPES.Engine.clock_stopped) {
+        if (incomingData.type === MESSAGE_TYPES.Engine.clockStopped) {
             enableManualClockIncrease();
             updateClockRunning(false);
         }
-        if (incomingData.type === MESSAGE_TYPES.Engine.display_update) {
+        if (incomingData.type === MESSAGE_TYPES.Engine.displayUpdate) {
             updateDisplays(incomingData);
         }
         if (incomingData.source === MESSAGE_SOURCES.server) {
-            if (incomingData.type === MESSAGE_TYPES.Server.id_assignment) {
+            if (incomingData.type === MESSAGE_TYPES.Server.originAssignment) {
                 originId = incomingData.id;
                 enableEnginePowerUpButton();
             }
-        }
-        if (incomingData.source === MESSAGE_SOURCES.engine) {
-            if (incomingData.originId) {
-                if (targetId === null) {
-                    targetId = incomingData.originId;
-                }
+            else if (incomingData.type === MESSAGE_TYPES.Server.targetAssignment) {
+                targetId = incomingData.id;
+                sendConnectionACK();
             }
         }
 
     }
 }
 
+function sendConnectionACK() {
+    data = {
+        'type': MESSAGE_TYPES.Webpage.connectionACK
+    }
+    sendJsonObjectToSocket(data)
+}
+
 function onToggleClock() {
     switch (toggleClockButton.value) {
         case "STOP": {
-            let jsonMessage = {"type": MESSAGE_TYPES.Webpage.clock_enabled,
+            let jsonMessage = {"type": MESSAGE_TYPES.Webpage.clockEnabled,
                 "clockEnabled": false,
             };
             sendJsonObjectToSocket(jsonMessage);
@@ -91,7 +95,7 @@ function onToggleClock() {
 
         }
         case "START": {
-            let jsonMessage = {"type": MESSAGE_TYPES.Webpage.clock_enabled,
+            let jsonMessage = {"type": MESSAGE_TYPES.Webpage.clockEnabled,
                 "clockEnabled": true,
             };
             toggleClockButton.value = "STOP";
@@ -154,7 +158,7 @@ function enableEnginePowerUpButton() {
 
 function sendProgramAsIntArrayToServer(program) {
     let jsonMessage = {};
-    jsonMessage["type"] = MESSAGE_TYPES.Webpage.ram_update;
+    jsonMessage["type"] = MESSAGE_TYPES.Webpage.ramUpdate;
     jsonMessage["memoryContents"] = program;
     sendJsonObjectToSocket(jsonMessage);
 }

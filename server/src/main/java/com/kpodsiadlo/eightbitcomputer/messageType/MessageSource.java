@@ -1,4 +1,4 @@
-package com.kpodsiadlo.eightbitcomputer.handler.messages;
+package com.kpodsiadlo.eightbitcomputer.messageType;
 
 public enum MessageSource {
     SERVER,

@@ -12,6 +12,7 @@ class WebsocketClient():
         self.originId = None  # will be assigned at first server message
         self.targetId = targetId  # assigned at program start via REST API
         self.controller = ComputerController()
+        self.connected = False
         self.uri = uri
         self.period = 1 / clock_speed
 
@@ -19,16 +20,19 @@ class WebsocketClient():
         while True:
             if self.originId == None:
                 await asyncio.sleep(0.001)
-
-            if self.controller.get_clock_running_state() == True:
-                data = self.controller.execute_one_computer_cycle_and_return_state()
-                data["type"] = MessageTypes.Engine.display_update
-                await self.send_to_server(websocket, data)
-                await asyncio.sleep(float(self.period))
+            elif self.connected == False:
+                await self.sendConnectionRequest(websocket)
+                await asyncio.sleep((0.20))
             else:
-                await self.send_ping(websocket)
-                # print(cycles_elapsed)
-                await asyncio.sleep(1)
+                if self.controller.get_clock_running_state() == True:
+                    data = self.controller.execute_one_computer_cycle_and_return_state()
+                    data["type"] = MessageTypes.Engine.display_update
+                    await self.send_to_server(websocket, data)
+                    await asyncio.sleep(float(self.period))
+                else:
+                    await self.send_ping(websocket)
+                    # print(cycles_elapsed)
+                    await asyncio.sleep(1)
 
     async def receive(self, message, websocket):
         message_json = json.loads(message)
@@ -40,8 +44,10 @@ class WebsocketClient():
             await self.send_to_server(websocket, data)
 
     def process_server_message(self, message_json):
-        if message_json["type"] == MessageTypes.Server.id_assignment:
+        if message_json["type"] == MessageTypes.Server.origin_assignment:
             self.originId = message_json["id"]
+        elif message_json["type"] == MessageTypes.Server.handshake_complete:
+            self.connected = True
 
     async def send_to_server(self, websocket, data):
         print("Data Being Sent:")

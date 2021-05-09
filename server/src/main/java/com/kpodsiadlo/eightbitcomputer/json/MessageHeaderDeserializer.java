@@ -1,13 +1,14 @@
-package com.kpodsiadlo.eightbitcomputer.handler;
+package com.kpodsiadlo.eightbitcomputer.json;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.kpodsiadlo.eightbitcomputer.handler.messages.EngineMessage;
-import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageSource;
-import com.kpodsiadlo.eightbitcomputer.handler.messages.MessageType;
-import com.kpodsiadlo.eightbitcomputer.handler.messages.WebpageMessage;
+import com.kpodsiadlo.eightbitcomputer.messages.MessageHeader;
+import com.kpodsiadlo.eightbitcomputer.messageType.EngineMessage;
+import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
+import com.kpodsiadlo.eightbitcomputer.messageType.MessageType;
+import com.kpodsiadlo.eightbitcomputer.messageType.WebpageMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

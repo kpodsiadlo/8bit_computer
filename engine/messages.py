@@ -11,8 +11,9 @@ class MessageTypes:
         clock_stopped = "clockStopped"
 
     class Server:
-        target_assignment = "targetAssigment"
-        id_assignment = "idAssignment"
+        target_assignment = "targetAssignment"
+        origin_assignment = "originAssignment"
+        handshake_complete = "handshakeComplete"
 
     class Webpage:
         register_request = "registerRequest"
@@ -20,3 +21,4 @@ class MessageTypes:
         advance_clock = "advanceClock"
         reset = "reset"
         ram_update = "ramUpdate"
+        connection_ACK = "connectionACK"
