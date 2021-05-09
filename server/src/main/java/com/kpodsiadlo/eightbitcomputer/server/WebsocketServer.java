@@ -44,6 +44,7 @@ public class WebsocketServer {
     @OnError
     public void onError(Throwable error) {
         logger.error("On Error: {}", error.getMessage());
+        error.printStackTrace();
     }
 
 }

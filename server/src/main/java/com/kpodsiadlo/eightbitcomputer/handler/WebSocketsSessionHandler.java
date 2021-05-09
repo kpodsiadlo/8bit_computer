@@ -1,5 +1,8 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +23,7 @@ public class WebSocketsSessionHandler implements MessageHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     public void forwardMessage(String message, Session originSession) {
-        sendToAllOtherSessions(message, originSession);
+        sendToTargetSession(message, originSession);
     }
 
     public void addSession(Session session) {
@@ -61,9 +64,23 @@ public class WebSocketsSessionHandler implements MessageHandler {
 
     }
 
+    public void sendToTargetSession(String message, Session originSession) {
+        ObjectMapper mapper = new ObjectMapper();
+        String targetId = null;
+        try {
+            JsonNode jsonNode = mapper.readTree(message);
+            targetId = jsonNode.get("targetId").textValue();
+        } catch (JsonProcessingException | NullPointerException e) {
+            logger.info("No targetId in message");
+        }
+        if (targetId == null) {
+            return;
+        }
+        sendToSession(sessions.get(targetId), message);
+    }
+}
+
 //    public void sendToAllSessions(String message) {
 //        sessions.forEach(session -> sendToSession(session, message));
 //    }
 
-
-}

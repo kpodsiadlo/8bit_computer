@@ -62,6 +62,14 @@ function onMessage(event) {
                 enableEnginePowerUpButton();
             }
         }
+        if (incomingData.source === "ENGINE") {
+            if (incomingData.originId) {
+                if (targetId === null) {
+                    targetId = incomingData.originId;
+                }
+            }
+        }
+
     }
 }
 
@@ -166,6 +174,9 @@ function addSourceToJSONMessage(jsonMessage) {
     jsonMessage["source"] = "WEBPAGE";
     if (originId !== null) {
         jsonMessage["originId"] = originId;
+    }
+    if (targetId !== null) {
+        jsonMessage["targetId"] = targetId;
     }
     return jsonMessage;
 }
