@@ -16,7 +16,8 @@
             <div class="row" id="indicators">
                 <span class="badge badge-info" id="connection-indicator"></span>
                 <span id="clock-running-display">Clock: Stopped</span>
-                <input class="btn btn-primary" type=button id="start-engine" value="Power-up"></input>
+                <input class="btn btn-primary" type=button id="start-engine"
+                       value="Power-up"/>
             </div>
             <div class="row" id="clock">
                 <input class="btn btn-danger" type=button id="toggle-clock-button" value="START">

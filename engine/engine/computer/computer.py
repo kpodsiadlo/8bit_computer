@@ -1,7 +1,7 @@
-from engine.computer_components.components import RAM, Display, MAR, ProgramCounter, Clock, Bus, \
+from engine.computer.computer_components.other_components import RAM, Display, MAR, ProgramCounter, Clock, Bus, \
     InstructionRegister, InstructionCounter
-from engine.computer_components.alu import ALU
-from engine.computer_components.decoder import Decoder
+from engine.computer.computer_components.alu import ALU
+from engine.computer.computer_components.decoder import Decoder
 from engine.utilities.input_data import get_input_data
 
 class Computer:

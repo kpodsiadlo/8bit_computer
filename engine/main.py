@@ -1,9 +1,33 @@
-from websocket_client import WebsocketClient
-from sys import argv
+import json
+from engine.websocketclient.websocket_client import WebsocketClient
+import quart
 
-target_id = argv[1]
-clock_speed = 10  #Hz
-uri = "ws://localhost:8080/server/computer"
+app = quart.Quart(__name__)
+app.config["DEBUG"] = True
+computers = {}
+default_clock_speed = 10
 
-client = WebsocketClient(clock_speed=clock_speed, uri=uri, targetId = target_id)
-client.start()
+
+@app.route('/', methods=['POST'])
+
+async def start():
+    targetUUID = quart.request.args.get("uuid")
+    computer = WebsocketClient(default_clock_speed, targetUUID)
+    computers["uuid"] = computer
+    computer.start()
+    if computer:
+        return {"Computer with targetId " + targetUUID + "started"}
+
+@app.route("/", methods=['GET'])
+def getAll():
+    return json.dumps(computers)
+
+@app.route("/", methods=['DELETE'])
+def stop():
+    targetUUID = quart.request.args.get("uuid")
+    del computers[targetUUID]
+    if computers[targetUUID] == None:
+        return "Computer with targetId" + targetUUID + "destroyed"
+
+
+app.run()

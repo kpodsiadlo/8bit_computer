@@ -1,4 +1,4 @@
-from messages import MessageTypes
+from engine.websocketclient.messages import MessageTypes
 
 def process_incoming_message(message_json, controller):
     #  Auxiliary functions

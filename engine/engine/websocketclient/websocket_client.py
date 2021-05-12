@@ -1,6 +1,6 @@
-from messages import MessageSources, MessageTypes
-from engine.computer_controller import ComputerController
-from message_processor import process_incoming_message
+from engine.websocketclient.messages import MessageSources, MessageTypes
+from engine.computer.computer_controller import ComputerController
+from engine.websocketclient.message_processor import process_incoming_message
 import json
 import asyncio
 import websockets
@@ -8,12 +8,12 @@ import websockets
 
 class WebsocketClient():
 
-    def __init__(self, clock_speed, uri, targetId):
+    def __init__(self, clock_speed, targetId):
+        self.uri = "ws://localhost:8080/server/computer"
         self.originId = None  # will be assigned at first server message
         self.targetId = targetId  # assigned at program start via REST API
         self.controller = ComputerController()
         self.connected = False
-        self.uri = uri
         self.period = 1 / clock_speed
 
     async def run_computer(self, websocket):

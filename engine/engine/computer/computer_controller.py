@@ -1,4 +1,4 @@
-from engine.computer import Computer;
+from engine.computer.computer import Computer
 
 class ComputerController():
 
