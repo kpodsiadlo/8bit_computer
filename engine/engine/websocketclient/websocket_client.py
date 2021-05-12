@@ -15,6 +15,7 @@ class WebsocketClient():
         self.controller = ComputerController()
         self.connected = False
         self.period = 1 / clock_speed
+        self.run = None
 
     async def run_computer(self, websocket):
         while True:
@@ -91,5 +92,9 @@ class WebsocketClient():
             for task in pending:
                 task.cancel()
 
-    def start(self):
-        asyncio.get_event_loop().run_until_complete(self.handler())
+    def start(self, loop):
+        self.run = loop.create_task(self.handler())
+
+
+    def stop(self):
+        self.run.cancel()

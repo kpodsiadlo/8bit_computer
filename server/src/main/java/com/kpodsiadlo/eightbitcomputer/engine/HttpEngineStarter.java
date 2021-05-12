@@ -1,5 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.engine;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,13 +23,19 @@ public class HttpEngineStarter {
 
     public void start(String uuid) {
 
-        RequestBody formBody = new FormBody.Builder()
-                .add("uuid", uuid)
+        HttpUrl url = new HttpUrl.Builder()
+                .scheme("http")
+                .host("localhost")
+                .port(5000)
+                .addQueryParameter("uuid", uuid)
                 .build();
 
+        RequestBody requestBody = RequestBody.create(new byte[0]);
+
+
         Request request = new Request.Builder()
-                .url(computerUri)
-                .post(formBody)
+                .url(url)
+                .method("post", requestBody )
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
