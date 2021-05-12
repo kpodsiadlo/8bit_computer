@@ -9,8 +9,8 @@ Alpha version will be released shortly.
 
 
 Stack:<br>
-Computer engine: Python 3.8<br>
+Computer engine: Python 3.8, Quart as REST API server<br>
 Web app: JAVA EE 8 + JSP on JBOSS 20<br>
-Communication over websockets (engine-webpage) and REST (database and compiler)<br>
+Communication over websockets (engine-webpage) and REST (database, compiler, managing instances of engine)<br>
 Persistence: MySQL/Hibernate
 
