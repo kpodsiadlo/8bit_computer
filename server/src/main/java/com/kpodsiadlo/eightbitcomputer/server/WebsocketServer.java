@@ -1,6 +1,5 @@
 package com.kpodsiadlo.eightbitcomputer.server;
 
-import com.kpodsiadlo.eightbitcomputer.handler.ComputerMessageHandler;
 import com.kpodsiadlo.eightbitcomputer.handler.WebSocketsSessionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,14 +8,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
-import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 @ApplicationScoped
 @ServerEndpoint("/computer")
-public class WebsocketServer {
+public class WebsocketServer{
     @Inject
     private WebSocketsSessionHandler sessionHandler;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -34,13 +32,6 @@ public class WebsocketServer {
             sessionHandler.removeSession(session);
         }
     }
-
-//    @OnMessage
-//    public void onMessage(String message, Session originSession) {
-//        logger.debug("onMessage:");
-//        logger.debug("Received: {}", message);
-//        sessionHandler.forwardMessage(message);
-//    }
 
     @OnError
     public void onError(Throwable error) {

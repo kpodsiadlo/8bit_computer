@@ -22,30 +22,20 @@ import java.util.Map;
 
 
 public class ComputerMessageHandler implements MessageHandler.Whole<String> {
-    private final Session session;
     private final Map<String, WebsocketSession> sessions;
     private final Logger logger = LoggerFactory.getLogger(ComputerMessageHandler.class);
 
-    public ComputerMessageHandler(Session session, Map<String, WebsocketSession> sessions) {
+    public ComputerMessageHandler(Map<String, WebsocketSession> sessions) {
         this.sessions = sessions;
-        this.session = session;
     }
 
     @Override
     public void onMessage(String message) {
-        try {
             processMessage(message);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void processMessage(String message) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
-                false);
-        mapper.registerModule(new SimpleModule().addDeserializer(MessageHeader.class,
-                new MessageHeaderDeserializer()));
-        MessageHeader messageHeader = mapper.readValue(message, MessageHeader.class);
+    public void processMessage(String message)  {
+        MessageHeader messageHeader = getMessageHeader(message);
         switch (messageHeader.getSource()) {
             case SERVER:
                 logger.error("Server has received its own message: \n{} ", message);
@@ -59,6 +49,20 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
             default:
                 logger.error("Unknown message source");
         }
+    }
+
+    private MessageHeader getMessageHeader(String message) {
+        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
+                false);
+        mapper.registerModule(new SimpleModule().addDeserializer(MessageHeader.class,
+                new MessageHeaderDeserializer()));
+        MessageHeader messageHeader = null;
+        try {
+            messageHeader = mapper.readValue(message, MessageHeader.class);
+        } catch (JsonProcessingException e) {
+            logger.error("Invalid message format: \n{}", message);
+        }
+        return messageHeader;
     }
 
     private void processWebpageMessage(String message, MessageHeader messageHeader) {
@@ -106,9 +110,6 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
 
     }
 
-    private void setSessionsValues(String engineID, String webpageId) {
-
-    }
 
     private void forwardMessage(String message, MessageHeader messageHeader) {
         sendToSession(sessions.get(messageHeader.getTargetId()), message);

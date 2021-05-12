@@ -7,21 +7,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
-public class WebSocketsSessionHandler implements MessageHandler {
+public class WebSocketsSessionHandler  {
 
     private final Map<String, WebsocketSession> sessions = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     public void addSession(Session session) {
         WebsocketSession websocketSession = new WebsocketSession(session);
-        websocketSession.addMessageHandler(new ComputerMessageHandler(session, sessions));
+        websocketSession.addMessageHandler(new ComputerMessageHandler(sessions));
 
         String clientId = UUID.randomUUID().toString();
         websocketSession.setOriginId(clientId);
@@ -35,19 +34,18 @@ public class WebSocketsSessionHandler implements MessageHandler {
     public void removeSession(Session session) {
 
         WebsocketSession websocketSession = null;
-        for (Map.Entry<String, WebsocketSession> stringSessionEntry : sessions.entrySet()) {
-            // Find enclosing websocketsession based on session_id
-            if (stringSessionEntry.getValue().getId().equals(session.getId())) {
-                websocketSession = stringSessionEntry.getValue();
+        for (Map.Entry<String, WebsocketSession> UUIDandSessionEntry : sessions.entrySet()) {
+            String websocketSessionId = UUIDandSessionEntry.getValue().getId();
+            if (websocketSessionId.equals(session.getId())) {
+                websocketSession = UUIDandSessionEntry.getValue();
                 assert (websocketSession != null);
                 sessions.remove(websocketSession.getOriginId());
-                // If webpage, disconnect engine (for safety)
+                // If webpage, disconnect engine
                 if (websocketSession.getSource().equals(MessageSource.WEBPAGE)) {
                     sessions.remove(websocketSession.getTargetId());
                 }
             }
         }
-        assert websocketSession != null;
     }
 
 }
