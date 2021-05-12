@@ -1,6 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.controller;
-import com.kpodsiadlo.eightbitcomputer.engine.EngineStarter;
-import com.kpodsiadlo.eightbitcomputer.engine.HttpEngineStarter;
+import com.kpodsiadlo.eightbitcomputer.engine.EngineControlMessage;
+import com.kpodsiadlo.eightbitcomputer.engine.EngineRestClient;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,9 +12,9 @@ public class EngineController {
     @GET
     @Path("/start/{clientId}")
     public String startEngine(@PathParam("clientId") String clientId){
-        HttpEngineStarter httpEngineStarter = new HttpEngineStarter();
-        httpEngineStarter.start(clientId);
-        //EngineStarter.startEngine(clientId);
+        EngineRestClient.sendControlMessage(
+                EngineControlMessage.START, clientId
+        );
         return null;
     }
 }

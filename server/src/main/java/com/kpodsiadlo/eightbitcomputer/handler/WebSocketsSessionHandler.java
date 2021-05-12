@@ -1,5 +1,7 @@
 package com.kpodsiadlo.eightbitcomputer.handler;
 
+import com.kpodsiadlo.eightbitcomputer.engine.EngineControlMessage;
+import com.kpodsiadlo.eightbitcomputer.engine.EngineRestClient;
 import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
 import com.kpodsiadlo.eightbitcomputer.messageType.ServerMessage;
 import com.kpodsiadlo.eightbitcomputer.messages.IdDispatcher;
@@ -42,7 +44,9 @@ public class WebSocketsSessionHandler  {
                 sessions.remove(websocketSession.getOriginId());
                 // If webpage, disconnect engine
                 if (websocketSession.getSource().equals(MessageSource.WEBPAGE)) {
-                    sessions.remove(websocketSession.getTargetId());
+                    EngineRestClient.sendControlMessage(
+                            EngineControlMessage.STOP,
+                            websocketSession.getOriginId());
                 }
             }
         }
