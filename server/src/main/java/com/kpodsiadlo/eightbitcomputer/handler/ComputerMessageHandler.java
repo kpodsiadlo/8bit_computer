@@ -31,10 +31,10 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
 
     @Override
     public void onMessage(String message) {
-            processMessage(message);
+        processMessage(message);
     }
 
-    public void processMessage(String message)  {
+    public void processMessage(String message) {
         MessageHeader messageHeader = getMessageHeader(message);
         switch (messageHeader.getSource()) {
             case SERVER:
@@ -69,8 +69,7 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
 
         if (messageHeader.getType().equals(WebpageMessage.connectionACK)) {
             sendHandshakeComplete(messageHeader);
-        }
-        else if (messageHeader.getTargetId() != null) {
+        } else if (messageHeader.getTargetId() != null) {
             forwardMessage(message, messageHeader);
         }
     }
@@ -112,7 +111,11 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
 
 
     private void forwardMessage(String message, MessageHeader messageHeader) {
-        sendToSession(sessions.get(messageHeader.getTargetId()), message);
+        try {
+            sendToSession(sessions.get(messageHeader.getTargetId()), message);
+        } catch (NullPointerException e) {
+            logger.error("Session {} does not exist", messageHeader.getTargetId());
+        }
     }
 
 
@@ -123,10 +126,6 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
             logger.error("Can't send message: {} to session: {}", message,
                     session.getId());
             logger.error(e.getMessage());
-        } catch (NullPointerException e) {
-            logger.error("Session {} does not exist", session.getId());
         }
     }
-
-
 }
