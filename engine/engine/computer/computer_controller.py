@@ -2,7 +2,9 @@ from engine.computer.computer import Computer
 
 class ComputerController():
 
-    computer = Computer()
+    def __init__(self):
+
+        self.computer = Computer()
 
     def stop_computer(self):
         self.computer.clock.stop()

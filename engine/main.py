@@ -26,6 +26,7 @@ def getAll():
     return json.dumps([key for key in clients.keys()])
 
 
+
 @app.route("/", methods=['DELETE'])
 def stop():
     targetUUID = quart.request.args.get("uuid")

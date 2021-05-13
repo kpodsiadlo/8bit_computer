@@ -54,12 +54,14 @@ class WebsocketClient():
             await self.send_to_server(websocket, data)
 
     async def send_to_server(self, websocket, data):
-        print("Data Being Sent:")
+
         data["source"] = MessageSources.engine
         data["targetId"] = self.targetId
         if self.originId != None:
             data["originId"] = self.originId
-        print(data)
+        if data["type"] !=  "clockStopped":
+            print("Data Being Sent:")
+            print(data)
         data_json = json.dumps(data)
         await websocket.send(data_json)
 
