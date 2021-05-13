@@ -120,7 +120,11 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
         try {
             session.getBasicRemote().sendText(message);
         } catch (IOException e) {
+            logger.error("Can't send message: {} to session: {}", message,
+                    session.getId());
             logger.error(e.getMessage());
+        } catch (NullPointerException e) {
+            logger.error("Session {} does not exist", session.getId());
         }
     }
 

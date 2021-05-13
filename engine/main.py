@@ -19,7 +19,7 @@ async def start():
     loop = asyncio.get_event_loop()
     client.start(loop)
     if client:
-        return "Computer with targetId " + target_uuid + "started"
+        return "Computer with targetId " + target_uuid + " started"
 
 @app.route("/", methods=['GET'])
 def getAll():

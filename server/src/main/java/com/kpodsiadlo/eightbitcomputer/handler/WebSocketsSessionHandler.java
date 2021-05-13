@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
-public class WebSocketsSessionHandler  {
+public class WebSocketsSessionHandler {
 
     private final Map<String, WebsocketSession> sessions = new HashMap<>();
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -35,19 +35,17 @@ public class WebSocketsSessionHandler  {
 
     public void removeSession(Session session) {
 
-        WebsocketSession websocketSession = null;
-        for (Map.Entry<String, WebsocketSession> UUIDandSessionEntry : sessions.entrySet()) {
-            String websocketSessionId = UUIDandSessionEntry.getValue().getId();
-            if (websocketSessionId.equals(session.getId())) {
-                websocketSession = UUIDandSessionEntry.getValue();
-                assert (websocketSession != null);
+        for (WebsocketSession websocketSession: sessions.values()) {
+            if (websocketSession.getId().equals(session.getId())) {
                 sessions.remove(websocketSession.getOriginId());
-                // If webpage, disconnect engine
+
+                // If webpage, disconnect the engine
                 if (websocketSession.getSource().equals(MessageSource.WEBPAGE)) {
                     EngineRestClient.sendControlMessage(
                             EngineControlMessage.STOP,
                             websocketSession.getOriginId());
                 }
+                return;
             }
         }
     }
