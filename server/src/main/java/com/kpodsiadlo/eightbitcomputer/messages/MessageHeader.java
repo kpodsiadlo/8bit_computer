@@ -3,12 +3,10 @@ package com.kpodsiadlo.eightbitcomputer.messages;
 import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
 import com.kpodsiadlo.eightbitcomputer.messageType.MessageType;
 
-public class MessageHeader {
-    private MessageSource source;
-    private MessageType type;
+public class MessageHeader extends Message {
+
     private String originId = null;
     private String targetId = null;
-
     public MessageHeader(){
 
     }
@@ -19,22 +17,6 @@ public class MessageHeader {
         this.type = type;
         this.originId = originId;
         this.targetId = targetId;
-    }
-
-    public MessageSource getSource() {
-        return source;
-    }
-
-    public void setSource(MessageSource source) {
-        this.source = source;
-    }
-
-    public MessageType getType() {
-        return type;
-    }
-
-    public void setType(MessageType type) {
-        this.type = type;
     }
 
     public String getOriginId() {

@@ -38,13 +38,13 @@ public class Program {
         this.name = name;
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
     public List<String>getContents() {
         String[] split = contents.split(",");
         return List.of(split);
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
     }
 
     public void setContents(List<String> contents) {

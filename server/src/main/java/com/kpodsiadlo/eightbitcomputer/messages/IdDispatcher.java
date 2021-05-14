@@ -11,21 +11,15 @@ import java.io.IOException;
 public class IdDispatcher {
 
     public void sendIdToClient(Session session, MessageType type, String clientId) {
-        AssignIdMessage assignIdMessage = getIdAssignMessage(type,clientId);
-        String jsonMessage = convertToJsonMessage(assignIdMessage);
+        IdAssignMessage idAssignMessage = new IdAssignMessage(
+                MessageSource.SERVER, type, clientId
+        );
+        String jsonMessage = convertToJsonMessage(idAssignMessage);
         sendToSession(session, jsonMessage);
     }
+    
 
-
-    private AssignIdMessage getIdAssignMessage(MessageType type, String clientId) {
-        AssignIdMessage assignIdMessage = new AssignIdMessage();
-        assignIdMessage.setSource(MessageSource.SERVER);
-        assignIdMessage.setType(type);
-        assignIdMessage.setId(clientId);
-        return assignIdMessage;
-    }
-
-    private String convertToJsonMessage(AssignIdMessage message) {
+    private String convertToJsonMessage(IdAssignMessage message) {
         ObjectMapper mapper = new ObjectMapper();
         String jsonMessage = null;
         try {
