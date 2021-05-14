@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.kpodsiadlo.eightbitcomputer.json.JsonConverter;
+import com.kpodsiadlo.eightbitcomputer.json.StringSerializer;
 import com.kpodsiadlo.eightbitcomputer.json.MessageHeaderDeserializer;
 import com.kpodsiadlo.eightbitcomputer.messageType.EngineMessage;
 import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
 import com.kpodsiadlo.eightbitcomputer.messageType.ServerMessage;
 import com.kpodsiadlo.eightbitcomputer.messageType.WebpageMessage;
-import com.kpodsiadlo.eightbitcomputer.messages.IdDispatcher;
 import com.kpodsiadlo.eightbitcomputer.messages.Message;
 import com.kpodsiadlo.eightbitcomputer.messages.MessageFactory;
 import com.kpodsiadlo.eightbitcomputer.messages.MessageHeader;
@@ -56,6 +55,7 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
                 false);
         mapper.registerModule(new SimpleModule().addDeserializer(MessageHeader.class,
                 new MessageHeaderDeserializer()));
+
         MessageHeader messageHeader = null;
         try {
             messageHeader = mapper.readValue(message, MessageHeader.class);
@@ -75,14 +75,15 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
     }
 
     private void sendHandshakeComplete(MessageHeader messageHeader) {
-        MessageHeader handshakeComplete = new MessageHeader();
-        handshakeComplete.setSource(MessageSource.SERVER);
-        handshakeComplete.setType(ServerMessage.handshakeComplete);
-        handshakeComplete.setOriginId(messageHeader.getOriginId());
-        handshakeComplete.setTargetId(messageHeader.getTargetId());
-        String message = JsonConverter.convertToJsonString(handshakeComplete);
-        WebsocketSession targetSession = sessions.get(handshakeComplete.getTargetId());
-        MessageSender.sendToSession(targetSession, message);
+        Message handshakeComplete = MessageFactory.getMessageHeader(
+                MessageSource.SERVER,
+                ServerMessage.handshakeComplete,
+                messageHeader.getOriginId(),
+                messageHeader.getTargetId());
+
+        String message = StringSerializer.convertToJsonString(handshakeComplete);
+        WebsocketSession targetSession = sessions.get(messageHeader.getTargetId());
+        MessageSender.sendToSession(message, targetSession);
     }
 
     private void processEngineMessage(String message, MessageHeader messageHeader) {
@@ -105,19 +106,21 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
         webpageSession.setSource(MessageSource.WEBPAGE);
         webpageSession.setTargetId(engineId);
 
-        Message idAssignMessage = MessageFactory.getIdAssignMessage(ServerMessage.targetAssignment, engineId);
-        MessageSender.sendToSession(webpageSession,
-                JsonConverter.convertToJsonString(idAssignMessage));
+        Message idAssignMessage = MessageFactory.getIdAssignMessage(
+                ServerMessage.targetAssignment, engineId);
 
-//        IdDispatcher.sendIdToClient(webpageSession, ServerMessage.targetAssignment,
-//                engineId);
+        MessageSender.sendToSession(
+                StringSerializer.convertToJsonString(
+                        idAssignMessage),
+                webpageSession);
 
     }
 
 
     private void forwardMessage(String message, MessageHeader messageHeader) {
         try {
-            MessageSender.sendToSession(sessions.get(messageHeader.getTargetId()), message);
+            MessageSender.sendToSession(message,
+                    sessions.get(messageHeader.getTargetId()));
         } catch (NullPointerException e) {
             logger.error("Session {} does not exist", messageHeader.getTargetId());
         }

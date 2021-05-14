@@ -6,7 +6,11 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
-public class JsonConverter {
+public class StringSerializer {
+
+    private StringSerializer() {
+
+    }
 
     public static String convertToJsonString(Object object) {
         String jsonString = null;

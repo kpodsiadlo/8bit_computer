@@ -2,9 +2,11 @@ package com.kpodsiadlo.eightbitcomputer.handler;
 
 import com.kpodsiadlo.eightbitcomputer.engine.EngineControlMessage;
 import com.kpodsiadlo.eightbitcomputer.engine.EngineRestClient;
+import com.kpodsiadlo.eightbitcomputer.json.StringSerializer;
 import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
 import com.kpodsiadlo.eightbitcomputer.messageType.ServerMessage;
-import com.kpodsiadlo.eightbitcomputer.messages.IdDispatcher;
+import com.kpodsiadlo.eightbitcomputer.messages.Message;
+import com.kpodsiadlo.eightbitcomputer.messages.MessageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +30,9 @@ public class WebSocketsSessionHandler {
         websocketSession.setOriginId(clientId);
         sessions.put(clientId, websocketSession);
 
-        IdDispatcher.sendIdToClient(websocketSession, ServerMessage.originAssignment,
-                clientId);
+        Message idAssignMessage = MessageFactory.getIdAssignMessage(ServerMessage.originAssignment, clientId);
+        MessageSender.sendToSession(StringSerializer.convertToJsonString(idAssignMessage),
+            websocketSession);
     }
 
     public void removeSession(Session session) {

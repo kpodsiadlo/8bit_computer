@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class CompilerController {
 
-    private final Logger logger = LoggerFactory.getLogger("CompilerService");
+    private final Logger logger = LoggerFactory.getLogger(CompilerController.class);
 
     @Inject
     Compiler compiler;

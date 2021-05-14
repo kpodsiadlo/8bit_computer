@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class MessageSender {
     private static final Logger logger = LoggerFactory.getLogger(MessageSender.class);
-    public static void sendToSession(Session session, String message) {
+    public static void sendToSession(String message, Session session) {
         try {
             session.getBasicRemote().sendText(message);
         } catch (IOException e) {

@@ -11,11 +11,28 @@ import java.util.stream.Stream;
 @Stateless
 public class Compiler {
 
+    private static final Integer PROGRAM_LENGTH = 16;
     private final Map<String, String> opcodes = getOpcodes();
-    private final Integer PROGRAM_LENGTH = 16;
 
     public static Set<String> getInstructionsFromOpcodes() {
         return getOpcodes().keySet();
+    }
+
+    private static Map<String, String> getOpcodes() {
+        return Stream.of(new String[][]
+                {
+                        {"nop", "0000"},
+                        {"lda", "0001"},
+                        {"add", "0010"},
+                        {"sub", "0011"},
+                        {"sta", "0100"},
+                        {"ldi", "0101"},
+                        {"jmp", "0110"},
+                        {"jc", "0111"},
+                        {"jz", "1000"},
+                        {"out", "1110"},
+                        {"hlt", "1111"},
+                }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
     }
 
     public Program compile(IncomingUserProgram incomingUserProgram) {
@@ -23,10 +40,10 @@ public class Compiler {
 
         for (int i = 0; i < PROGRAM_LENGTH; i++) {
             String entry = createMachineCodeEntry(incomingUserProgram, i);
-            programBinary.append(entry);
-            programBinary.append(",");
+            programBinary.append(entry)
+                    .append(",");
         }
-        
+
         Program compiledProgram = new Program();
         compiledProgram.setContents(programBinary.toString());
         return compiledProgram;
@@ -72,23 +89,6 @@ public class Compiler {
 
     private String convertToStringAndPad(Integer integer, Integer pad) {
         return Strings.padStart((Integer.toBinaryString(integer)), pad, '0');
-    }
-
-    private static Map<String, String> getOpcodes() {
-        return Stream.of(new String[][]
-                {
-                        {"nop", "0000"},
-                        {"lda", "0001"},
-                        {"add", "0010"},
-                        {"sub", "0011"},
-                        {"sta", "0100"},
-                        {"ldi", "0101"},
-                        {"jmp", "0110"},
-                        {"jc", "0111"},
-                        {"jz", "1000"},
-                        {"out", "1110"},
-                        {"hlt", "1111"},
-                }).collect(Collectors.toMap(data -> data[0], data -> data[1]));
     }
 
 }
