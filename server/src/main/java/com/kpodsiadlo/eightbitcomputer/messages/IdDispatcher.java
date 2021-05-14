@@ -2,24 +2,25 @@ package com.kpodsiadlo.eightbitcomputer.messages;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpodsiadlo.eightbitcomputer.handler.MessageSender;
 import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
 import com.kpodsiadlo.eightbitcomputer.messageType.MessageType;
 
 import javax.websocket.Session;
-import java.io.IOException;
 
 public class IdDispatcher {
 
-    public void sendIdToClient(Session session, MessageType type, String clientId) {
-        IdAssignMessage idAssignMessage = new IdAssignMessage(
-                MessageSource.SERVER, type, clientId
+    public static void sendIdToClient(Session session, MessageType type,
+                                      String clientId) {
+        Message idAssignMessage = MessageFactory.getIdAssignMessage(
+                type, clientId
         );
         String jsonMessage = convertToJsonMessage(idAssignMessage);
-        sendToSession(session, jsonMessage);
+        MessageSender.sendToSession(session, jsonMessage);
     }
     
 
-    private String convertToJsonMessage(IdAssignMessage message) {
+    private static String convertToJsonMessage(Message message) {
         ObjectMapper mapper = new ObjectMapper();
         String jsonMessage = null;
         try {
@@ -30,12 +31,5 @@ public class IdDispatcher {
         return jsonMessage;
     }
 
-    public void sendToSession(Session session, String message) {
-        try {
-            session.getBasicRemote().sendText(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
 

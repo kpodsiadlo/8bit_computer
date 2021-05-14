@@ -28,8 +28,7 @@ public class WebSocketsSessionHandler {
         websocketSession.setOriginId(clientId);
         sessions.put(clientId, websocketSession);
 
-        IdDispatcher idDispatcher = new IdDispatcher();
-        idDispatcher.sendIdToClient(websocketSession, ServerMessage.originAssignment,
+        IdDispatcher.sendIdToClient(websocketSession, ServerMessage.originAssignment,
                 clientId);
     }
 

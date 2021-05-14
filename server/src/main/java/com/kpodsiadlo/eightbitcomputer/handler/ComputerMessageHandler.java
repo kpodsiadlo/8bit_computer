@@ -11,13 +11,13 @@ import com.kpodsiadlo.eightbitcomputer.messageType.MessageSource;
 import com.kpodsiadlo.eightbitcomputer.messageType.ServerMessage;
 import com.kpodsiadlo.eightbitcomputer.messageType.WebpageMessage;
 import com.kpodsiadlo.eightbitcomputer.messages.IdDispatcher;
+import com.kpodsiadlo.eightbitcomputer.messages.Message;
+import com.kpodsiadlo.eightbitcomputer.messages.MessageFactory;
 import com.kpodsiadlo.eightbitcomputer.messages.MessageHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.websocket.MessageHandler;
-import javax.websocket.Session;
-import java.io.IOException;
 import java.util.Map;
 
 
@@ -82,7 +82,7 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
         handshakeComplete.setTargetId(messageHeader.getTargetId());
         String message = JsonConverter.convertToJsonString(handshakeComplete);
         WebsocketSession targetSession = sessions.get(handshakeComplete.getTargetId());
-        sendToSession(targetSession, message);
+        MessageSender.sendToSession(targetSession, message);
     }
 
     private void processEngineMessage(String message, MessageHeader messageHeader) {
@@ -100,32 +100,28 @@ public class ComputerMessageHandler implements MessageHandler.Whole<String> {
         WebsocketSession engineSession = sessions.get(engineId);
         engineSession.setSource(MessageSource.ENGINE);
         engineSession.setTargetId(webpageId);
+
         WebsocketSession webpageSession = sessions.get(webpageId);
         webpageSession.setSource(MessageSource.WEBPAGE);
         webpageSession.setTargetId(engineId);
 
-        IdDispatcher idDispatcher = new IdDispatcher();
-        idDispatcher.sendIdToClient(webpageSession, ServerMessage.targetAssignment, engineId);
+        Message idAssignMessage = MessageFactory.getIdAssignMessage(ServerMessage.targetAssignment, engineId);
+        MessageSender.sendToSession(webpageSession,
+                JsonConverter.convertToJsonString(idAssignMessage));
+
+//        IdDispatcher.sendIdToClient(webpageSession, ServerMessage.targetAssignment,
+//                engineId);
 
     }
 
 
     private void forwardMessage(String message, MessageHeader messageHeader) {
         try {
-            sendToSession(sessions.get(messageHeader.getTargetId()), message);
+            MessageSender.sendToSession(sessions.get(messageHeader.getTargetId()), message);
         } catch (NullPointerException e) {
             logger.error("Session {} does not exist", messageHeader.getTargetId());
         }
     }
 
 
-    public void sendToSession(Session session, String message) {
-        try {
-            session.getBasicRemote().sendText(message);
-        } catch (IOException e) {
-            logger.error("Can't send message: {} to session: {}", message,
-                    session.getId());
-            logger.error(e.getMessage());
-        }
-    }
 }
