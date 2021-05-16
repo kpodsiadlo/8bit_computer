@@ -52,6 +52,11 @@ public class WebSocketsSessionHandler {
         }
     }
 
+    public boolean sessionExist(String uuid) {
+        boolean contains = sessions.containsKey(uuid);
+        return contains;
+    }
+
 }
 
 
