@@ -1,4 +1,4 @@
-package com.kpodsiadlo.eightbitcomputer.authentication;
+package com.kpodsiadlo.eightbitcomputer.recaptcha;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

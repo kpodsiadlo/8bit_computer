@@ -1,4 +1,4 @@
-package com.kpodsiadlo.eightbitcomputer.authentication;
+package com.kpodsiadlo.eightbitcomputer.recaptcha;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.HttpUrl;
@@ -13,6 +13,9 @@ import java.io.IOException;
 
 public class VerifyRecaptcha {
 
+    private VerifyRecaptcha() {
+
+    }
 
     public static final String URL = "https://www.google.com/recaptcha/api/siteverify";
     public static final String SECRET = "6LcD5NcaAAAAANjiI8Y8v-vnRuZwyG9Ok3gvI5V7";

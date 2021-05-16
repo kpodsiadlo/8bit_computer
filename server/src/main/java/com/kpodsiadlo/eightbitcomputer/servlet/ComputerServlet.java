@@ -1,6 +1,6 @@
 package com.kpodsiadlo.eightbitcomputer.servlet;
 
-import com.kpodsiadlo.eightbitcomputer.authentication.VerifyRecaptcha;
+import com.kpodsiadlo.eightbitcomputer.recaptcha.VerifyRecaptcha;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
