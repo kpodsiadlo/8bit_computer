@@ -14,16 +14,12 @@ import java.io.IOException;
 import java.util.UUID;
 
 @WebServlet("/index.html")
-public class DefaultServlet extends HttpServlet {
+public class IndexServlet extends HttpServlet {
     Logger logger = LoggerFactory.getLogger("DefaultServlet");
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("default.jsp");
-        String name = "8bitComputerCookie";
-        String value = UUID.randomUUID().toString();
-        Cookie cookie = new Cookie(name, value);
-        resp.addCookie(cookie);
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("login.html");
         requestDispatcher.forward(req, resp);
     }
 }
